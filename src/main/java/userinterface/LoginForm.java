@@ -13,15 +13,17 @@ public class LoginForm extends JDialog{
 
 
     public LoginForm(JFrame parent) {
-        super(parent);
-        setTitle("Order-N-Go Login");
-        setContentPane(loginPanel);
-        setMinimumSize(new Dimension(750, 750));
+        JFrame loginFrame = new JFrame();
+        loginFrame.setTitle("Order-N-Go Login");
+        loginFrame.setContentPane(loginPanel);
+        loginFrame.setMinimumSize(new Dimension(750, 750));
         setModal(true);
-        setLocationRelativeTo(parent);
-        setDefaultCloseOperation(DISPOSE_ON_CLOSE);
-        setVisible(true);
+        loginFrame.setLocationRelativeTo(parent);
+        loginFrame.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+        loginFrame.setVisible(true);
     }
+
+    // TODO: usar SQL para login/pass e fechar e abrir MainForm
 
     private void createUIComponents() {
         restaurantImage = new JLabel(new ImageIcon("C:\\Users\\Joao\\Desktop\\Order-N-Go\\src\\food-tray.png"));
