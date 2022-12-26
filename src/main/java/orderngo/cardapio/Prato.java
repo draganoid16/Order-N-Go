@@ -6,8 +6,13 @@ package orderngo.cardapio;
  */
 public class Prato extends ItemCardapio
 {
+    public static enum TipoPrato
+    {
+        CARNE, PEIXE, VEGETARIANO, VEGANO
+    }
+
     private final TipoPrato tipoPrato;
-    private String alergenicos;
+    private String alergenios;
 
     public Prato(String nome, String detalhes, TipoPrato tipoPrato, String alergenicos)
     {
@@ -18,7 +23,7 @@ public class Prato extends ItemCardapio
         
         this.tipoPrato = tipoPrato;
         
-        setAlergenicos(alergenicos);
+        setAlergenios(alergenios);
     }
 
     //<editor-fold defaultstate="collapsed" desc="Getters">
@@ -28,24 +33,21 @@ public class Prato extends ItemCardapio
     }
     
     
-    public String getAlergenicos()
+    public String getAlergenios()
     {
-        return alergenicos;
+        return alergenios;
     }
     //</editor-fold>
 
     //<editor-fold defaultstate="collapsed" desc="Setters">
-    public void setAlergenicos(String alergenicos)
+    public void setAlergenios(String alergenios)
     {
-        if (alergenicos == null || alergenicos.isBlank())
-            throw new IllegalArgumentException("Alergenicos invalido!");
+        if (alergenios == null)
+            throw new IllegalArgumentException("Alergenios invalido!");
         
-        this.alergenicos = alergenicos;
+        this.alergenios = alergenios;
     }
     //</editor-fold>
     
-    public static enum TipoPrato
-    {
-        CARNE, PEIXE, VEGETARIANO, VEGANO
-    }
+    
 }
