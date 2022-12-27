@@ -22,12 +22,17 @@ public class LoginForm extends JDialog{
              * @param e the event to be processed
              */
             @Override
-            public void actionPerformed(ActionEvent e) {
+            public void actionPerformed(ActionEvent e) { //aqui devia ser quando se carrega no botão login e quando se carrega no Enter
                 dispose();
                 String email = emailField.getText();
                 String password = passwordField.getText();
-                if(email.equals("teste") && password.equals("teste")) {
-                    App.MainMenu();
+                //GerenteForm que gere o seu restaurante e edita o cardapio
+                if(email.equals("Gerente") && password.equals("GerentePassword")) {
+                    App.GerenteMenu();
+                }
+                //GestorForm que adiciona/remove restaurantes de agueda da base de dados
+                if(email.equals("Gestor") && password.equals("GestorPassword")) {
+                    App.GestorMenu();
                 }
             }
         });
@@ -44,7 +49,7 @@ public class LoginForm extends JDialog{
     // TODO: usar SQL para login/pass e fechar e abrir MainForm
 
     private void createUIComponents() {
-        restaurantImage = new JLabel(new ImageIcon("C:\\Users\\Joao\\Desktop\\Order-N-Go\\src\\food-tray.png"));
-        loginImage = new JLabel(new ImageIcon("C:\\Users\\Joao\\Desktop\\Order-N-Go\\src\\login.png"));
+        restaurantImage = new JLabel(new ImageIcon("src\\imageresources\\food-tray.png"));
+        loginImage = new JLabel(new ImageIcon("src\\imageresources\\user.png"));
     }
 }

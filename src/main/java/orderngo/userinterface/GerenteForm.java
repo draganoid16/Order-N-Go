@@ -6,7 +6,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import static javax.swing.WindowConstants.DISPOSE_ON_CLOSE;
 
-public class MainForm {
+public class GerenteForm {
 
     private JLabel usernameCustom;
     private JLabel restauranteLabel;
@@ -15,7 +15,7 @@ public class MainForm {
     private JPanel mainPanel;
     private JLabel userImage;
 
-    public MainForm(JFrame parent) {
+    public GerenteForm(JFrame parent) {
 
 
 
@@ -30,13 +30,13 @@ public class MainForm {
         restauranteLabel.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                JOptionPane.showMessageDialog(null, "This is a message dialog", "Dialog", JOptionPane.INFORMATION_MESSAGE);
+                JOptionPane.showMessageDialog(null, "Teste. Isto não é para criar uma dialogue box, mas outro Jpanel com as cenas de SQL", "teste", JOptionPane.INFORMATION_MESSAGE);
             }
         });
     }
 
     private void createUIComponents() {
-        userImage = new JLabel(new ImageIcon("\\Order-N-Go\\src\\profile(1).png"));
+        userImage = new JLabel(new ImageIcon("src\\imageresources\\profile.png"));
 
         // TODO usernameCustom: trocar o nome baseado no username guardado no SQL
         usernameCustom = new JLabel("Username");
