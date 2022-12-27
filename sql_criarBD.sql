@@ -10,7 +10,7 @@ BEGIN
         nome VARCHAR(100),
         morada VARCHAR(100),
         telemovel CHAR(9),
-        palavraPasse VARCHAR(100) NOT NULL,
+        palavraPasse CHAR(64) NOT NULL,
         nrEmpregado INT UNIQUE NOT NULL,
         
         CONSTRAINT nrEmpregadoValida CHECK (nrEmpregado > 0),
@@ -24,7 +24,7 @@ BEGIN
         nome VARCHAR(100) UNIQUE NOT NULL,
         morada VARCHAR(100),
         telemovel CHAR(9),
-        palavraPasse VARCHAR(100) NOT NULL,
+        palavraPasse CHAR(64) NOT NULL,
         
         CONSTRAINT pk PRIMARY KEY (email)
     );

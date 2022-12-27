@@ -8,8 +8,9 @@ public abstract class ItemCardapio
 {
     private final String nome;
     private String detalhes;
+    private float precoUnitario;
 
-    public ItemCardapio(String nome, String detalhes)
+    public ItemCardapio(String nome, String detalhes, float precoUnitario)
     {
         if (nome == null || nome.isBlank())
             throw new IllegalArgumentException("Nome invalido!");
@@ -17,6 +18,7 @@ public abstract class ItemCardapio
         this.nome = nome;
         
         setDetalhes(detalhes);
+        setPrecoUnitario(precoUnitario);
     }
 
     //<editor-fold defaultstate="collapsed" desc="Getters">
@@ -29,6 +31,11 @@ public abstract class ItemCardapio
     {
         return detalhes;
     }
+
+    public float getPrecoUnitario()
+    {
+        return precoUnitario;
+    }
     //</editor-fold>
     
     //<editor-fold defaultstate="collapsed" desc="Setters">
@@ -39,5 +46,14 @@ public abstract class ItemCardapio
         
         this.detalhes = detalhes;
     }
+    
+    public void setPrecoUnitario(float precoUnitario)
+    {
+        if (precoUnitario <= 0)
+            throw new IllegalArgumentException("Preco unitario invalido!");
+        
+        this.precoUnitario = precoUnitario;
+    }
     //</editor-fold>
+
 }

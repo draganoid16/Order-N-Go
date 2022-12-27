@@ -55,7 +55,7 @@ public abstract class Utilizador
 
     public void setTelemovel(String telemovel)
     {
-        if (telemovel == null || !telemovel.matches("\\d{9}"))
+        if (!telemovel.matches("\\d{9}"))
             throw new IllegalArgumentException("Telemovel invalido!");
         
         this.telemovel = telemovel;

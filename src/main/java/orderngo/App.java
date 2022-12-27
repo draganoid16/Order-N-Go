@@ -1,9 +1,8 @@
 package orderngo;
 
 
-import com.sun.tools.javac.Main;
-import userinterface.LoginForm;
-import userinterface.MainForm;
+import orderngo.userinterface.LoginForm;
+import orderngo.userinterface.MainForm;
 
 /**
  * @author grupo1

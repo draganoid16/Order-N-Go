@@ -18,7 +18,7 @@ public class Pedido
     public Pedido(int nrPedido, String moradaEntrega, Date dataHoraEntrega)
     {
         if (nrPedido <= 0)
-            throw new IllegalArgumentException("N�mero de pedido invalido!");
+            throw new IllegalArgumentException("Numero de pedido invalido!");
             
         this.nrPedido = nrPedido;
         
