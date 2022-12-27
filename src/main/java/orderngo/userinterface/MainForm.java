@@ -36,7 +36,7 @@ public class MainForm {
     }
 
     private void createUIComponents() {
-        userImage = new JLabel(new ImageIcon("C:\\Users\\Joao\\Desktop\\Order-N-Go\\src\\profile(1).png"));
+        userImage = new JLabel(new ImageIcon("\\Order-N-Go\\src\\profile(1).png"));
 
         // TODO usernameCustom: trocar o nome baseado no username guardado no SQL
         usernameCustom = new JLabel("Username");

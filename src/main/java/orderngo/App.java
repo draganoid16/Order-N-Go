@@ -10,6 +10,8 @@ import orderngo.userinterface.MainForm;
 public class App {
     public static void main(String[] args) {
         LoginForm loginForm = new LoginForm(null);
+    }
+    public static void MainMenu(){
         //teste login form e main form
         MainForm mainForm = new MainForm(null);
     }
