@@ -7,7 +7,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-public class LoginForm extends JDialog{
+public class LoginForm extends JDialog {
     private JTextField emailField;
     private JPasswordField passwordField;
     private JButton loginButton;
@@ -17,21 +17,21 @@ public class LoginForm extends JDialog{
 
 
     public LoginForm(JFrame parent) {
-        JFrame loginFrame = new JFrame(); loginButton.addActionListener(new ActionListener() {
-            /**
-             * @param e the event to be processed
-             */
+        JFrame loginFrame = new JFrame();
+        App.GerenteMenu();
+
+        loginButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) { //aqui devia ser quando se carrega no botão login e quando se carrega no Enter
                 dispose();
                 String email = emailField.getText();
                 String password = passwordField.getText();
                 //GerenteForm que gere o seu restaurante e edita o cardapio
-                if(email.equals("Gerente") && password.equals("GerentePassword")) {
+                if (email.equals("gerente") && password.equals("gerentepass")) {
                     App.GerenteMenu();
                 }
                 //GestorForm que adiciona/remove restaurantes de agueda da base de dados
-                if(email.equals("Gestor") && password.equals("GestorPassword")) {
+                if (email.equals("gestor") && password.equals("gestorpass")) {
                     App.GestorMenu();
                 }
             }
