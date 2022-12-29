@@ -1,11 +1,15 @@
 package orderngo.userinterface;
 
 import orderngo.App;
+import orderngo.exceptions.RestauranteNotFoundException;
+import orderngo.utilizador.Restaurante;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowEvent;
+import java.sql.SQLException;
 
 public class LoginForm extends JDialog {
     private JTextField emailField;
@@ -14,11 +18,17 @@ public class LoginForm extends JDialog {
     private JPanel loginPanel;
     private JLabel restaurantImage;
     private JLabel loginImage;
+    private JRadioButton restauranteRadioButton;
+    private JRadioButton gestorONGRadioButton;
 
 
     public LoginForm(JFrame parent) {
         JFrame loginFrame = new JFrame();
-        App.GerenteMenu();
+        //RadioButtons agrupados
+        ButtonGroup group = new ButtonGroup();
+        group.add(restauranteRadioButton);
+        group.add(gestorONGRadioButton);
+        //App.GerenteMenu();
 
         loginButton.addActionListener(new ActionListener() {
             @Override
@@ -26,16 +36,32 @@ public class LoginForm extends JDialog {
                 dispose();
                 String email = emailField.getText();
                 String password = passwordField.getText();
+
+                //TODO: Implementar radiobuttons
+
                 //GerenteForm que gere o seu restaurante e edita o cardapio
-                if (email.equals("gerente") && password.equals("gerentepass")) {
-                    App.GerenteMenu();
+                try {
+                    if (Restaurante.validCredentials(email, password)) {
+                        App.GerenteMenu();
+                        loginFrame.dispatchEvent(new WindowEvent(loginFrame, WindowEvent.WINDOW_CLOSING));
+
+                        //GestorForm que adiciona/remove restaurantes de agueda da base de dados
+                    } else if (email.equals("gestor") && password.equals("gestorpass")) { //trocar isto
+                        App.GestorMenu();
+
+                    } else {
+                        JOptionPane.showMessageDialog(loginFrame, "Erro! Credencias introduzidos não são validos!", "Login Incorreto!", JOptionPane.ERROR_MESSAGE);
+                        throw new RestauranteNotFoundException(email);
+                    }
+
+                } catch (SQLException ex) {
+                    JOptionPane.showMessageDialog(loginFrame, "Erro! Conexão a Base de Dados não foi estabelecido!", "Conexão não Estabelecida!", JOptionPane.ERROR_MESSAGE);
+                    throw new RuntimeException(ex);
                 }
-                //GestorForm que adiciona/remove restaurantes de agueda da base de dados
-                if (email.equals("gestor") && password.equals("gestorpass")) {
-                    App.GestorMenu();
-                }
+
             }
         });
+
         loginFrame.setTitle("Order-N-Go Login");
         loginFrame.setContentPane(loginPanel);
         loginFrame.setMinimumSize(new Dimension(750, 750));
@@ -46,7 +72,6 @@ public class LoginForm extends JDialog {
 
     }
 
-    // TODO: usar SQL para login/pass e fechar e abrir MainForm
 
     private void createUIComponents() {
         restaurantImage = new JLabel(new ImageIcon("src\\imageresources\\food-tray.png"));
