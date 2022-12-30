@@ -59,26 +59,39 @@ public class ConectorBD
         );
     }
     
-            
+    //<editor-fold defaultstate="collapsed" desc="Statements">
     public ResultSet executeQuery(String sql) throws SQLException
     {
-        return con.createStatement().executeQuery(sql);
+        var st = con.createStatement();
+        st.closeOnCompletion();
+        
+        return st.executeQuery(sql);
     }
     
     public int executeUpdate(String sql) throws SQLException
     {
-        return con.createStatement().executeUpdate(sql);
+        var st = con.createStatement();
+        st.closeOnCompletion();
+        
+        return st.executeUpdate(sql);
     }
+    //</editor-fold>
     
-    
+    //<editor-fold defaultstate="collapsed" desc="Prepared Statements">
     public PreparedStatement prepareStatement(String sql) throws SQLException
     {
-        return con.prepareStatement(sql);
+        PreparedStatement ps = con.prepareStatement(sql);
+        ps.closeOnCompletion();
+        
+        return ps;
     }
     
     public CallableStatement prepareCall(String sql) throws SQLException
     {
-        return con.prepareCall(sql);
+        CallableStatement cs = con.prepareCall(sql);
+        cs.closeOnCompletion();
+        
+        return cs;
     }
     
 
@@ -96,16 +109,15 @@ public class ConectorBD
     {
         return statement.executeUpdate();
     }
-            
+    //</editor-fold>
     
     private static ConectorBD instance = null;
     public static ConectorBD getInstance() throws SQLException
     {
-        if (instance == null)
-        {
-            instance = new ConectorBD();
-        }
+        if (instance != null)
+            return instance;
             
+        instance = new ConectorBD();
         return instance;
     }
 }

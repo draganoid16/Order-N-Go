@@ -1,8 +1,13 @@
 package orderngo.cardapio;
 
+import java.awt.image.BufferedImage;
+
 import orderngo.basedados.ConectorBD;
 import orderngo.utilizador.Restaurante;
 import java.util.ArrayList;
+import java.sql.ResultSet;
+import orderngo.basedados.BaseDadosUtils;
+
 import java.sql.SQLException;
 
 /**
@@ -55,7 +60,27 @@ public class Prato extends ItemCardapio
     //</editor-fold>
     
     
-    
+    //<editor-fold defaultstate="collapsed" desc="BuscarDados">
+    private static Prato createPrato(ResultSet result) throws SQLException
+    {
+        Prato p = new Prato(
+            result.getString("nome"), 
+            result.getString("detalhes"),
+            result.getFloat("precoUnitario"),
+            TipoPrato.valueOf(
+                result.getString("tipo")
+            ), 
+            result.getString("alergenios")
+        );
+
+        BufferedImage imagem = BaseDadosUtils.blobToImage(
+            result.getBlob("imagem")
+        );
+        p.setImagem(imagem);
+        
+        return p;
+    }
+        
     public static Prato[] from(Restaurante rest) throws SQLException
     {
         ArrayList<Prato> pratos = new ArrayList<>();
@@ -63,19 +88,13 @@ public class Prato extends ItemCardapio
         var cbd = ConectorBD.getInstance();
         var ps = cbd.prepareStatement("SELECT * FROM prato WHERE emailRestaurante = ?");
         ps.setString(1, rest.getEmail());
-        var result = cbd.executePreparedQuery(ps);
-
-        while (result.next())
+        
+        try (ResultSet result = cbd.executePreparedQuery(ps))
         {
-            pratos.add(new Prato(
-                result.getString("nome"), 
-                result.getString("detalhes"),
-                result.getFloat("precoUnitario"),
-                TipoPrato.valueOf(
-                    result.getString("tipo")
-                ), 
-                result.getString("alergenios")
-            ));
+            while (result.next())
+            {
+                pratos.add(createPrato(result));
+            }
         }
         
         
@@ -83,4 +102,5 @@ public class Prato extends ItemCardapio
         pratos.toArray(arr);
         return arr;
     }
+    //</editor-fold>
 }

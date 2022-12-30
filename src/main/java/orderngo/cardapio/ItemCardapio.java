@@ -1,5 +1,7 @@
 package orderngo.cardapio;
 
+import java.awt.image.BufferedImage;
+
 /**
  *
  * @author grupo1
@@ -9,6 +11,7 @@ public abstract class ItemCardapio
     private final String nome;
     private String detalhes;
     private float precoUnitario;
+    private BufferedImage imagem;
 
     public ItemCardapio(String nome, String detalhes, float precoUnitario)
     {
@@ -19,6 +22,7 @@ public abstract class ItemCardapio
         
         setDetalhes(detalhes);
         setPrecoUnitario(precoUnitario);
+        setImagem(null);
     }
 
     //<editor-fold defaultstate="collapsed" desc="Getters">
@@ -35,6 +39,11 @@ public abstract class ItemCardapio
     public float getPrecoUnitario()
     {
         return precoUnitario;
+    }
+    
+    public BufferedImage getImagem()
+    {
+        return imagem;
     }
     //</editor-fold>
     
@@ -53,6 +62,11 @@ public abstract class ItemCardapio
             throw new IllegalArgumentException("Preco unitario invalido!");
         
         this.precoUnitario = precoUnitario;
+    }
+    
+    public void setImagem(BufferedImage imagem)
+    {
+        this.imagem = imagem;
     }
     //</editor-fold>
 

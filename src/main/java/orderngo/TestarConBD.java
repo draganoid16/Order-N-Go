@@ -1,9 +1,15 @@
 package orderngo;
 
-import orderngo.cardapio.*;
+import java.awt.image.BufferedImage;
 import orderngo.utilizador.*;
 
+import java.io.FileInputStream;
+
+import orderngo.basedados.ConectorBD;
+import orderngo.basedados.BaseDadosUtils;
+
 import java.sql.SQLException;
+import java.io.FileNotFoundException;
 
 public class TestarConBD 
 {
@@ -33,117 +39,45 @@ public class TestarConBD
     
     public void main()
     {
-        Restaurante[] rests = new Restaurante[0];
-        GestorOrderAndGo gestor1 = new GestorOrderAndGo("nao@esta.bem", "nao esta bem", "123456789", "nao esta bem", 404);
-        Restaurante rest1 = new Restaurante("nao@esta.bem", "nao esta bem", "123456789", "nao esta bem");
+        Restaurante rest10 = new Restaurante("nao@esta.bem", "nao esta bem", "123456789", "nao esta bem");
         
         try
         {
-            rests = Restaurante.all();
+            var con = ConectorBD.getInstance();
             
-            for (Restaurante r : rests)
+            // remover r10
+            var ps = con.prepareStatement("DELETE FROM restaurante WHERE email = ?");
+            ps.setString(1, "r10@r10.r10");
+            
+            con.executePreparedUpdate(ps);
+            
+            // adicionar r10
+            ps = con.prepareStatement("INSERT INTO restaurante(email, nome, morada, telemovel, palavraPasse, imagem) VALUES (?,?,?,?,?,?)");
+
+            ps.setString(1, "r10@r10.r10");
+            ps.setString(2, "r10");
+            ps.setString(3, "Morada 10");
+            ps.setString(4, "101010101");
+            ps.setString(5, BaseDadosUtils.encriptarPassword("10"));
+            try
             {
-                Cardapio.fillFrom(r);
+                // imagem food-tray.png, para testar
+                ps.setBlob(6, new FileInputStream("src\\imageresources\\food-tray.png"));
             }
+            catch (FileNotFoundException fnfe) {}
             
-            gestor1 = GestorOrderAndGo.getGestor("g1@g1.g1");
-            rest1 = Restaurante.getRestaurante("r1@r1.r1");
+            con.executePreparedUpdate(ps);
+
+            // obtem r10
+            rest10 = Restaurante.getRestaurante("r10@r10.r10");
         }
         catch (SQLException sqle)
         {
             printSQLException(sqle);
         }
         
-        System.out.printf(
-            "Restaurantes:\n%-20s | %-20s | %-20s | %-9s\n", 
-            "Email", 
-            "Nome", 
-            "Morada", 
-            "Telemovel"
-        );
-        for (Restaurante r : rests)
-        {
-            System.out.printf(
-                "%-20s | %-20s | %-20s | %-9s\n",
-                r.getEmail(),
-                r.getNome(),
-                r.getMorada(),
-                r.getTelemovel()
-            );
-        }
-        System.out.println();
-        
-        System.out.printf(
-            "Cardapios:\n%-20s | %-20s | %14s | %-20s | %-20s | %-20s\n", 
-            "Nome", 
-            "Detalhes",
-            "Preco Unitario",
-            "Tipo_Prato", 
-            "Alergenios_Prato",
-            "CapacidadeCL_Bebida"
-        );
-        for (Restaurante r : rests)
-        {
-            System.out.printf(
-                "%-20s%-108s\n", 
-                r.getNome(),
-                "-".repeat(108)
-            );
-            
-            for (ItemCardapio item : r.getCardapio().getAllItems())
-            {
-                boolean isPrato = item instanceof Prato;
-                
-                System.out.printf(
-                    "%-20s | %-20s | %14.2f | %-20s | %-20s | %-20s\n", 
-                    item.getNome(), 
-                    item.getDetalhes(), 
-                    item.getPrecoUnitario(),
-                    !isPrato ? "" : ((Prato)item).getTipoPrato(), 
-                    !isPrato ? "" : ((Prato)item).getAlergenios(), 
-                    isPrato ? "" : ((Bebida)item).getCapacidadeCL() 
-                );
-            }
-        }
-        System.out.println();
-        
-        
-        System.out.printf(
-            "Gestor 1:\nEmail: %s\nNome: %s\nMorada: %s\nTelemovel: %s\nNrEmpregado: %d\n",
-            gestor1.getEmail(),
-            gestor1.getNome(),
-            gestor1.getMorada(),
-            gestor1.getTelemovel(),
-            gestor1.getNrEmpregado()
-        );
-        System.out.println();
-        
-        System.out.printf(
-            "Restaurante 1:\nEmail: %s\nNome: %s\nMorada: %s\nTelemovel: %s\n",
-            rest1.getEmail(),
-            rest1.getNome(),
-            rest1.getMorada(),
-            rest1.getTelemovel()
-        );
-        System.out.println();
-        
-        
-        try
-        {
-            System.out.println(GestorOrderAndGo.validCredentials("g1@g1.g1", "incorreta"));
-            System.out.println(GestorOrderAndGo.validCredentials("g1@g1.g1", "1"));
-            System.out.println(GestorOrderAndGo.validCredentials("r2@r2.r2", "2"));
-            System.out.println();
-            
-            System.out.println(Restaurante.validCredentials("r1@r1.r1", "incorreta"));
-            System.out.println(Restaurante.validCredentials("r1@r1.r1", "1"));
-            System.out.println(Restaurante.validCredentials("g2@g2.g2", "2"));
-            System.out.println();
-        }
-        catch (SQLException sqle)
-        {
-            printSQLException(sqle);
-        }
+        BufferedImage bimagem = rest10.getImagem();
+        System.out.println(bimagem);
     }
     
     public static void main(String[] args) 

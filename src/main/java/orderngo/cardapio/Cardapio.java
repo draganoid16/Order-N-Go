@@ -3,6 +3,7 @@ package orderngo.cardapio;
 import java.util.ArrayList;
 
 import orderngo.utilizador.Restaurante;
+
 import java.sql.SQLException;
 
 /**
@@ -18,6 +19,7 @@ public class Cardapio
         items = new ArrayList<>();
     }
 
+    
     public ItemCardapio[] getAllItems()
     {
         ItemCardapio[] itemsArr = new ItemCardapio[items.size()];
@@ -29,6 +31,11 @@ public class Cardapio
     public ItemCardapio getItem(int idx)
     {
         return items.get(idx);
+    }
+    
+    public void limparCardapio()
+    {
+        items.clear();
     }
     
     public void adicionarItem(ItemCardapio item)
@@ -47,6 +54,7 @@ public class Cardapio
     }
     
     
+    //<editor-fold defaultstate="collapsed" desc="BuscarDados">
     public static Cardapio fillFrom(Restaurante rest) throws SQLException
     {
         Cardapio card = rest.getCardapio();
@@ -65,4 +73,5 @@ public class Cardapio
 
         return card;
     }
+    //</editor-fold>
 }
