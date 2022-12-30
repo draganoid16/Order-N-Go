@@ -14,24 +14,16 @@ import orderngo.exceptions.RestauranteNotFoundException;
  */
 public class Restaurante extends Utilizador
 {
-    private final String email;
-    private final String nome;
-    private final String telemovel;
-    private final String morada;
     private final Cardapio cardapio;
+    
     public Restaurante(String email, String nome, String telemovel, String morada, Cardapio cardapio)
     {
         super(email, nome, telemovel, morada);
         
         if (cardapio == null)
             throw new IllegalArgumentException("Cardapio invalido!");
-
-        this.email = email;
-        this.nome = nome;
-        this.telemovel = telemovel;
-        this.morada = morada;
+        
         this.cardapio = cardapio;
-
     }
     
     public Restaurante(String email, String nome, String telemovel, String morada)
@@ -39,28 +31,14 @@ public class Restaurante extends Utilizador
         this(email, nome, telemovel, morada, new Cardapio());
     }
 
-    public String getEmail() {
-        return email;
-    }
-
-    public String getNome() {
-        return nome;
-    }
-
-    public String getTelemovel() {
-        return telemovel;
-    }
-
-    public String getMorada() {
-        return morada;
-    }
-
+    //<editor-fold defaultstate="collapsed" desc="Getters">
     public Cardapio getCardapio()
     {
         return cardapio;
     }
+    //</editor-fold>
 
-
+    
     public static Restaurante[] all() throws SQLException
     {
         ArrayList<Restaurante> rests = new ArrayList<>();

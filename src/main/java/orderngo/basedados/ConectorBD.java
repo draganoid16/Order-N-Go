@@ -19,7 +19,7 @@ import java.sql.SQLException;
 public class ConectorBD
 {
     private static final String PROPERTIES_FILE = "basededados.properties";
-    private Properties getProperties()
+    private static Properties getProperties()
     {
         // Properties por omissão
         Properties prop = new Properties();
