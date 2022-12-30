@@ -25,6 +25,7 @@ BEGIN
         morada VARCHAR(100),
         telemovel CHAR(9),
         palavraPasse CHAR(64) NOT NULL,
+        imagem MEDIUMBLOB,
         
         CONSTRAINT pk PRIMARY KEY (email)
     );
@@ -37,6 +38,7 @@ BEGIN
         precoUnitario FLOAT,
         tipo ENUM("CARNE", "PEIXE", "VEGETARIANO", "VEGANO") NOT NULL,
         alergenios VARCHAR(100),
+        imagem MEDIUMBLOB,
         
         CONSTRAINT precoPratoValido CHECK (precoUnitario > 0),
 
@@ -50,6 +52,7 @@ BEGIN
         detalhes VARCHAR(100),
         precoUnitario FLOAT,
         capacidadeCL INT,
+        imagem MEDIUMBLOB,
         
         CONSTRAINT precoBebidaValido CHECK (precoUnitario > 0),
         CONSTRAINT capacidadeValida CHECK (capacidadeCL > 0),

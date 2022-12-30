@@ -25,70 +25,70 @@ END;;
 
 CREATE PROCEDURE restauranteTeste()
 BEGIN
-    INSERT INTO restaurante(email, nome, morada, telemovel, palavraPasse) VALUES
-        ("r1@r1.r1", "r1", "Morada 1", "111111111", "67b176705b46206614219f47a05aee7ae6a3edbe850bbbe214c536b989aea4d2"), /* pass: 1 */
-        ("r2@r2.r2", "r2", "Morada 2", "222222222", "b1b1bd1ed240b1496c81ccf19ceccf2af6fd24fac10ae42023628abbe2687310"), /* pass: 2 */
-        ("r3@r3.r3", "r3", "Morada 3", "333333333", "1bf0b26eb2090599dd68cbb42c86a674cb07ab7adc103ad3ccdf521bb79056b9"), /* pass: 3 */
-        ("r4@r4.r4", "r4", "Morada 4", "444444444", "b410677b84ed73fac43fcf1abd933151dd417d932a0ef9b0260ecf8b7b72ecb9"); /* pass: 4 */
+    INSERT INTO restaurante(email, nome, morada, telemovel, palavraPasse, imagem) VALUES
+        ("r1@r1.r1", "r1", "Morada 1", "111111111", "67b176705b46206614219f47a05aee7ae6a3edbe850bbbe214c536b989aea4d2", NULL), /* pass: 1 */
+        ("r2@r2.r2", "r2", "Morada 2", "222222222", "b1b1bd1ed240b1496c81ccf19ceccf2af6fd24fac10ae42023628abbe2687310", NULL), /* pass: 2 */
+        ("r3@r3.r3", "r3", "Morada 3", "333333333", "1bf0b26eb2090599dd68cbb42c86a674cb07ab7adc103ad3ccdf521bb79056b9", NULL), /* pass: 3 */
+        ("r4@r4.r4", "r4", "Morada 4", "444444444", "b410677b84ed73fac43fcf1abd933151dd417d932a0ef9b0260ecf8b7b72ecb9", NULL); /* pass: 4 */
 
     /*
-    INSERT INTO restaurante(email, nome, morada, telemovel, palavraPasse) VALUES
-        (NULL, "r10", "Morada 10", "101010101", "dd121e36961a04627eacff629765dd3528471ed745c1e32222db4a8a5f3421c4");
-    INSERT INTO restaurante(email, nome, morada, telemovel, palavraPasse) VALUES
-        ("r10@r10.r10", NULL, "Morada 10", "101010101", "dd121e36961a04627eacff629765dd3528471ed745c1e32222db4a8a5f3421c4");
-    INSERT INTO restaurante(email, nome, morada, telemovel, palavraPasse) VALUES
-        ("r10@r10.r10", "r10", "Morada 10", "101010101", NULL);
-    INSERT INTO restaurante(email, nome, morada, telemovel, palavraPasse) VALUES
-        ("r1@r1.r1", "r10", "Morada 10", "101010101", "dd121e36961a04627eacff629765dd3528471ed745c1e32222db4a8a5f3421c4");
-    INSERT INTO restaurante(email, nome, morada, telemovel, palavraPasse) VALUES
-        ("r10@r10.r10", "r1", "Morada 10", "101010101", "dd121e36961a04627eacff629765dd3528471ed745c1e32222db4a8a5f3421c4");
+    INSERT INTO restaurante(email, nome, morada, telemovel, palavraPasse, imagem) VALUES
+        (NULL, "r10", "Morada 10", "101010101", "dd121e36961a04627eacff629765dd3528471ed745c1e32222db4a8a5f3421c4", NULL);
+    INSERT INTO restaurante(email, nome, morada, telemovel, palavraPasse, imagem) VALUES
+        ("r10@r10.r10", NULL, "Morada 10", "101010101", "dd121e36961a04627eacff629765dd3528471ed745c1e32222db4a8a5f3421c4", NULL);
+    INSERT INTO restaurante(email, nome, morada, telemovel, palavraPasse, imagem) VALUES
+        ("r10@r10.r10", "r10", "Morada 10", "101010101", NULL, NULL);
+    INSERT INTO restaurante(email, nome, morada, telemovel, palavraPasse, imagem) VALUES
+        ("r1@r1.r1", "r10", "Morada 10", "101010101", "dd121e36961a04627eacff629765dd3528471ed745c1e32222db4a8a5f3421c4", NULL);
+    INSERT INTO restaurante(email, nome, morada, telemovel, palavraPasse, imagem) VALUES
+        ("r10@r10.r10", "r1", "Morada 10", "101010101", "dd121e36961a04627eacff629765dd3528471ed745c1e32222db4a8a5f3421c4", NULL);
     */
 END;;
 
 CREATE PROCEDURE pratoTeste()
 BEGIN
-    INSERT INTO prato(emailRestaurante, nome, detalhes, precoUnitario, tipo, alergenios) VALUES
-        ("r1@r1.r1", "Prato 1", "p1", 7.5, "CARNE", "NOZES"),
-        ("r2@r2.r2", "Prato 1", "p1", 10, "PEIXE", NULL),
-        ("r3@r3.r3", "Prato 1", "p1", 20, "VEGETARIANO", "NOZES"),
-        ("r1@r1.r1", "Prato 2", "p2", 9.5, "VEGANO", NULL);
+    INSERT INTO prato(emailRestaurante, nome, detalhes, precoUnitario, tipo, alergenios, imagem) VALUES
+        ("r1@r1.r1", "Prato 1", "p1", 7.5, "CARNE", "NOZES", NULL),
+        ("r2@r2.r2", "Prato 1", "p1", 10, "PEIXE", NULL, NULL),
+        ("r3@r3.r3", "Prato 1", "p1", 20, "VEGETARIANO", "NOZES", NULL),
+        ("r1@r1.r1", "Prato 2", "p2", 9.5, "VEGANO", NULL, NULL);
 
     /*
-    INSERT INTO prato(emailRestaurante, nome, detalhes, tipo, alergenios) VALUES
-        (NULL, "Prato 3", "p3", 10, "CARNE", NULL);
-    INSERT INTO prato(emailRestaurante, nome, detalhes, tipo, alergenios) VALUES
-        ("r10@r10.r10", "Prato 1", "p1", 10, "CARNE", NULL);
-    INSERT INTO prato(emailRestaurante, nome, detalhes, tipo, alergenios) VALUES
-        ("r1@r1.r1", "Prato 2", "p3", 10, "CARNE", NULL);
-    INSERT INTO prato(emailRestaurante, nome, detalhes, tipo, alergenios) VALUES
-        ("r1@r1.r1", "Prato 3", "p3", 10, NULL, NULL);
-    INSERT INTO prato(emailRestaurante, nome, detalhes, tipo, alergenios) VALUES
-        ("r1@r1.r1", "Prato 3", "p3", 10, "NOT", NULL);
-    INSERT INTO prato(emailRestaurante, nome, detalhes, tipo, alergenios) VALUES
-        ("r1@r1.r1", "Prato 3", "p3", 0, "CARNE", NULL);
+    INSERT INTO prato(emailRestaurante, nome, detalhes, tipo, alergenios, imagem) VALUES
+        (NULL, "Prato 3", "p3", 10, "CARNE", NULL, NULL);
+    INSERT INTO prato(emailRestaurante, nome, detalhes, tipo, alergenios, imagem) VALUES
+        ("r10@r10.r10", "Prato 1", "p1", 10, "CARNE", NULL, NULL);
+    INSERT INTO prato(emailRestaurante, nome, detalhes, tipo, alergenios, imagem) VALUES
+        ("r1@r1.r1", "Prato 2", "p3", 10, "CARNE", NULL, NULL);
+    INSERT INTO prato(emailRestaurante, nome, detalhes, tipo, alergenios, imagem) VALUES
+        ("r1@r1.r1", "Prato 3", "p3", 10, NULL, NULL, NULL);
+    INSERT INTO prato(emailRestaurante, nome, detalhes, tipo, alergenios, imagem) VALUES
+        ("r1@r1.r1", "Prato 3", "p3", 10, "NOT", NULL, NULL);
+    INSERT INTO prato(emailRestaurante, nome, detalhes, tipo, alergenios, imagem) VALUES
+        ("r1@r1.r1", "Prato 3", "p3", 0, "CARNE", NULL, NULL);
     */
 END;;
 
 CREATE PROCEDURE bebidaTeste()
 BEGIN
-    INSERT INTO bebida(emailRestaurante, nome, detalhes, precoUnitario, capacidadeCL) VALUES
-        ("r1@r1.r1", "Bebida 1", "b1", 2.5, 25),
-        ("r2@r2.r2", "Bebida 1", "b1", 5, 25),
-        ("r1@r1.r1", "Bebida 2", "b2", 1.5, 35);
+    INSERT INTO bebida(emailRestaurante, nome, detalhes, precoUnitario, capacidadeCL, imagem) VALUES
+        ("r1@r1.r1", "Bebida 1", "b1", 2.5, 25, NULL),
+        ("r2@r2.r2", "Bebida 1", "b1", 5, 25, NULL),
+        ("r1@r1.r1", "Bebida 2", "b2", 1.5, 35, NULL);
 
     /*
-    INSERT INTO bebida(emailRestaurante, nome, detalhes, capacidadeCL) VALUES
-        (NULL, "Bebida 1", "b1", 5, 25);
-    INSERT INTO bebida(emailRestaurante, nome, detalhes, capacidadeCL) VALUES
-        ("r10@r10.r10", "Bebida 1", "b1", 5, 25);
-    INSERT INTO bebida(emailRestaurante, nome, detalhes, capacidadeCL) VALUES
-        ("r1@r1.r1", NULL, "b1", 25);
-    INSERT INTO bebida(emailRestaurante, nome, detalhes, capacidadeCL) VALUES
-        ("r1@r1.r1", "Bebida 1", "b1", 5, 25);
-    INSERT INTO bebida(emailRestaurante, nome, detalhes, capacidadeCL) VALUES
-        ("r1@r1.r1", "Bebida 10", "b10", 5, 0);
-    INSERT INTO bebida(emailRestaurante, nome, detalhes, capacidadeCL) VALUES
-        ("r3@r3.r3", "Bebida 1", "b1", 0, 25);
+    INSERT INTO bebida(emailRestaurante, nome, detalhes, capacidadeCL, imagem) VALUES
+        (NULL, "Bebida 1", "b1", 5, 25, NULL);
+    INSERT INTO bebida(emailRestaurante, nome, detalhes, capacidadeCL, imagem) VALUES
+        ("r10@r10.r10", "Bebida 1", "b1", 5, 25, NULL);
+    INSERT INTO bebida(emailRestaurante, nome, detalhes, capacidadeCL, imagem) VALUES
+        ("r1@r1.r1", NULL, "b1", 25, NULL);
+    INSERT INTO bebida(emailRestaurante, nome, detalhes, capacidadeCL, imagem) VALUES
+        ("r1@r1.r1", "Bebida 1", "b1", 5, 25, NULL);
+    INSERT INTO bebida(emailRestaurante, nome, detalhes, capacidadeCL, imagem) VALUES
+        ("r1@r1.r1", "Bebida 10", "b10", 5, 0, NULL);
+    INSERT INTO bebida(emailRestaurante, nome, detalhes, capacidadeCL, imagem) VALUES
+        ("r3@r3.r3", "Bebida 1", "b1", 0, 25, NULL);
     */
 END;;
 
