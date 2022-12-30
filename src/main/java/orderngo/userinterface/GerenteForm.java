@@ -1,6 +1,7 @@
 package orderngo.userinterface;
 
 import orderngo.utilizador.Restaurante;
+import orderngo.utilizador.Utilizador;
 
 import javax.swing.*;
 import java.awt.*;
@@ -45,12 +46,12 @@ public class GerenteForm {
         cardapioPanel.setVisible(false);
         infoPanel.setVisible(false);
         //Restaurante Setup
-        Restaurante restaurante = Restaurante.getRestaurante(email);
-        usernameCustom.setText(restaurante.getNome());
-        restauranteName.setText(restaurante.getNome());
-        emailLabel.setText(restaurante.getEmail());
-        moradaLabel.setText(restaurante.getMorada());
-        telemovelLabel.setText(restaurante.getTelemovel());
+        Utilizador utilizador = Restaurante.getRestaurante(email);
+        usernameCustom.setText(utilizador.getNome());
+        restauranteName.setText(utilizador.getNome());
+        emailLabel.setText(utilizador.getEmail());
+        moradaLabel.setText(utilizador.getMorada());
+        telemovelLabel.setText(utilizador.getTelemovel());
         // TODO: IMAGEM RESTAURANTE
 
         restauranteLabel.addMouseListener(new MouseAdapter() {
