@@ -1,9 +1,13 @@
 package orderngo.userinterface;
 
+import orderngo.utilizador.Restaurante;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.sql.SQLException;
+
 import static javax.swing.WindowConstants.DISPOSE_ON_CLOSE;
 
 public class GerenteForm {
@@ -20,9 +24,12 @@ public class GerenteForm {
     private JPanel infoPanel;
     private JLabel restauranteName;
     private JLabel restauranteImage;
+    private JLabel emailLabel;
+    private JLabel moradaLabel;
+    private JLabel telemovelLabel;
     private JLabel restauranteEmail;
 
-    public GerenteForm(JFrame parent) {
+    public GerenteForm(JFrame parent, String email) throws SQLException {
 
 
 
@@ -37,6 +44,14 @@ public class GerenteForm {
         restaurantePanel.setVisible(false);
         cardapioPanel.setVisible(false);
         infoPanel.setVisible(false);
+        //Restaurante Setup
+        Restaurante restaurante = Restaurante.getRestaurante(email);
+        usernameCustom.setText(restaurante.getNome());
+        restauranteName.setText(restaurante.getNome());
+        emailLabel.setText(restaurante.getEmail());
+        moradaLabel.setText(restaurante.getMorada());
+        telemovelLabel.setText(restaurante.getTelemovel());
+        // TODO: IMAGEM RESTAURANTE
 
         restauranteLabel.addMouseListener(new MouseAdapter() {
             @Override
@@ -74,13 +89,13 @@ public class GerenteForm {
 
     private void createUIComponents() {
         userImage = new JLabel(new ImageIcon("src\\imageresources\\profile.png"));
-        // TODO usernameCustom: trocar o nome baseado no username guardado no SQL
-        usernameCustom = new JLabel("Username");
+        usernameCustom = new JLabel("placeholder");
         usernameCustom.setFont(new Font("Arial Black", Font.PLAIN, 14));
-
-        // TODO restauranteForm: SQL para info do restaurante
+        //info restaurante
         restauranteName = new JLabel("blah blah restaurante"); //puxar de bd
         restauranteImage = new JLabel(new ImageIcon("src\\imageresources\\restauranteimageexample.jpg"));
-        restauranteEmail = new JLabel("comidaboa@gmail.com");
+        emailLabel = new JLabel("examploemail");
+        moradaLabel = new JLabel("exemplomorada");
+        telemovelLabel = new JLabel("exemplotelemovel");
     }
 }

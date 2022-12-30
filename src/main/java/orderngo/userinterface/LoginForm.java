@@ -2,6 +2,7 @@ package orderngo.userinterface;
 
 import orderngo.App;
 import orderngo.exceptions.RestauranteNotFoundException;
+import orderngo.utilizador.GestorOrderAndGo;
 import orderngo.utilizador.Restaurante;
 
 import javax.swing.*;
@@ -28,7 +29,6 @@ public class LoginForm extends JDialog {
         ButtonGroup group = new ButtonGroup();
         group.add(restauranteRadioButton);
         group.add(gestorONGRadioButton);
-        //App.GerenteMenu();
 
         loginButton.addActionListener(new ActionListener() {
             @Override
@@ -37,20 +37,20 @@ public class LoginForm extends JDialog {
                 String email = emailField.getText();
                 String password = passwordField.getText();
 
-                //TODO: Implementar radiobuttons
 
                 //GerenteForm que gere o seu restaurante e edita o cardapio
                 try {
-                    if (Restaurante.validCredentials(email, password)) {
-                        App.GerenteMenu();
+                    if (Restaurante.validCredentials(email, password) && restauranteRadioButton.isSelected()) {
+                        GerenteForm gerenteForm = new GerenteForm(null, email);
                         loginFrame.dispatchEvent(new WindowEvent(loginFrame, WindowEvent.WINDOW_CLOSING));
 
                         //GestorForm que adiciona/remove restaurantes de agueda da base de dados
-                    } else if (email.equals("gestor") && password.equals("gestorpass")) { //trocar isto
+                    } else if (GestorOrderAndGo.validCredentials(email, password) && gestorONGRadioButton.isSelected()) { //trocar isto
                         App.GestorMenu();
+                        loginFrame.dispatchEvent(new WindowEvent(loginFrame, WindowEvent.WINDOW_CLOSING));
 
                     } else {
-                        JOptionPane.showMessageDialog(loginFrame, "Erro! Credencias introduzidos não são validos!", "Login Incorreto!", JOptionPane.ERROR_MESSAGE);
+                        JOptionPane.showMessageDialog(loginFrame, "Erro! Credencias introduzidos não são validos, ou conta selecionada incorreta!", "Login/Seleção Incorreto!", JOptionPane.ERROR_MESSAGE);
                         throw new RestauranteNotFoundException(email);
                     }
 

@@ -162,7 +162,7 @@
             </constraints>
             <properties>
               <background color="-12365736"/>
-              <font name="Arial Black" size="14" style="0"/>
+              <font name="Arial Black" size="18" style="0"/>
               <hideActionText value="false"/>
               <horizontalAlignment value="0"/>
               <text value="Restaurante"/>
@@ -174,7 +174,7 @@
             </constraints>
             <properties>
               <background color="-12365736"/>
-              <font name="Arial Black" size="14" style="0"/>
+              <font name="Arial Black" size="18" style="0"/>
               <horizontalAlignment value="0"/>
               <text value="GestorONG"/>
             </properties>
