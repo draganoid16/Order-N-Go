@@ -32,7 +32,6 @@ public class Prato extends ItemCardapio
             throw new IllegalArgumentException("Tipo de prato invalido!");
         
         this.tipoPrato = tipoPrato;
-        
         setAlergenios(alergenios);
     }
 
@@ -41,7 +40,7 @@ public class Prato extends ItemCardapio
     {
         return tipoPrato;
     }
-    
+
     
     public String getAlergenios()
     {
