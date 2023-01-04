@@ -32,11 +32,15 @@ public class GerenteForm {
     private JLabel moradaLabel;
     private JLabel telemovelLabel;
     private JLabel prato1;
-    private JLabel prato2;
     private JLabel prato3;
+    private JLabel prato2;
     private JLabel bebida1;
     private JLabel bebida2;
     private JLabel bebida3;
+    private JPanel menu1;
+    private JPanel menu2;
+    private JPanel menu3;
+    private JLabel helpIcon;
     private JLabel restauranteEmail;
 
     public GerenteForm(JFrame parent, String email) throws SQLException {
@@ -46,7 +50,7 @@ public class GerenteForm {
         JFrame mainFrame = new JFrame();
         mainFrame.setTitle("Order-N-Go Main");
         mainFrame.setContentPane(mainPanel);
-        mainFrame.setMinimumSize(new Dimension(1050, 850));
+        mainFrame.setMinimumSize(new Dimension(1050, 1050));
         mainFrame.setLocationRelativeTo(parent);
         mainFrame.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         mainFrame.setVisible(true);
@@ -65,6 +69,16 @@ public class GerenteForm {
                 restaurantePanel.setVisible(true);
                 System.out.println("carregado");
             }
+
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                restauranteLabel.setForeground(Color.green);
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+                restauranteLabel.setForeground(Color.BLACK);
+            }
         });
 
         cardapioLabel.addMouseListener(new MouseAdapter() {
@@ -77,6 +91,16 @@ public class GerenteForm {
                 cardapioPanel.setVisible(true);
                 System.out.println("carregado");
             }
+
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                cardapioLabel.setForeground(Color.green);
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+                cardapioLabel.setForeground(Color.BLACK);
+            }
         });
         infoLabel.addMouseListener(new MouseAdapter() {
             @Override
@@ -87,8 +111,90 @@ public class GerenteForm {
                 infoPanel.setVisible(true);
                 System.out.println("carregado");
             }
+
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                infoLabel.setForeground(Color.green);
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+                infoLabel.setForeground(Color.BLACK);
+            }
         });
 
+        prato1.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                try {
+                    String[] arr = getInfoPrato(email, 0);
+                    JOptionPane.showMessageDialog(mainFrame, "Info do Prato \n" + "Nome do Prato: " + arr[0] + "\n" + "Detalhes do Prato: " + arr[1] + "\n"
+                    + "Preço do Prato: " + arr[2] + "€" + "\n" + "Tipo de Prato: "+ arr[3] + "\n" + "Alergenicos Presentes no Prato: " + arr[4]);
+                } catch (SQLException ex) {
+                    throw new RuntimeException(ex);
+                }
+            }
+        });
+        bebida1.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                try {
+                    String[] arr = getInfoBebida(email, 0);
+                    JOptionPane.showMessageDialog(mainFrame, "Info da Bebida \n" + "Nome da Bebida: " + arr[0] + "\n" + "Detalhes da Bebida: " + arr[1] + "\n"
+                            + "Preço da Bebida: " + arr[2] + "€" + "\n" + "Capacidade da Bebida: "+ arr[3] + "CL");
+                } catch (SQLException ex) {
+                    throw new RuntimeException(ex);
+                }
+            }
+        });
+        prato2.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                try {
+                    String[] arr = getInfoPrato(email, 1);
+                    JOptionPane.showMessageDialog(mainFrame, "Info do Prato \n" + "Nome do Prato: " + arr[0] + "\n" + "Detalhes do Prato: " + arr[1] + "\n"
+                            + "Preço do Prato: " + arr[2] + "€" + "\n" + "Tipo de Prato: "+ arr[3] + "\n" + "Alergenicos Presentes no Prato: " + arr[4]);
+                } catch (SQLException ex) {
+                    throw new RuntimeException(ex);
+                }
+            }
+        });
+        bebida2.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                try {
+                    String[] arr = getInfoBebida(email, 1);
+                    JOptionPane.showMessageDialog(mainFrame, "Info da Bebida \n" + "Nome da Bebida: " + arr[0] + "\n" + "Detalhes da Bebida: " + arr[1] + "\n"
+                            + "Preço da Bebida: " + arr[2] + "€" + "\n" + "Capacidade da Bebida: "+ arr[3] + "CL");
+                } catch (SQLException ex) {
+                    throw new RuntimeException(ex);
+                }
+            }
+        });
+        prato3.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                try {
+                    String[] arr = getInfoPrato(email, 2);
+                    JOptionPane.showMessageDialog(mainFrame, "Info do Prato \n" + "Nome do Prato: " + arr[0] + "\n" + "Detalhes do Prato: " + arr[1] + "\n"
+                            + "Preço do Prato: " + arr[2] + "€" + "\n" + "Tipo de Prato: "+ arr[3] + "\n" + "Alergenicos Presentes no Prato: " + arr[4]);
+                } catch (SQLException ex) {
+                    throw new RuntimeException(ex);
+                }
+            }
+        });
+        bebida3.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                try {
+                    String[] arr = getInfoBebida(email, 2);
+                    JOptionPane.showMessageDialog(mainFrame, "Info da Bebida \n" + "Nome da Bebida: " + arr[0] + "\n" + "Detalhes da Bebida: " + arr[1] + "\n"
+                            + "Preço da Bebida: " + arr[2] + "€" + "\n" + "Capacidade da Bebida: "+ arr[3] + "CL");
+                } catch (SQLException ex) {
+                    throw new RuntimeException(ex);
+                }
+            }
+        });
     }
 
     private void restauranteSetup(String email) throws SQLException {
@@ -111,55 +217,79 @@ public class GerenteForm {
         Icon icon = resizeImage(img, restauranteImage);
         restauranteImage.setIcon(icon);
         restauranteImage.setBorder(border);
+        //menu cardapio
+        menu1.setBorder(border);
+        menu2.setBorder(border);
+        menu3.setBorder(border);
+
     }
 
-    public Icon resizeImage(Image image, JLabel restauranteImage){
+    public Icon resizeImage(Image image, JLabel restauranteImage) {
         Image resizedimg = image.getScaledInstance(restauranteImage.getWidth(), restauranteImage.getHeight(), Image.SCALE_SMOOTH);
         return new ImageIcon(resizedimg);
     }
 
-    public Icon pratoImage(Image image){
+    public Icon ImageSize(Image image) {
         Image pratoImage = image.getScaledInstance(350, 250, Image.SCALE_DEFAULT);
         return new ImageIcon(pratoImage);
     }
 
-    public Icon bebidaImage(Image image){
-        Image bebidaImage = image.getScaledInstance(350, 250, Image.SCALE_DEFAULT);
-        return new ImageIcon(bebidaImage);
-    }
 
     private void adicionarPratodeSQL(Restaurante restaurante) throws SQLException {
         Prato[] pratos = Prato.from(restaurante);
 
-        for(int i=0; i<pratos.length; i++){
-            JLabel[] pratosVariaveis = {prato1, prato2, prato3};
+        for (int i = 0; i < pratos.length; i++) {
+            JLabel[] pratosVariaveis = {prato1, prato3, prato2};
             String tipoprato = String.valueOf(pratos[i].getNome());
             pratosVariaveis[i].setText(tipoprato);
 
             Image img = pratos[i].getImagem();
-            Icon icon = pratoImage(img);
+            Icon icon = ImageSize(img);
 
             pratosVariaveis[i].setIcon(icon);
         }
 
     }
-        //TODO: da para otimizar estas funções so numa, mas para efeitos de teste (so adicionar pratos, ou so adicionar bebidas), fica por agora assim
-        //TODO: otimizar se pratos/bebidas image for null
+    //TODO: da para otimizar estas funções so numa, mas para efeitos de teste (so adicionar pratos, ou so adicionar bebidas), fica por agora assim
+    //TODO: otimizar se pratos/bebidas image for null
+    //TODO: help button com dialogue box
 
     private void adicionarBebidadeSQL(Restaurante restaurante) throws SQLException {
         Bebida[] bebidas = Bebida.from(restaurante);
 
-        for(int i=0; i<bebidas.length; i++){
+        for (int i = 0; i < bebidas.length; i++) {
             JLabel[] pratosVariaveis = {bebida1, bebida2, bebida3};
             String tipoprato = String.valueOf(bebidas[i].getNome());
             pratosVariaveis[i].setText(tipoprato);
 
             Image img = bebidas[i].getImagem();
-            Icon icon = bebidaImage(img);
+            //if null setup X, else setup img
+            Icon icon = ImageSize(img);
 
             pratosVariaveis[i].setIcon(icon);
         }
 
+    }
+
+    private String[] getInfoPrato(String email, int i) throws SQLException {
+        Restaurante rest = Restaurante.getRestaurante(email);
+        Prato[] pratos = Prato.from(rest);
+        String nomeprato = pratos[i].getNome();
+        String detalhesprato = pratos[i].getDetalhes();
+        String precoprato = String.valueOf(pratos[i].getPrecoUnitario());
+        String tipoprato = String.valueOf(pratos[i].getTipoPrato());
+        String alergenio = pratos[i].getAlergenios();
+        return new String[]{nomeprato, detalhesprato, precoprato, tipoprato, alergenio};
+    }
+
+    private String[] getInfoBebida(String email, int i) throws SQLException {
+        Restaurante rest = Restaurante.getRestaurante(email);
+        Bebida[] bebidas = Bebida.from(rest);
+        String nomebebidas = bebidas[i].getNome();
+        String detalhesbebidas = bebidas[i].getDetalhes();
+        String precobebidas = String.valueOf(bebidas[i].getPrecoUnitario());
+        String capacidadebebidas = String.valueOf(bebidas[i].getCapacidadeCL());
+        return new String[]{nomebebidas, detalhesbebidas, precobebidas, capacidadebebidas};
     }
 
     private void createUIComponents() {
@@ -173,11 +303,12 @@ public class GerenteForm {
         moradaLabel = new JLabel("exemplomorada");
         telemovelLabel = new JLabel("exemplotelemovel");
         prato1 = new JLabel(new ImageIcon("src\\imageresources\\food-tray.png"));
-        prato2 = new JLabel(new ImageIcon("src\\imageresources\\food-tray.png"));
         prato3 = new JLabel(new ImageIcon("src\\imageresources\\food-tray.png"));
+        prato2 = new JLabel(new ImageIcon("src\\imageresources\\food-tray.png"));
         bebida1 = new JLabel(new ImageIcon("src\\imageresources\\food-tray.png"));
         bebida2 = new JLabel(new ImageIcon("src\\imageresources\\food-tray.png"));
         bebida3 = new JLabel(new ImageIcon("src\\imageresources\\food-tray.png"));
+        helpIcon = new JLabel(new ImageIcon("src\\imageresources\\question.png"));
 
     }
 }

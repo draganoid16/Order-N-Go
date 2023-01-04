@@ -29,6 +29,8 @@ public class LoginForm extends JDialog {
         ButtonGroup group = new ButtonGroup();
         group.add(restauranteRadioButton);
         group.add(gestorONGRadioButton);
+        //butão enter
+        loginFrame.getRootPane().setDefaultButton(loginButton);
 
         loginButton.addActionListener(new ActionListener() {
             @Override
