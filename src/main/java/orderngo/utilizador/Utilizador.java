@@ -69,4 +69,39 @@ public abstract class Utilizador
         this.morada = morada;
     }
     //</editor-fold>
+
+    
+    @Override
+    public boolean equals(Object obj)
+    {
+        if (obj == this)
+            return true;
+        
+        if (obj == null)
+            return false;
+        
+        if (!(obj instanceof Utilizador))
+            return false;
+        
+        Utilizador other = (Utilizador)obj;
+        
+        if (!getEmail().equals(other.getEmail()))
+            return false;
+        
+        if (!getNome().equals(other.getNome()))
+            return false;
+        
+        if (!getTelemovel().equals(other.getTelemovel()))
+            return false;
+        
+        return getMorada().equals(other.getMorada());
+    }
+
+    @Override
+    public int hashCode()
+    {
+        int hash = 7;
+        hash = 79 * hash + getEmail().hashCode();
+        return hash;
+    }
 }

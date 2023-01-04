@@ -1,8 +1,9 @@
 package orderngo.pedidos;
 
+import orderngo.utilizador.Cliente;
+import orderngo.cardapio.ItemCardapio;
 import java.util.Date;
 import java.util.LinkedHashMap;
-import orderngo.cardapio.ItemCardapio;
 
 /**
  * 
@@ -10,17 +11,18 @@ import orderngo.cardapio.ItemCardapio;
  */
 public class Pedido
 {
-    private final int nrPedido;
+    private final Cliente cliente;
+    private int nrPedido;
     private final String moradaEntrega;
     private final Date dataHoraEntrega;
     private final LinkedHashMap<ItemCardapio, Integer> itemsPedido;
 
-    public Pedido(int nrPedido, String moradaEntrega, Date dataHoraEntrega)
+    public Pedido(Cliente cliente, String moradaEntrega, Date dataHoraEntrega)
     {
-        if (nrPedido <= 0)
-            throw new IllegalArgumentException("Numero de pedido invalido!");
-            
-        this.nrPedido = nrPedido;
+        if (cliente == null)
+            throw new IllegalArgumentException("Cliente invalido!");
+        
+        this.cliente = cliente;
         
         if (moradaEntrega == null || moradaEntrega.isBlank())
             throw new IllegalArgumentException("Morada de entrega invalida!");
@@ -36,6 +38,11 @@ public class Pedido
     }
 
     //<editor-fold defaultstate="collapsed" desc="Getters">
+    public Cliente getCliente()
+    {
+        return cliente;
+    }
+    
     public int getNrPedido()
     {
         return nrPedido;
@@ -54,6 +61,16 @@ public class Pedido
     public LinkedHashMap<ItemCardapio, Integer> getItemsPedido()
     {
         return itemsPedido;
+    }
+    //</editor-fold>
+    
+    //<editor-fold defaultstate="collapsed" desc="Setters">
+    private void setNrPedido(int nrPedido)
+    {
+        if (nrPedido <= 0)
+            throw new IllegalArgumentException("Numero de pedido invalido!");
+            
+        this.nrPedido = nrPedido;
     }
     //</editor-fold>
 
@@ -96,5 +113,43 @@ public class Pedido
             throw new IllegalArgumentException("Item invalido!");
             
         itemsPedido.remove(item);
+    }
+    
+
+    @Override
+    public boolean equals(Object obj)
+    {
+        if (obj == this)
+            return true;
+        
+        if (obj == null)
+            return false;
+
+        if (!(obj instanceof Pedido))
+            return false;
+        
+        Pedido other = (Pedido)obj;
+        
+        if (!getCliente().equals(other.getCliente()))
+            return false;
+        
+        if (this.nrPedido != other.nrPedido)
+            return false;
+        
+        if (!getMoradaEntrega().equals(other.getMoradaEntrega()))
+            return false;
+        
+        if (!getDataHoraEntrega().equals(other.getDataHoraEntrega()))
+            return false;
+        
+        return itemsPedido.equals(other.itemsPedido);
+    }
+    
+    @Override
+    public int hashCode()
+    {
+        int hash = 7;
+        hash = 37 * hash + this.nrPedido;
+        return hash;
     }
 }

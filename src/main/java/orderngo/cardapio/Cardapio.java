@@ -1,8 +1,9 @@
 package orderngo.cardapio;
 
-import java.util.ArrayList;
-
 import orderngo.utilizador.Restaurante;
+
+import java.util.ArrayList;
+import java.util.Collections;
 
 import java.sql.SQLException;
 
@@ -12,20 +13,61 @@ import java.sql.SQLException;
  */
 public class Cardapio
 {
+    private final Restaurante restaurante;
     private final ArrayList<ItemCardapio> items;
     
-    public Cardapio()
+    public Cardapio(Restaurante restaurante)
     {
+        if (restaurante == null)
+            throw new IllegalArgumentException("Restaurante invalido!");
+        
+        this.restaurante = restaurante;
+        
         items = new ArrayList<>();
     }
 
     
+    public void limparCardapio()
+    {
+        items.clear();
+    }
+    
+    public boolean adicionarItem(ItemCardapio item)
+    {
+        return items.add(item);
+    }
+    
+    public boolean removerItem(ItemCardapio item)
+    {
+        return items.remove(item);
+    }
+    
+    public ItemCardapio removerItem(int idx)
+    {
+        return items.remove(idx);
+    }
+    
+    
     public ItemCardapio[] getAllItems()
     {
-        ItemCardapio[] itemsArr = new ItemCardapio[items.size()];
-        items.toArray(itemsArr);
-        
-        return itemsArr;
+        return items
+            .toArray(ItemCardapio[]::new);
+    }
+    
+    public Prato[] getAllPratos()
+    {
+        return items.stream()
+            .filter(it -> it instanceof Prato)
+            .map(p -> (Prato)p)
+            .toArray(Prato[]::new);
+    }
+    
+    public Bebida[] getAllBebidas()
+    {
+        return items.stream()
+            .filter(it -> it instanceof Bebida)
+            .map(b -> (Bebida)b)
+            .toArray(Bebida[]::new);
     }
     
     public ItemCardapio getItem(int idx)
@@ -33,45 +75,41 @@ public class Cardapio
         return items.get(idx);
     }
     
-    public void limparCardapio()
-    {
-        items.clear();
-    }
-    
-    public void adicionarItem(ItemCardapio item)
-    {
-        items.add(item);
-    }
-    
-    public void removerItem(ItemCardapio item)
-    {
-        items.remove(item);
-    }
-    
-    public void removerItem(int idx)
-    {
-        items.remove(idx);
-    }
-    
     
     //<editor-fold defaultstate="collapsed" desc="BuscarDados">
-    public static Cardapio fillFrom(Restaurante rest) throws SQLException
+    public void fill() throws SQLException
     {
-        Cardapio card = rest.getCardapio();
-        
-        ItemCardapio[] items = Prato.from(rest);
-        for (ItemCardapio item : items)
-        {
-            card.adicionarItem(item);
-        }
-        
-        items = Bebida.from(rest);
-        for (ItemCardapio item : items)
-        {
-            card.adicionarItem(item);
-        }
-
-        return card;
+        Collections.addAll(items, Prato.from(restaurante));
+        Collections.addAll(items, Bebida.from(restaurante));
     }
     //</editor-fold>
+
+    
+    @Override
+    public boolean equals(Object obj)
+    {
+        if (obj == this)
+            return true;
+        
+        if (obj == null)
+            return false;
+        
+        if (!(obj instanceof Cardapio))
+            return false;
+        
+        Cardapio other = (Cardapio)obj;
+        
+        if (!restaurante.equals(other.restaurante))
+            return false;
+        
+        return items.equals(other.items);
+    }
+
+    @Override
+    public int hashCode()
+    {
+        int hash = 5;
+        hash = 43 * hash + restaurante.hashCode();
+        return hash;
+    }
 }

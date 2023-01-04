@@ -24,4 +24,19 @@ public class Cliente extends Utilizador
         return nif;
     }
     //</editor-fold>
+    
+    
+    @Override
+    public boolean equals(Object obj)
+    {
+        if (!super.equals(obj))
+            return false;
+        
+        if (!(obj instanceof Cliente))
+            return false;
+        
+        Cliente other = (Cliente)obj;
+        
+        return getNif().equals(other.getNif());
+    }
 }

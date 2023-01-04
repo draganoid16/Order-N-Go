@@ -18,9 +18,9 @@ public class Bebida extends ItemCardapio
 {
     private final int capacidadeCL;
 
-    public Bebida(String nome, String detalhes, float precoUnitario, int capacidadeCL)
+    public Bebida(Restaurante restaurante, String nome, String detalhes, float precoUnitario, int capacidadeCL)
     {
-        super(nome, detalhes, precoUnitario);
+        super(restaurante, nome, detalhes, precoUnitario);
         
         if (capacidadeCL <= 0)
             throw new IllegalArgumentException("Capacidade (em centilitros) invalida!");
@@ -37,9 +37,10 @@ public class Bebida extends ItemCardapio
     
     
     //<editor-fold defaultstate="collapsed" desc="BuscarDados">
-    private static Bebida createBebida(ResultSet result) throws SQLException
+    private static Bebida createBebida(Restaurante restaurante, ResultSet result) throws SQLException
     {
         Bebida b = new Bebida(
+            restaurante,
             result.getString("nome"),
             result.getString("detalhes"),
             result.getFloat("precoUnitario"),
@@ -54,25 +55,41 @@ public class Bebida extends ItemCardapio
         return b;
     }
         
-    public static Bebida[] from(Restaurante rest) throws SQLException
+    public static Bebida[] from(Restaurante restaurante) throws SQLException
     {
+        if (restaurante == null)
+            throw new IllegalArgumentException("Restaurante invalido!");
+        
         ArrayList<Bebida> bebidas = new ArrayList<>();
         
         var cbd = ConectorBD.getInstance();
         var ps = cbd.prepareStatement("SELECT * FROM bebida WHERE emailRestaurante = ?");
-        ps.setString(1, rest.getEmail());
+        ps.setString(1, restaurante.getEmail());
         
         try (ResultSet result = cbd.executePreparedQuery(ps))
         {
             while (result.next())
             {
-                bebidas.add(createBebida(result));
+                bebidas.add(createBebida(restaurante, result));
             }
         }
         
-        Bebida[] arr = new Bebida[bebidas.size()];
-        bebidas.toArray(arr);
-        return arr;
+        return bebidas
+            .toArray(Bebida[]::new);
     }
     //</editor-fold>
+    
+    @Override
+    public boolean equals(Object obj)
+    {
+        if (!super.equals(obj))
+            return false;
+        
+        if (!(obj instanceof Bebida))
+            return false;
+        
+        Bebida other = (Bebida)obj;
+        
+        return getCapacidadeCL() == other.getCapacidadeCL();
+    }
 }

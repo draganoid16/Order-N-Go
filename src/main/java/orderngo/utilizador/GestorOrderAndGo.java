@@ -34,6 +34,19 @@ public class GestorOrderAndGo extends Utilizador
     
     
     //<editor-fold defaultstate="collapsed" desc="BuscarDados">
+    private static GestorOrderAndGo createGestor(ResultSet result) throws SQLException
+    {
+        GestorOrderAndGo g = new GestorOrderAndGo(
+            result.getString("email"),
+            result.getString("nome"),
+            result.getString("telemovel"),
+            result.getString("morada"),
+            result.getInt("nrEmpregado")
+        );
+        
+        return g;
+    }
+    
     public static GestorOrderAndGo getGestor(String email) throws SQLException, GestorNotFoundException
     {
         var cbd = ConectorBD.getInstance();
@@ -46,13 +59,7 @@ public class GestorOrderAndGo extends Utilizador
             if (!result.next())
                 throw new GestorNotFoundException(email);
             
-            g = new GestorOrderAndGo(
-                result.getString("email"),
-                result.getString("nome"),
-                result.getString("telemovel"),
-                result.getString("morada"),
-                result.getInt("nrEmpregado")
-            );
+            g = createGestor(result);
         }
         
         return g;
@@ -64,7 +71,7 @@ public class GestorOrderAndGo extends Utilizador
         String encriptedPassword = BaseDadosUtils.encriptarPassword(password);
         
         var cbd = ConectorBD.getInstance();
-        var ps = cbd.prepareStatement("SELECT * FROM gestorog WHERE email = ? AND palavraPasse = ?");
+        var ps = cbd.prepareStatement("SELECT email FROM gestorog WHERE email = ? AND palavraPasse = ?");
         ps.setString(1, email);
         ps.setString(2, encriptedPassword);
         
@@ -74,5 +81,20 @@ public class GestorOrderAndGo extends Utilizador
             isValid = result.next();
         }
         return isValid;
+    }
+
+    
+    @Override
+    public boolean equals(Object obj)
+    {
+        if (!super.equals(obj))
+            return false;
+        
+        if (!(obj instanceof GestorOrderAndGo))
+            return false;
+        
+        GestorOrderAndGo other = (GestorOrderAndGo)obj;
+        
+        return getNrEmpregado() == other.getNrEmpregado();
     }
 }

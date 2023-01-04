@@ -24,9 +24,9 @@ public class Prato extends ItemCardapio
     private final TipoPrato tipoPrato;
     private String alergenios;
 
-    public Prato(String nome, String detalhes, float precoUnitario, TipoPrato tipoPrato, String alergenios)
+    public Prato(Restaurante restaurante, String nome, String detalhes, float precoUnitario, TipoPrato tipoPrato, String alergenios)
     {
-        super(nome, detalhes, precoUnitario);
+        super(restaurante, nome, detalhes, precoUnitario);
         
         if (tipoPrato == null)
             throw new IllegalArgumentException("Tipo de prato invalido!");
@@ -60,9 +60,10 @@ public class Prato extends ItemCardapio
     
     
     //<editor-fold defaultstate="collapsed" desc="BuscarDados">
-    private static Prato createPrato(ResultSet result) throws SQLException
+    private static Prato createPrato(Restaurante restaurante, ResultSet result) throws SQLException
     {
         Prato p = new Prato(
+            restaurante,
             result.getString("nome"), 
             result.getString("detalhes"),
             result.getFloat("precoUnitario"),
@@ -80,26 +81,45 @@ public class Prato extends ItemCardapio
         return p;
     }
         
-    public static Prato[] from(Restaurante rest) throws SQLException
+    public static Prato[] from(Restaurante restaurante) throws SQLException
     {
+        if (restaurante == null)
+            throw new IllegalArgumentException("Restaurante invalido!");
+        
         ArrayList<Prato> pratos = new ArrayList<>();
         
         var cbd = ConectorBD.getInstance();
         var ps = cbd.prepareStatement("SELECT * FROM prato WHERE emailRestaurante = ?");
-        ps.setString(1, rest.getEmail());
+        ps.setString(1, restaurante.getEmail());
         
         try (ResultSet result = cbd.executePreparedQuery(ps))
         {
             while (result.next())
             {
-                pratos.add(createPrato(result));
+                pratos.add(createPrato(restaurante, result));
             }
         }
         
-        
-        Prato[] arr = new Prato[pratos.size()];
-        pratos.toArray(arr);
-        return arr;
+        return pratos
+            .toArray(Prato[]::new);
     }
     //</editor-fold>
+    
+    
+    @Override
+    public boolean equals(Object obj)
+    {
+        if (!super.equals(obj))
+            return false;
+        
+        if (!(obj instanceof Prato))
+            return false;
+        
+        Prato other = (Prato)obj;
+        
+        if (!getTipoPrato().equals(other.getTipoPrato()))
+            return false;
+        
+        return getAlergenios().equals(other.getAlergenios());
+    }
 }

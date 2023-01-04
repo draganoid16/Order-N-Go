@@ -1,14 +1,12 @@
 package orderngo.basedados;
 
+import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import org.apache.commons.codec.digest.DigestUtils;
 import java.sql.Blob;
+import org.apache.commons.codec.digest.DigestUtils;
 
 import java.sql.SQLException;
-import javax.imageio.ImageIO;
+import java.io.IOException;
 
 /**
  *

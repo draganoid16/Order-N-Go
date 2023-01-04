@@ -2,6 +2,7 @@ package orderngo.utilizador;
 
 import orderngo.cardapio.Cardapio;
 import java.awt.image.BufferedImage;
+import java.util.Objects;
 
 import orderngo.basedados.ConectorBD;
 import java.util.ArrayList;
@@ -24,7 +25,8 @@ public class Restaurante extends Utilizador
     {
         super(email, nome, telemovel, morada);
         
-        this.cardapio = new Cardapio();
+        this.cardapio = new Cardapio(this);
+        
         setImagem(null);
     }
 
@@ -78,9 +80,8 @@ public class Restaurante extends Utilizador
             }
         }
         
-        Restaurante[] arr = new Restaurante[rests.size()];
-        rests.toArray(arr);
-        return arr;
+        return rests
+            .toArray(Restaurante[]::new);
     }
     
     public static Restaurante getRestaurante(String email) throws SQLException, RestauranteNotFoundException
@@ -106,7 +107,7 @@ public class Restaurante extends Utilizador
         String encriptedPassword = BaseDadosUtils.encriptarPassword(password);
         
         var cbd = ConectorBD.getInstance();
-        var ps = cbd.prepareStatement("SELECT * FROM restaurante WHERE email = ? AND palavraPasse = ?");
+        var ps = cbd.prepareStatement("SELECT email FROM restaurante WHERE email = ? AND palavraPasse = ?");
         ps.setString(1, email);
         ps.setString(2, encriptedPassword);
         
@@ -117,5 +118,20 @@ public class Restaurante extends Utilizador
         }
         
         return isValid;
+    }
+    
+    
+    @Override
+    public boolean equals(Object obj)
+    {
+        if (!super.equals(obj))
+            return false;
+        
+        if (!(obj instanceof Restaurante))
+            return false;
+        
+        Restaurante other = (Restaurante)obj;
+        
+        return Objects.equals(getImagem(), other.getImagem());
     }
 }
