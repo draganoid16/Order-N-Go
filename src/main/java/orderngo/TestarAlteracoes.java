@@ -6,6 +6,7 @@ import orderngo.cardapio.Prato.TipoPrato;
 import orderngo.exceptions.*;
 import orderngo.pedidos.*;
 import orderngo.utilizador.*;
+import orderngo.utils.*;
 
 import java.time.LocalDateTime;
 
@@ -65,8 +66,8 @@ public class TestarAlteracoes
         GestorOrderAndGo gest = new GestorOrderAndGo("nao@nao.nao", "nao", "000000000", "nao", 999);
         
         // adiciona items ao cardapio
-        card.adicionarItem(new Prato(rest, "Prato nao", "nao", 999, TipoPrato.CARNE, null));
-        card.adicionarItem(new ItemCardapio(rest, "Item nao", "nao", 999){});
+        card.adicionarItem(new Prato(rest, "Carne nao", "Carne nao", 999, TipoPrato.CARNE, null));
+        card.adicionarItem(new Prato(rest, "Peixe nao", "Peixe nao", 999, TipoPrato.PEIXE, null));
         card.adicionarItem(new Bebida(rest, "Bebida nao", "nao", 999, 999));
         
         // --- valores em caso de erro da BD
@@ -102,6 +103,14 @@ public class TestarAlteracoes
             System.out.println(GestorOrderAndGo.validarCredenciais("g1@g1.g1", new char[]{'1', '0'}));
             System.out.println(GestorOrderAndGo.validarCredenciais("r1@r1.r1", new char[]{'1'}));
             System.out.println();
+            
+            // save
+            rest.setPassword(new char[]{'n', 'a', 'o'});
+            rest.setImagem(ImagemUtils.ficheiroToImage(null));
+            rest.save();
+            
+            rest = Restaurante.getRestaurante(rest.getEmail());
+            System.out.println(rest);
             
             // buscarDados (getRestaurante, getGestor, fill)
             rest = Restaurante.getRestaurante("r1@r1.r1");

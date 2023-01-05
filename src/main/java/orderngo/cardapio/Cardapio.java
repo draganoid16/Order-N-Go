@@ -1,6 +1,7 @@
 package orderngo.cardapio;
 
 import orderngo.utilizador.Restaurante;
+import orderngo.basedados.SavableInDatabase;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -11,7 +12,7 @@ import java.sql.SQLException;
  *
  * @author grupo1
  */
-public class Cardapio
+public class Cardapio implements SavableInDatabase
 {
     private final Restaurante restaurante;
     private final ArrayList<ItemCardapio> items;
@@ -89,6 +90,14 @@ public class Cardapio
     }
     //</editor-fold>
 
+    //<editor-fold defaultstate="collapsed" desc="Save">
+    @Override
+    public void save() throws SQLException
+    {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+    //</editor-fold>
+    
     
     @Override
     public boolean equals(Object obj)

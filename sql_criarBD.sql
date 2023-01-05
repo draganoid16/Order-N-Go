@@ -75,7 +75,7 @@ BEGIN
     CREATE UNIQUE INDEX idxNifCliente ON cliente(nif);
     
     CREATE TABLE pedido (
-        nrPedido INT AUTO_INCREMENT,
+        nrPedido INT,
         moradaEntrega VARCHAR(100),
         dataHoraEntrega DATETIME,
         emailCliente VARCHAR(100) NOT NULL,
@@ -88,7 +88,7 @@ BEGIN
         nrPedido INT,
         emailRestaurante VARCHAR(100),
         nomePrato VARCHAR(100),
-        quantidade INT,
+        quantidade INT NOT NULL,
         
         CONSTRAINT quantPratoValida CHECK (quantidade > 0),
         
@@ -101,7 +101,7 @@ BEGIN
         nrPedido INT,
         emailRestaurante VARCHAR(100),
         nomeBebida VARCHAR(100),
-        quantidade INT,
+        quantidade INT NOT NULL,
         
         CONSTRAINT quantBebidaValida CHECK (quantidade > 0),
         

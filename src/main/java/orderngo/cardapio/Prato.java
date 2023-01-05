@@ -1,12 +1,12 @@
 package orderngo.cardapio;
 
-import java.awt.image.BufferedImage;
-
-import orderngo.basedados.ConectorBD;
 import orderngo.utilizador.Restaurante;
+import orderngo.basedados.ConectorBD;
+import orderngo.utils.ImagemUtils;
+
+import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.sql.ResultSet;
-import orderngo.basedados.BaseDadosUtils;
 
 import java.sql.SQLException;
 
@@ -73,7 +73,7 @@ public class Prato extends ItemCardapio
             result.getString("alergenios")
         );
 
-        BufferedImage imagem = BaseDadosUtils.blobToImage(
+        BufferedImage imagem = ImagemUtils.blobToImage(
             result.getBlob("imagem")
         );
         p.setImagem(imagem);
@@ -102,6 +102,14 @@ public class Prato extends ItemCardapio
         
         return pratos
             .toArray(Prato[]::new);
+    }
+    //</editor-fold>
+    
+    //<editor-fold defaultstate="collapsed" desc="Save">
+    @Override
+    public void save() throws SQLException
+    {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
     //</editor-fold>
     

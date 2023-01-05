@@ -1,13 +1,15 @@
 package orderngo.utilizador;
 
 import orderngo.cardapio.Cardapio;
+import orderngo.basedados.ConectorBD;
+import orderngo.utils.PasswordUtils;
+import orderngo.utils.ImagemUtils;
+
 import java.awt.image.BufferedImage;
 import java.util.Objects;
 
-import orderngo.basedados.ConectorBD;
 import java.util.ArrayList;
 import java.sql.ResultSet;
-import orderngo.basedados.BaseDadosUtils;
 
 import java.sql.SQLException;
 import orderngo.exceptions.RestauranteNotFoundException;
@@ -60,10 +62,12 @@ public class Restaurante extends Utilizador
             result.getString("morada")
         );
 
-        BufferedImage imagem = BaseDadosUtils.blobToImage(
+        BufferedImage imagem = ImagemUtils.blobToImage(
             result.getBlob("imagem")
         );
         r.setImagem(imagem);
+        
+        r.setPasswordEncriptada(result.getString("palavraPasse"));
         
         return r;
     }
@@ -72,7 +76,7 @@ public class Restaurante extends Utilizador
     {
         ArrayList<Restaurante> rests = new ArrayList<>();
         
-        try (ResultSet result = ConectorBD.getInstance().executeQuery("SELECT email, nome, morada, telemovel, imagem FROM restaurante"))
+        try (ResultSet result = ConectorBD.getInstance().executeQuery("SELECT * FROM restaurante"))
         {
             while (result.next())
             {
@@ -87,7 +91,7 @@ public class Restaurante extends Utilizador
     public static Restaurante getRestaurante(String email) throws SQLException, RestauranteNotFoundException
     {
         var cbd = ConectorBD.getInstance();
-        var ps = cbd.prepareStatement("SELECT email, nome, morada, telemovel, imagem FROM restaurante WHERE email = ?");
+        var ps = cbd.prepareStatement("SELECT * FROM restaurante WHERE email = ?");
         ps.setString(1, email);
         
         Restaurante r;
@@ -102,22 +106,54 @@ public class Restaurante extends Utilizador
     }
     //</editor-fold>
     
-    public static boolean validarCredenciais(String email, char[] password) throws SQLException
+    //<editor-fold defaultstate="collapsed" desc="Save">
+    @Override
+    public void save() throws SQLException
     {
         var cbd = ConectorBD.getInstance();
-        var ps = cbd.prepareStatement("SELECT palavraPasse FROM restaurante WHERE email = ?");
-        ps.setString(1, email);
-        
-        String encriptada;
-        try (ResultSet result = cbd.executePreparedQuery(ps))
+    
+        try
         {
-            if (!result.next())
-                return false;
+            // verifica se o restaurante existe
+            getRestaurante(getEmail());
             
-            encriptada = result.getString("palavraPasse");
+            // update
+            var ps = cbd.prepareStatement("UPDATE restaurante SET telemovel = ?, morada = ?, imagem = ?, palavraPasse = ? WHERE email = ?");
+            ps.setString(1, getTelemovel());
+            ps.setString(2, getMorada());
+            ps.setBlob(3, ImagemUtils.imageToInputStream(imagem));
+            ps.setString(4, getPasswordEncriptada());
+            ps.setString(5, getEmail());
+            
+            cbd.executePreparedUpdate(ps);
         }
-        
-        return BaseDadosUtils.verificarPassword(password, encriptada);
+        catch (RestauranteNotFoundException rnfe)
+        {
+            // insert
+            var ps = cbd.prepareStatement("INSERT INTO restaurante(email, nome, telemovel, morada, imagem, palavraPasse) VALUES (?, ?, ?, ?, ?, ?)");
+            ps.setString(1, getEmail());
+            ps.setString(2, getNome());
+            ps.setString(3, getTelemovel());
+            ps.setString(4, getMorada());
+            ps.setBlob(5, ImagemUtils.imageToInputStream(imagem));
+            ps.setString(6, getPasswordEncriptada());
+
+            cbd.executePreparedUpdate(ps);
+        }
+    }
+    //</editor-fold>
+    
+    public static boolean validarCredenciais(String email, char[] password) throws SQLException
+    {
+        try
+        {
+            String encriptada = getRestaurante(email).getPasswordEncriptada();
+            return PasswordUtils.verificarPassword(password, encriptada);
+        }
+        catch (RestauranteNotFoundException rnfe)
+        {
+            return false;
+        }
     }
     
     

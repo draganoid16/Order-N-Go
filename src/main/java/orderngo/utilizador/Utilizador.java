@@ -1,15 +1,19 @@
 package orderngo.utilizador;
 
+import orderngo.utils.PasswordUtils;
+import orderngo.basedados.SavableInDatabase;
+
 /**
  *
  * @author grupo1
  */
-public abstract class Utilizador
+public abstract class Utilizador implements SavableInDatabase
 {
     private final String email;
     private String nome;
     private String telemovel;
     private String morada;
+    private String passwordEncriptada;
 
     public Utilizador(String email, String nome, String telemovel, String morada)
     {
@@ -42,6 +46,11 @@ public abstract class Utilizador
     {
         return morada;
     }
+    
+    public String getPasswordEncriptada()
+    {
+        return passwordEncriptada;
+    }
     //</editor-fold>
     
     //<editor-fold defaultstate="collapsed" desc="Setters">
@@ -68,8 +77,18 @@ public abstract class Utilizador
         
         this.morada = morada;
     }
-    //</editor-fold>
 
+    public void setPasswordEncriptada(String passwordEncriptada)
+    {
+        this.passwordEncriptada = passwordEncriptada;
+    }
+    
+    public void setPassword(char[] password)
+    {
+        passwordEncriptada = PasswordUtils.encriptarPassword(password);
+    }
+    //</editor-fold>
+    
     
     @Override
     public boolean equals(Object obj)

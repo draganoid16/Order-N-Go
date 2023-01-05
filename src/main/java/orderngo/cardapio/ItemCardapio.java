@@ -1,6 +1,8 @@
 package orderngo.cardapio;
 
 import orderngo.utilizador.Restaurante;
+import orderngo.basedados.SavableInDatabase;
+
 import java.awt.image.BufferedImage;
 import java.util.Objects;
 
@@ -8,7 +10,7 @@ import java.util.Objects;
  *
  * @author grupo1
  */
-public abstract class ItemCardapio
+public abstract class ItemCardapio implements SavableInDatabase
 {
     private final Restaurante restaurante;
     private final String nome;

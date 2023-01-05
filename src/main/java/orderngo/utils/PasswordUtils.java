@@ -1,39 +1,15 @@
-package orderngo.basedados;
-
-import javax.imageio.ImageIO;
-import java.awt.image.BufferedImage;
-import java.sql.Blob;
+package orderngo.utils;
 
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import java.nio.CharBuffer;
 import java.util.Arrays;
 
-import java.sql.SQLException;
-import java.io.IOException;
-
 /**
  *
  * @author grupo1
  */
-public class BaseDadosUtils
+public class PasswordUtils
 {
-    public static BufferedImage blobToImage(Blob imagemBlob) throws SQLException
-    {
-        if (imagemBlob == null)
-            return null;
-        
-        BufferedImage imagem = null;
-        try
-        {
-            imagem = ImageIO.read(imagemBlob.getBinaryStream());
-        }
-        catch (IOException ioe) {}
-        
-        imagemBlob.free();
-        return imagem;
-    }
-
-    
     /* Usar encriptarPassword(char[] password) por motivos de segurança
     https://www.baeldung.com/java-storing-passwords Use char[] Array Over a String for Manipulating Passwords in Java?
     

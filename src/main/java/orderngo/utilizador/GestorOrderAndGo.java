@@ -1,8 +1,9 @@
 package orderngo.utilizador;
 
 import orderngo.basedados.ConectorBD;
+import orderngo.utils.PasswordUtils;
+
 import java.sql.ResultSet;
-import orderngo.basedados.BaseDadosUtils;
 
 import java.sql.SQLException;
 import orderngo.exceptions.GestorNotFoundException;
@@ -21,7 +22,7 @@ public class GestorOrderAndGo extends Utilizador
         
         if (nrEmpregado <= 0)
             throw new IllegalArgumentException("Numero de empregado invalido!");
-            
+        
         this.nrEmpregado = nrEmpregado;
     }
 
@@ -44,13 +45,15 @@ public class GestorOrderAndGo extends Utilizador
             result.getInt("nrEmpregado")
         );
         
+        g.setPasswordEncriptada(result.getString("palavraPasse"));
+        
         return g;
     }
     
     public static GestorOrderAndGo getGestor(String email) throws SQLException, GestorNotFoundException
     {
         var cbd = ConectorBD.getInstance();
-        var ps = cbd.prepareStatement("SELECT email, nome, morada, telemovel, nrEmpregado FROM gestorog WHERE email = ?");
+        var ps = cbd.prepareStatement("SELECT * FROM gestorog WHERE email = ?");
         ps.setString(1, email);
         
         GestorOrderAndGo g;
@@ -66,22 +69,53 @@ public class GestorOrderAndGo extends Utilizador
     }
     //</editor-fold>
     
-    public static boolean validarCredenciais(String email, char[] password) throws SQLException
+    //<editor-fold defaultstate="collapsed" desc="Save">
+    @Override
+    public void save() throws SQLException
     {
         var cbd = ConectorBD.getInstance();
-        var ps = cbd.prepareStatement("SELECT palavraPasse FROM gestorog WHERE email = ?");
-        ps.setString(1, email);
-        
-        String encriptada;
-        try (ResultSet result = cbd.executePreparedQuery(ps))
+    
+        try
         {
-            if (!result.next())
-                return false;
+            // verifica se o gestor existe
+            getGestor(getEmail());
             
-            encriptada = result.getString("palavraPasse");
+            // update
+            var ps = cbd.prepareStatement("UPDATE gestorog SET telemovel = ?, morada = ?, palavraPasse = ? WHERE email = ?");
+            ps.setString(1, getTelemovel());
+            ps.setString(2, getMorada());
+            ps.setString(3, getPasswordEncriptada());
+            ps.setString(4, getEmail());
+            
+            cbd.executePreparedUpdate(ps);
         }
-        
-        return BaseDadosUtils.verificarPassword(password, encriptada);
+        catch (GestorNotFoundException gnfe)
+        {
+            // insert
+            var ps = cbd.prepareStatement("INSERT INTO gestorog(email, nome, telemovel, morada, nrEmpregado, palavraPasse) VALUES (?, ?, ?, ?, ?, ?)");
+            ps.setString(1, getEmail());
+            ps.setString(2, getNome());
+            ps.setString(3, getTelemovel());
+            ps.setString(4, getMorada());
+            ps.setInt(5, nrEmpregado);
+            ps.setString(6, getPasswordEncriptada());
+
+            cbd.executePreparedUpdate(ps);
+        }
+    }
+    //</editor-fold>
+    
+    public static boolean validarCredenciais(String email, char[] password) throws SQLException
+    {
+        try
+        {
+            String encriptada = getGestor(email).getPasswordEncriptada();
+            return PasswordUtils.verificarPassword(password, encriptada);
+        }
+        catch (GestorNotFoundException gnfe)
+        {
+            return false;
+        }
     }
 
     

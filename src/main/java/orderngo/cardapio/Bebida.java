@@ -1,12 +1,12 @@
 package orderngo.cardapio;
 
-import java.awt.image.BufferedImage;
-
 import orderngo.basedados.ConectorBD;
 import orderngo.utilizador.Restaurante;
+import orderngo.utils.ImagemUtils;
+
+import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.sql.ResultSet;
-import orderngo.basedados.BaseDadosUtils;
 
 import java.sql.SQLException;
 
@@ -47,7 +47,7 @@ public class Bebida extends ItemCardapio
             result.getInt("capacidadeCL")
         );
 
-        BufferedImage imagem = BaseDadosUtils.blobToImage(
+        BufferedImage imagem = ImagemUtils.blobToImage(
             result.getBlob("imagem")
         );
         b.setImagem(imagem);
@@ -78,6 +78,15 @@ public class Bebida extends ItemCardapio
             .toArray(Bebida[]::new);
     }
     //</editor-fold>
+    
+    //<editor-fold defaultstate="collapsed" desc="Save">
+    @Override
+    public void save() throws SQLException
+    {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+    //</editor-fold>
+    
     
     @Override
     public boolean equals(Object obj)

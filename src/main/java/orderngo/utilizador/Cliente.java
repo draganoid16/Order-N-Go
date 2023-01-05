@@ -1,5 +1,7 @@
 package orderngo.utilizador;
 
+import java.sql.SQLException;
+
 /**
  *
  * @author grupo1
@@ -22,6 +24,14 @@ public class Cliente extends Utilizador
     public String getNif()
     {
         return nif;
+    }
+    //</editor-fold>
+
+    //<editor-fold defaultstate="collapsed" desc="Save">
+    @Override
+    public void save() throws SQLException
+    {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
     //</editor-fold>
     
