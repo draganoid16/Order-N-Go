@@ -9,6 +9,8 @@ import java.util.ArrayList;
 import java.sql.ResultSet;
 
 import java.sql.SQLException;
+import orderngo.exceptions.ItemCardapioNotFoundException;
+import orderngo.exceptions.RestauranteNotFoundException;
 
 /**
  *
@@ -77,13 +79,66 @@ public class Bebida extends ItemCardapio
         return bebidas
             .toArray(Bebida[]::new);
     }
+    
+    public static Bebida getBebida(Restaurante restaurante, String nome) throws SQLException, RestauranteNotFoundException, ItemCardapioNotFoundException
+    {
+        if (restaurante == null)
+            throw new IllegalArgumentException("Restaurante invalido!");
+            
+        // verifica se o restaurante existe
+        Restaurante.getRestaurante(restaurante.getEmail());
+            
+        var cbd = ConectorBD.getInstance();
+        var ps = cbd.prepareStatement("SELECT * FROM bebida WHERE emailRestaurante = ? AND nome = ?");
+        ps.setString(1, restaurante.getEmail());
+        ps.setString(2, nome);
+        
+        Bebida b;
+        try (ResultSet result = cbd.executePreparedQuery(ps))
+        {
+            if (!result.next())
+                throw new ItemCardapioNotFoundException(restaurante.getEmail(), nome);
+            
+            b = criarBebida(restaurante, result);
+        }
+        return b;
+    }
     //</editor-fold>
     
     //<editor-fold defaultstate="collapsed" desc="Save">
     @Override
-    public void save() throws SQLException
+    public void save() throws SQLException, RestauranteNotFoundException
     {
-        throw new UnsupportedOperationException("Not supported yet.");
+        var cbd = ConectorBD.getInstance();
+    
+        try
+        {
+            // verifica se a bebida existe
+            getBebida(getRestaurante(), getNome());
+            
+            // update
+            var ps = cbd.prepareStatement("UPDATE bebida SET detalhes = ?, precoUnitario = ?, imagem = ? WHERE emailRestaurante = ? AND nome = ?");
+            ps.setString(1, getDetalhes());
+            ps.setFloat(2, getPrecoUnitario());
+            ps.setBlob(3, ImagemUtils.imageToInputStream(getImagem()));
+            ps.setString(4, getRestaurante().getEmail());
+            ps.setString(5, getNome());
+            
+            cbd.executePreparedUpdate(ps);
+        }
+        catch (ItemCardapioNotFoundException icnf)
+        {
+            // insert
+            var ps = cbd.prepareStatement("INSERT INTO bebida(emailRestaurante, nome, detalhes, precoUnitario, capacidadeCL, imagem) VALUES (?, ?, ?, ?, ?, ?)");
+            ps.setString(1, getRestaurante().getEmail());
+            ps.setString(2, getNome());
+            ps.setString(3, getDetalhes());
+            ps.setFloat(4, getPrecoUnitario());
+            ps.setInt(5, capacidadeCL);
+            ps.setBlob(6, ImagemUtils.imageToInputStream(getImagem()));
+
+            cbd.executePreparedUpdate(ps);
+        }
     }
     //</editor-fold>
     

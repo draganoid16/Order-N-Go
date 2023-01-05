@@ -4,18 +4,26 @@ package orderngo.exceptions;
  *
  * @author grupo1
  */
-public class RestauranteNotFoundException extends IllegalArgumentException
+public class ItemCardapioNotFoundException extends IllegalArgumentException
 {
-    private final String emailProcurado;
+    private final String emailRestauranteProcurado;
+    private final String nomeProcurado;
 
-    public RestauranteNotFoundException(String emailProcurado)
+    public ItemCardapioNotFoundException(String emailRestauranteProcurado, String nomeProcurado)
     {
-        super(String.format("Nao existe restaurante com email %s", emailProcurado));
-        this.emailProcurado = emailProcurado;
+        super(String.format("Nao existe item com emailRestaurante %s e nome %s", emailRestauranteProcurado, nomeProcurado));
+        
+        this.emailRestauranteProcurado = emailRestauranteProcurado;
+        this.nomeProcurado = nomeProcurado;
     }
 
-    public String getEmailProcurado()
+    public String getEmailRestauranteProcurado()
     {
-        return emailProcurado;
+        return emailRestauranteProcurado;
+    }
+
+    public String getNomeProcurado()
+    {
+        return nomeProcurado;
     }
 }

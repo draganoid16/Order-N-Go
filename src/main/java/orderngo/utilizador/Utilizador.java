@@ -1,7 +1,7 @@
 package orderngo.utilizador;
 
-import orderngo.utils.PasswordUtils;
 import orderngo.basedados.SavableInDatabase;
+import orderngo.utils.PasswordUtils;
 
 /**
  *

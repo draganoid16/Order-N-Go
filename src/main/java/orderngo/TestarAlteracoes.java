@@ -9,6 +9,7 @@ import orderngo.utilizador.*;
 import orderngo.utils.*;
 
 import java.time.LocalDateTime;
+import java.awt.image.BufferedImage;
 
 import java.sql.SQLException;
 
@@ -59,63 +60,35 @@ public class TestarAlteracoes
     
     public void main()
     {
-        // valores em caso de erro da BD
-        ConectorBD cbd = null;
-        Restaurante rest = new Restaurante("nao@nao.nao", "nao", "000000000", "nao");
+        Restaurante rest = new Restaurante("teste@teste.teste", "restaurante teste", "000000000", "teste");
+        rest.setPassword("teste".toCharArray());
+        rest.setImagem(ImagemUtils.ficheiroToImage("src\\imageresources\\profile.png"));
+        
         Cardapio card = rest.getCardapio();
-        GestorOrderAndGo gest = new GestorOrderAndGo("nao@nao.nao", "nao", "000000000", "nao", 999);
-        
-        // adiciona items ao cardapio
-        card.adicionarItem(new Prato(rest, "Carne nao", "Carne nao", 999, TipoPrato.CARNE, null));
-        card.adicionarItem(new Prato(rest, "Peixe nao", "Peixe nao", 999, TipoPrato.PEIXE, null));
-        card.adicionarItem(new Bebida(rest, "Bebida nao", "nao", 999, 999));
-        
-        // --- valores em caso de erro da BD
-        Cliente cli = new Cliente("c1@c1.c1", "c1", "111111111", "Morada 1", "111111111");
-        Pedido ped = new Pedido(
-            cli, "Morada 10", 
-            LocalDateTime.of(2022, 10, 10, 10, 10)
-        );
-       
-        // --- adiciona items ao pedido 
         ItemCardapio ic;
-        ic = card.getItem(0);
-        ped.adicionarItem(ic);
-        ped.incrQuantidade(ic, 2);
-                
-        ic = card.getItem(2);
-        ped.adicionarItem(ic);
-        ped.alterQuantidade(ic, 2);
+        
+        ic = new Prato(rest, "carne teste", "carne teste", 999, TipoPrato.CARNE, null);
+        ic.setImagem(ImagemUtils.ficheiroToImage("src\\imageresources\\food-tray.png"));
+        card.adicionarItem(ic);
+        
+        ic = new Prato(rest, "peixe teste", "peixe teste", 999, TipoPrato.PEIXE, null);
+        card.adicionarItem(ic);
+        
+        ic = new Bebida(rest, "bebida teste", "bebida teste", 999, 999);
+        ic.setImagem(ImagemUtils.ficheiroToImage(null));
+        card.adicionarItem(ic);
+        
+        GestorOrderAndGo gest = new GestorOrderAndGo("teste@teste.teste", "gestorog teste", "000000000", "teste", 999);
+        gest.setPassword("teste".toCharArray());
         
         try
         {
-            cbd = ConectorBD.getInstance();
-            
-            // validarCredenciais()
-            System.out.println("Restaurante.validarCredenciais() - true, false, false");
-            System.out.println(Restaurante.validarCredenciais("r1@r1.r1", new char[]{'1'}));
-            System.out.println(Restaurante.validarCredenciais("r1@r1.r1", new char[]{'1', '0'}));
-            System.out.println(Restaurante.validarCredenciais("g1@g1.g1", new char[]{'1'}));
-            System.out.println();
-            
-            System.out.println("GestorOrderAndGo.validarCredenciais() - true, false, false");
-            System.out.println(GestorOrderAndGo.validarCredenciais("g1@g1.g1", new char[]{'1'}));
-            System.out.println(GestorOrderAndGo.validarCredenciais("g1@g1.g1", new char[]{'1', '0'}));
-            System.out.println(GestorOrderAndGo.validarCredenciais("r1@r1.r1", new char[]{'1'}));
-            System.out.println();
-            
-            // save
-            rest.setPassword(new char[]{'n', 'a', 'o'});
-            rest.setImagem(ImagemUtils.ficheiroToImage(null));
             rest.save();
+            gest.save();
+            card.save();
             
             rest = Restaurante.getRestaurante(rest.getEmail());
-            System.out.println(rest);
-            
-            // buscarDados (getRestaurante, getGestor, fill)
-            rest = Restaurante.getRestaurante("r1@r1.r1");
-            gest = GestorOrderAndGo.getGestor("g1@g1.g1");
-            
+            gest = GestorOrderAndGo.getGestor(gest.getEmail());
             card = rest.getCardapio();
             card.fill();
         }
@@ -125,23 +98,11 @@ public class TestarAlteracoes
         }
         
         
-        // toString() das variáveis
         System.out.println("_.toString()");
-        printObjects(cbd, rest, card, gest);
-
-        // --- toString() das variáveis
-        printObjects(cli, ped);
+        printObjects(rest, gest, card);
         
-        
-        // getAllItems, getAllPratos, getAllBebidas do Cardapio
         System.out.println("card.getAllItems()");
         printItemCardapioArray(card.getAllItems());
-        
-        System.out.println("card.getAllPratos()");
-        printItemCardapioArray(card.getAllPratos());
-        
-        System.out.println("card.getAllBebidas()");
-        printItemCardapioArray(card.getAllBebidas());
     }
     
     public static void main(String[] args) 

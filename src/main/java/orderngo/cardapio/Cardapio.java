@@ -94,7 +94,8 @@ public class Cardapio implements SavableInDatabase
     @Override
     public void save() throws SQLException
     {
-        throw new UnsupportedOperationException("Not supported yet.");
+        for (ItemCardapio it : items)
+            it.save();
     }
     //</editor-fold>
     
