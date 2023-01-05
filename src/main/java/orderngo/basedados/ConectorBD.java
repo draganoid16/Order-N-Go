@@ -18,7 +18,12 @@ import java.sql.SQLException;
  */
 public class ConectorBD
 {
+    private static ConectorBD instance = null;
     private static final String PROPERTIES_FILE = "basededados.properties";
+    
+    private final Connection con;
+    private final String urlCon;
+    
     private static Properties getProperties()
     {
         // Properties por omissão
@@ -48,13 +53,14 @@ public class ConectorBD
     }
     
     
-    private Connection con = null;
     private ConectorBD() throws SQLException
     {
         Properties prop = getProperties();
         
+        urlCon = prop.getProperty("url");
+        
         con = DriverManager.getConnection(
-            prop.getProperty("url"),
+            urlCon,
             prop
         );
     }
@@ -111,7 +117,7 @@ public class ConectorBD
     }
     //</editor-fold>
     
-    private static ConectorBD instance = null;
+    
     public static ConectorBD getInstance() throws SQLException
     {
         if (instance != null)
@@ -119,5 +125,16 @@ public class ConectorBD
             
         instance = new ConectorBD();
         return instance;
+    }
+
+    
+    @Override
+    public String toString()
+    {
+        StringBuilder sb = new StringBuilder();
+        sb.append("ConectorBD{");
+        sb.append("urlCon=").append(urlCon);
+        sb.append('}');
+        return sb.toString();
     }
 }

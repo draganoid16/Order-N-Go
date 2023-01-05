@@ -34,6 +34,9 @@ public class Cardapio
     
     public boolean adicionarItem(ItemCardapio item)
     {
+        if (item == null)
+            return false;
+            
         return items.add(item);
     }
     
@@ -79,6 +82,8 @@ public class Cardapio
     //<editor-fold defaultstate="collapsed" desc="BuscarDados">
     public void fill() throws SQLException
     {
+        limparCardapio();
+        
         Collections.addAll(items, Prato.from(restaurante));
         Collections.addAll(items, Bebida.from(restaurante));
     }
@@ -111,5 +116,16 @@ public class Cardapio
         int hash = 5;
         hash = 43 * hash + restaurante.hashCode();
         return hash;
+    }
+
+    @Override
+    public String toString()
+    {
+        StringBuilder sb = new StringBuilder();
+        sb.append("Cardapio{");
+        sb.append("restaurante=").append(restaurante);
+        sb.append(", items=").append(items);
+        sb.append('}');
+        return sb.toString();
     }
 }

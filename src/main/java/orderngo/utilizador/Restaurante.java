@@ -51,7 +51,7 @@ public class Restaurante extends Utilizador
 
     
     //<editor-fold defaultstate="collapsed" desc="BuscarDados">
-    private static Restaurante createRestaurante(ResultSet result) throws SQLException
+    private static Restaurante criarRestaurante(ResultSet result) throws SQLException
     {
         Restaurante r = new Restaurante(
             result.getString("email"),
@@ -72,11 +72,11 @@ public class Restaurante extends Utilizador
     {
         ArrayList<Restaurante> rests = new ArrayList<>();
         
-        try (ResultSet result = ConectorBD.getInstance().executeQuery("SELECT * FROM restaurante"))
+        try (ResultSet result = ConectorBD.getInstance().executeQuery("SELECT email, nome, morada, telemovel, imagem FROM restaurante"))
         {
             while (result.next())
             {
-                rests.add(createRestaurante(result));
+                rests.add(criarRestaurante(result));
             }
         }
         
@@ -87,7 +87,7 @@ public class Restaurante extends Utilizador
     public static Restaurante getRestaurante(String email) throws SQLException, RestauranteNotFoundException
     {
         var cbd = ConectorBD.getInstance();
-        var ps = cbd.prepareStatement("SELECT * FROM restaurante WHERE email = ?");
+        var ps = cbd.prepareStatement("SELECT email, nome, morada, telemovel, imagem FROM restaurante WHERE email = ?");
         ps.setString(1, email);
         
         Restaurante r;
@@ -96,28 +96,28 @@ public class Restaurante extends Utilizador
             if (!result.next())
                 throw new RestauranteNotFoundException(email);
             
-            r = createRestaurante(result);
+            r = criarRestaurante(result);
         }
         return r;
     }
     //</editor-fold>
     
-    public static boolean validCredentials(String email, String password) throws SQLException
+    public static boolean validarCredenciais(String email, char[] password) throws SQLException
     {
-        String encriptedPassword = BaseDadosUtils.encriptarPassword(password);
-        
         var cbd = ConectorBD.getInstance();
-        var ps = cbd.prepareStatement("SELECT email FROM restaurante WHERE email = ? AND palavraPasse = ?");
+        var ps = cbd.prepareStatement("SELECT palavraPasse FROM restaurante WHERE email = ?");
         ps.setString(1, email);
-        ps.setString(2, encriptedPassword);
         
-        boolean isValid;
+        String encriptada;
         try (ResultSet result = cbd.executePreparedQuery(ps))
         {
-            isValid = result.next();
+            if (!result.next())
+                return false;
+            
+            encriptada = result.getString("palavraPasse");
         }
         
-        return isValid;
+        return BaseDadosUtils.verificarPassword(password, encriptada);
     }
     
     
@@ -132,6 +132,17 @@ public class Restaurante extends Utilizador
         
         Restaurante other = (Restaurante)obj;
         
-        return Objects.equals(getImagem(), other.getImagem());
+        return Objects.equals(imagem, other.imagem);
+    }
+
+    @Override
+    public String toString()
+    {
+        StringBuilder sb = new StringBuilder();
+        sb.append("Restaurante{");
+        sb.append(super.toString());
+        sb.append(", imagem=").append(imagem);
+        sb.append('}');
+        return sb.toString();
     }
 }

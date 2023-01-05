@@ -97,27 +97,40 @@ public abstract class ItemCardapio
         
         ItemCardapio other = (ItemCardapio)obj;
         
-        if (!getRestaurante().equals(other.getRestaurante()))
+        if (!restaurante.equals(other.restaurante))
             return false;
         
-        if (!getNome().equals(other.getNome()))
+        if (!nome.equals(other.nome))
             return false;
         
-        if (!getDetalhes().equals(other.getDetalhes()))
+        if (!detalhes.equals(other.detalhes))
             return false;
 
-        if (getPrecoUnitario() != other.getPrecoUnitario())
+        if (precoUnitario != other.precoUnitario)
             return false;
         
-        return Objects.equals(getImagem(), other.getImagem());
+        return Objects.equals(imagem, other.imagem);
     }
 
     @Override
     public int hashCode()
     {
         int hash = 7;
-        hash = 89 * hash + getRestaurante().hashCode();
-        hash = 89 * hash + getNome().hashCode();
+        hash = 89 * hash + restaurante.hashCode();
+        hash = 89 * hash + nome.hashCode();
         return hash;
+    }
+
+    @Override
+    public String toString()
+    {
+        StringBuilder sb = new StringBuilder();
+        sb.append("ItemCardapio{");
+        sb.append("nome=").append(nome);
+        sb.append(", detalhes=").append(detalhes);
+        sb.append(", precoUnitario=").append(precoUnitario);
+        sb.append(", imagem=").append(imagem);
+        sb.append('}');
+        return sb.toString();
     }
 }

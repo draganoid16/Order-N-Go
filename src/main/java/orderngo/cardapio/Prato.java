@@ -60,7 +60,7 @@ public class Prato extends ItemCardapio
     
     
     //<editor-fold defaultstate="collapsed" desc="BuscarDados">
-    private static Prato createPrato(Restaurante restaurante, ResultSet result) throws SQLException
+    private static Prato criarPrato(Restaurante restaurante, ResultSet result) throws SQLException
     {
         Prato p = new Prato(
             restaurante,
@@ -96,7 +96,7 @@ public class Prato extends ItemCardapio
         {
             while (result.next())
             {
-                pratos.add(createPrato(restaurante, result));
+                pratos.add(criarPrato(restaurante, result));
             }
         }
         
@@ -117,9 +117,21 @@ public class Prato extends ItemCardapio
         
         Prato other = (Prato)obj;
         
-        if (!getTipoPrato().equals(other.getTipoPrato()))
+        if (!tipoPrato.equals(other.tipoPrato))
             return false;
         
-        return getAlergenios().equals(other.getAlergenios());
+        return alergenios.equals(other.alergenios);
+    }
+
+    @Override
+    public String toString()
+    {
+        StringBuilder sb = new StringBuilder();
+        sb.append("Prato{");
+        sb.append(super.toString());
+        sb.append(", tipoPrato=").append(tipoPrato);
+        sb.append(", alergenios=").append(alergenios);
+        sb.append('}');
+        return sb.toString();
     }
 }

@@ -34,7 +34,7 @@ public class GestorOrderAndGo extends Utilizador
     
     
     //<editor-fold defaultstate="collapsed" desc="BuscarDados">
-    private static GestorOrderAndGo createGestor(ResultSet result) throws SQLException
+    private static GestorOrderAndGo criarGestor(ResultSet result) throws SQLException
     {
         GestorOrderAndGo g = new GestorOrderAndGo(
             result.getString("email"),
@@ -50,7 +50,7 @@ public class GestorOrderAndGo extends Utilizador
     public static GestorOrderAndGo getGestor(String email) throws SQLException, GestorNotFoundException
     {
         var cbd = ConectorBD.getInstance();
-        var ps = cbd.prepareStatement("SELECT * FROM gestorog WHERE email = ?");
+        var ps = cbd.prepareStatement("SELECT email, nome, morada, telemovel, nrEmpregado FROM gestorog WHERE email = ?");
         ps.setString(1, email);
         
         GestorOrderAndGo g;
@@ -59,28 +59,29 @@ public class GestorOrderAndGo extends Utilizador
             if (!result.next())
                 throw new GestorNotFoundException(email);
             
-            g = createGestor(result);
+            g = criarGestor(result);
         }
         
         return g;
     }
     //</editor-fold>
     
-    public static boolean validCredentials(String email, String password) throws SQLException
+    public static boolean validarCredenciais(String email, char[] password) throws SQLException
     {
-        String encriptedPassword = BaseDadosUtils.encriptarPassword(password);
-        
         var cbd = ConectorBD.getInstance();
-        var ps = cbd.prepareStatement("SELECT email FROM gestorog WHERE email = ? AND palavraPasse = ?");
+        var ps = cbd.prepareStatement("SELECT palavraPasse FROM gestorog WHERE email = ?");
         ps.setString(1, email);
-        ps.setString(2, encriptedPassword);
         
-        boolean isValid;
+        String encriptada;
         try (ResultSet result = cbd.executePreparedQuery(ps))
         {
-            isValid = result.next();
+            if (!result.next())
+                return false;
+            
+            encriptada = result.getString("palavraPasse");
         }
-        return isValid;
+        
+        return BaseDadosUtils.verificarPassword(password, encriptada);
     }
 
     
@@ -95,6 +96,17 @@ public class GestorOrderAndGo extends Utilizador
         
         GestorOrderAndGo other = (GestorOrderAndGo)obj;
         
-        return getNrEmpregado() == other.getNrEmpregado();
+        return nrEmpregado == other.nrEmpregado;
+    }
+
+    @Override
+    public String toString()
+    {
+        StringBuilder sb = new StringBuilder();
+        sb.append("GestorOrderAndGo{");
+        sb.append(super.toString());
+        sb.append(", nrEmpregado=").append(nrEmpregado);
+        sb.append('}');
+        return sb.toString();
     }
 }

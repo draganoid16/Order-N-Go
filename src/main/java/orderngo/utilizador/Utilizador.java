@@ -85,23 +85,36 @@ public abstract class Utilizador
         
         Utilizador other = (Utilizador)obj;
         
-        if (!getEmail().equals(other.getEmail()))
+        if (!email.equals(other.email))
             return false;
         
-        if (!getNome().equals(other.getNome()))
+        if (!nome.equals(other.nome))
             return false;
         
-        if (!getTelemovel().equals(other.getTelemovel()))
+        if (!telemovel.equals(other.telemovel))
             return false;
         
-        return getMorada().equals(other.getMorada());
+        return morada.equals(other.morada);
     }
 
     @Override
     public int hashCode()
     {
         int hash = 7;
-        hash = 79 * hash + getEmail().hashCode();
+        hash = 79 * hash + email.hashCode();
         return hash;
+    }
+
+    @Override
+    public String toString()
+    {
+        StringBuilder sb = new StringBuilder();
+        sb.append("Utilizador{");
+        sb.append("email=").append(email);
+        sb.append(", nome=").append(nome);
+        sb.append(", telemovel=").append(telemovel);
+        sb.append(", morada=").append(morada);
+        sb.append('}');
+        return sb.toString();
     }
 }

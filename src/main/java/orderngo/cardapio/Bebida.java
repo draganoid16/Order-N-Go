@@ -37,7 +37,7 @@ public class Bebida extends ItemCardapio
     
     
     //<editor-fold defaultstate="collapsed" desc="BuscarDados">
-    private static Bebida createBebida(Restaurante restaurante, ResultSet result) throws SQLException
+    private static Bebida criarBebida(Restaurante restaurante, ResultSet result) throws SQLException
     {
         Bebida b = new Bebida(
             restaurante,
@@ -70,7 +70,7 @@ public class Bebida extends ItemCardapio
         {
             while (result.next())
             {
-                bebidas.add(createBebida(restaurante, result));
+                bebidas.add(criarBebida(restaurante, result));
             }
         }
         
@@ -90,6 +90,17 @@ public class Bebida extends ItemCardapio
         
         Bebida other = (Bebida)obj;
         
-        return getCapacidadeCL() == other.getCapacidadeCL();
+        return capacidadeCL == other.capacidadeCL;
+    }
+
+    @Override
+    public String toString()
+    {
+        StringBuilder sb = new StringBuilder();
+        sb.append("Bebida{");
+        sb.append(super.toString());
+        sb.append(", capacidadeCL=").append(capacidadeCL);
+        sb.append('}');
+        return sb.toString();
     }
 }

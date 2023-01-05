@@ -37,17 +37,17 @@ public class LoginForm extends JDialog {
             public void actionPerformed(ActionEvent e) { //aqui devia ser quando se carrega no botão login e quando se carrega no Enter
                 dispose();
                 String email = emailField.getText();
-                String password = passwordField.getText();
-
+                // String password = passwordField.getText(); // Deprecated
+                char[] password = passwordField.getPassword();
 
                 //GerenteForm que gere o seu restaurante e edita o cardapio
                 try {
-                    if (Restaurante.validCredentials(email, password) && restauranteRadioButton.isSelected()) {
+                    if (Restaurante.validarCredenciais(email, password) && restauranteRadioButton.isSelected()) {
                         GerenteForm gerenteForm = new GerenteForm(null, email);
                         loginFrame.dispatchEvent(new WindowEvent(loginFrame, WindowEvent.WINDOW_CLOSING));
 
                         //GestorForm que adiciona/remove restaurantes de agueda da base de dados
-                    } else if (GestorOrderAndGo.validCredentials(email, password) && gestorONGRadioButton.isSelected()) { //trocar isto
+                    } else if (GestorOrderAndGo.validarCredenciais(email, password) && gestorONGRadioButton.isSelected()) { //trocar isto
                         App.GestorMenu();
                         loginFrame.dispatchEvent(new WindowEvent(loginFrame, WindowEvent.WINDOW_CLOSING));
 

@@ -2,8 +2,10 @@ package orderngo.pedidos;
 
 import orderngo.utilizador.Cliente;
 import orderngo.cardapio.ItemCardapio;
-import java.util.Date;
+
 import java.util.LinkedHashMap;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 /**
  * 
@@ -14,10 +16,10 @@ public class Pedido
     private final Cliente cliente;
     private int nrPedido;
     private final String moradaEntrega;
-    private final Date dataHoraEntrega;
+    private final LocalDateTime dataHoraEntrega;
     private final LinkedHashMap<ItemCardapio, Integer> itemsPedido;
 
-    public Pedido(Cliente cliente, String moradaEntrega, Date dataHoraEntrega)
+    public Pedido(Cliente cliente, String moradaEntrega, LocalDateTime dataHoraEntrega)
     {
         if (cliente == null)
             throw new IllegalArgumentException("Cliente invalido!");
@@ -53,9 +55,14 @@ public class Pedido
         return moradaEntrega;
     }
 
-    public Date getDataHoraEntrega()
+    public LocalDateTime getDataHoraEntrega()
     {
         return dataHoraEntrega;
+    }
+    
+    public String getDataHoraEntregaString()
+    {
+        return DateTimeFormatter.ofPattern("dd-MM-yyyy kk:mm").format(dataHoraEntrega);
     }
     
     public LinkedHashMap<ItemCardapio, Integer> getItemsPedido()
@@ -74,28 +81,10 @@ public class Pedido
     }
     //</editor-fold>
 
-    public void incrQuantidade(ItemCardapio item)
+
+    public void limparItemsPedido()
     {
-        if (item == null || !itemsPedido.containsKey(item))
-            throw new IllegalArgumentException("Item invalido!");
-        
-        int quant = itemsPedido.get(item);
-        quant++;
-        itemsPedido.replace(item, quant);
-    }
-    
-    public void decrQuantidade(ItemCardapio item)
-    {
-        if (item == null || !itemsPedido.containsKey(item))
-            throw new IllegalArgumentException("Item invalido!");
-        
-        int quant = itemsPedido.get(item);
-        quant--;
-        
-        if (quant <= 0)
-            removerItem(item);
-        else
-            itemsPedido.replace(item, quant);
+        itemsPedido.clear();
     }
     
     public void adicionarItem(ItemCardapio item)
@@ -104,7 +93,7 @@ public class Pedido
             throw new IllegalArgumentException("Item invalido!");
             
         itemsPedido.putIfAbsent(item, 0);
-        incrQuantidade(item);
+        incrQuantidade(item, 1);
     }
     
     public void removerItem(ItemCardapio item)
@@ -113,6 +102,49 @@ public class Pedido
             throw new IllegalArgumentException("Item invalido!");
             
         itemsPedido.remove(item);
+    }
+    
+    
+    private void addRemQuantidade(ItemCardapio item, int addrem)
+    {
+        if (item == null || !itemsPedido.containsKey(item))
+            throw new IllegalArgumentException("Item invalido!");
+        
+        int quant = itemsPedido.get(item);
+        quant += addrem;
+        
+        if (quant <= 0)
+            removerItem(item);
+        else
+            itemsPedido.replace(item, quant);
+    }
+    
+    public void incrQuantidade(ItemCardapio item, int incr)
+    {
+        if (incr < 0)
+            throw new IllegalArgumentException("Incremento invalido!");
+        
+        addRemQuantidade(item, incr);
+    }
+    
+    public void decrQuantidade(ItemCardapio item, int decr)
+    {
+        if (decr < 0)
+            throw new IllegalArgumentException("Decremento invalido!");
+        
+        addRemQuantidade(item, -decr);
+    }
+    
+    
+    public void alterQuantidade(ItemCardapio item, int quant)
+    {
+        if (item == null || !itemsPedido.containsKey(item))
+            throw new IllegalArgumentException("Item invalido!");
+        
+        if (quant <= 0)
+            removerItem(item);
+        else
+            itemsPedido.replace(item, quant);
     }
     
 
@@ -130,16 +162,16 @@ public class Pedido
         
         Pedido other = (Pedido)obj;
         
-        if (!getCliente().equals(other.getCliente()))
+        if (!cliente.equals(other.cliente))
             return false;
         
         if (this.nrPedido != other.nrPedido)
             return false;
         
-        if (!getMoradaEntrega().equals(other.getMoradaEntrega()))
+        if (!moradaEntrega.equals(other.moradaEntrega))
             return false;
         
-        if (!getDataHoraEntrega().equals(other.getDataHoraEntrega()))
+        if (!dataHoraEntrega.equals(other.dataHoraEntrega))
             return false;
         
         return itemsPedido.equals(other.itemsPedido);
@@ -149,7 +181,21 @@ public class Pedido
     public int hashCode()
     {
         int hash = 7;
-        hash = 37 * hash + this.nrPedido;
+        hash = 37 * hash + nrPedido;
         return hash;
     }
+
+    @Override
+    public String toString()
+    {
+        StringBuilder sb = new StringBuilder();
+        sb.append("Pedido{");
+        sb.append("nrPedido=").append(nrPedido);
+        sb.append(", cliente=").append(cliente);
+        sb.append(", moradaEntrega=").append(moradaEntrega);
+        sb.append(", dataHoraEntrega=").append(getDataHoraEntregaString());
+        sb.append(", itemsPedido=").append(itemsPedido);
+        sb.append('}');
+        return sb.toString();
+    }   
 }

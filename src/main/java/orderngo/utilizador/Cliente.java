@@ -37,6 +37,17 @@ public class Cliente extends Utilizador
         
         Cliente other = (Cliente)obj;
         
-        return getNif().equals(other.getNif());
+        return nif.equals(other.nif);
+    }
+
+    @Override
+    public String toString()
+    {
+        StringBuilder sb = new StringBuilder();
+        sb.append("Cliente{");
+        sb.append(super.toString());
+        sb.append(", nif=").append(nif);
+        sb.append('}');
+        return sb.toString();
     }
 }
