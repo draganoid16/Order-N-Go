@@ -104,7 +104,6 @@ public class TestarAlteracoes
         System.out.println("card.getAllItems()");
         printItemCardapioArray(card.getAllItems());
     }
-    
     public static void main(String[] args) 
     {
         TestarAlteracoes t = new TestarAlteracoes();
