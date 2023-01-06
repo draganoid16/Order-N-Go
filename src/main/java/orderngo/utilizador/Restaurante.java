@@ -1,12 +1,15 @@
 package orderngo.utilizador;
 
 import orderngo.cardapio.Cardapio;
-import java.awt.image.BufferedImage;
-
 import orderngo.basedados.ConectorBD;
+import orderngo.utils.PasswordUtils;
+import orderngo.utils.ImagemUtils;
+
+import java.awt.image.BufferedImage;
+import java.util.Objects;
+
 import java.util.ArrayList;
 import java.sql.ResultSet;
-import orderngo.basedados.BaseDadosUtils;
 
 import java.sql.SQLException;
 import orderngo.exceptions.RestauranteNotFoundException;
@@ -24,7 +27,8 @@ public class Restaurante extends Utilizador
     {
         super(email, nome, telemovel, morada);
         
-        this.cardapio = new Cardapio();
+        this.cardapio = new Cardapio(this);
+        
         setImagem(null);
     }
 
@@ -49,7 +53,7 @@ public class Restaurante extends Utilizador
 
     
     //<editor-fold defaultstate="collapsed" desc="BuscarDados">
-    private static Restaurante createRestaurante(ResultSet result) throws SQLException
+    private static Restaurante criarRestaurante(ResultSet result) throws SQLException
     {
         Restaurante r = new Restaurante(
             result.getString("email"),
@@ -58,10 +62,12 @@ public class Restaurante extends Utilizador
             result.getString("morada")
         );
 
-        BufferedImage imagem = BaseDadosUtils.blobToImage(
+        BufferedImage imagem = ImagemUtils.blobToImage(
             result.getBlob("imagem")
         );
         r.setImagem(imagem);
+        
+        r.setPasswordEncriptada(result.getString("palavraPasse"));
         
         return r;
     }
@@ -74,13 +80,12 @@ public class Restaurante extends Utilizador
         {
             while (result.next())
             {
-                rests.add(createRestaurante(result));
+                rests.add(criarRestaurante(result));
             }
         }
         
-        Restaurante[] arr = new Restaurante[rests.size()];
-        rests.toArray(arr);
-        return arr;
+        return rests
+            .toArray(Restaurante[]::new);
     }
     
     public static Restaurante getRestaurante(String email) throws SQLException, RestauranteNotFoundException
@@ -95,27 +100,88 @@ public class Restaurante extends Utilizador
             if (!result.next())
                 throw new RestauranteNotFoundException(email);
             
-            r = createRestaurante(result);
+            r = criarRestaurante(result);
         }
         return r;
     }
     //</editor-fold>
     
-    public static boolean validCredentials(String email, String password) throws SQLException
+    //<editor-fold defaultstate="collapsed" desc="Save">
+    @Override
+    public void save() throws SQLException
     {
-        String encriptedPassword = BaseDadosUtils.encriptarPassword(password);
+        if (!PasswordUtils.isBCryptHash(getPasswordEncriptada()))
+            throw new IllegalStateException("Restaurante com password inválida!");
         
         var cbd = ConectorBD.getInstance();
-        var ps = cbd.prepareStatement("SELECT * FROM restaurante WHERE email = ? AND palavraPasse = ?");
-        ps.setString(1, email);
-        ps.setString(2, encriptedPassword);
-        
-        boolean isValid;
-        try (ResultSet result = cbd.executePreparedQuery(ps))
+    
+        try
         {
-            isValid = result.next();
+            // verifica se o restaurante existe
+            getRestaurante(getEmail());
+            
+            // update
+            var ps = cbd.prepareStatement("UPDATE restaurante SET telemovel = ?, morada = ?, imagem = ?, palavraPasse = ? WHERE email = ?");
+            ps.setString(1, getTelemovel());
+            ps.setString(2, getMorada());
+            ps.setBlob(3, ImagemUtils.imageToInputStream(imagem));
+            ps.setString(4, getPasswordEncriptada());
+            ps.setString(5, getEmail());
+            
+            cbd.executePreparedUpdate(ps);
         }
+        catch (RestauranteNotFoundException rnfe)
+        {
+            // insert
+            var ps = cbd.prepareStatement("INSERT INTO restaurante(email, nome, telemovel, morada, imagem, palavraPasse) VALUES (?, ?, ?, ?, ?, ?)");
+            ps.setString(1, getEmail());
+            ps.setString(2, getNome());
+            ps.setString(3, getTelemovel());
+            ps.setString(4, getMorada());
+            ps.setBlob(5, ImagemUtils.imageToInputStream(imagem));
+            ps.setString(6, getPasswordEncriptada());
+
+            cbd.executePreparedUpdate(ps);
+        }
+    }
+    //</editor-fold>
+    
+    public static boolean validarCredenciais(String email, char[] password) throws SQLException
+    {
+        try
+        {
+            String encriptada = getRestaurante(email).getPasswordEncriptada();
+            return PasswordUtils.verificarPassword(password, encriptada);
+        }
+        catch (RestauranteNotFoundException rnfe)
+        {
+            return false;
+        }
+    }
+    
+    
+    @Override
+    public boolean equals(Object obj)
+    {
+        if (!super.equals(obj))
+            return false;
         
-        return isValid;
+        if (!(obj instanceof Restaurante))
+            return false;
+        
+        Restaurante other = (Restaurante)obj;
+        
+        return Objects.equals(imagem, other.imagem);
+    }
+
+    @Override
+    public String toString()
+    {
+        StringBuilder sb = new StringBuilder();
+        sb.append("Restaurante{");
+        sb.append(super.toString());
+        sb.append(", imagem=").append(imagem);
+        sb.append('}');
+        return sb.toString();
     }
 }

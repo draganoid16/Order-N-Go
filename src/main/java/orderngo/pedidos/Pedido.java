@@ -1,8 +1,11 @@
 package orderngo.pedidos;
 
-import java.util.Date;
-import java.util.LinkedHashMap;
+import orderngo.utilizador.Cliente;
 import orderngo.cardapio.ItemCardapio;
+
+import java.util.LinkedHashMap;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 /**
  * 
@@ -10,17 +13,18 @@ import orderngo.cardapio.ItemCardapio;
  */
 public class Pedido
 {
-    private final int nrPedido;
+    private final Cliente cliente;
+    private int nrPedido;
     private final String moradaEntrega;
-    private final Date dataHoraEntrega;
+    private final LocalDateTime dataHoraEntrega;
     private final LinkedHashMap<ItemCardapio, Integer> itemsPedido;
 
-    public Pedido(int nrPedido, String moradaEntrega, Date dataHoraEntrega)
+    public Pedido(Cliente cliente, String moradaEntrega, LocalDateTime dataHoraEntrega)
     {
-        if (nrPedido <= 0)
-            throw new IllegalArgumentException("Numero de pedido invalido!");
-            
-        this.nrPedido = nrPedido;
+        if (cliente == null)
+            throw new IllegalArgumentException("Cliente invalido!");
+        
+        this.cliente = cliente;
         
         if (moradaEntrega == null || moradaEntrega.isBlank())
             throw new IllegalArgumentException("Morada de entrega invalida!");
@@ -36,6 +40,11 @@ public class Pedido
     }
 
     //<editor-fold defaultstate="collapsed" desc="Getters">
+    public Cliente getCliente()
+    {
+        return cliente;
+    }
+    
     public int getNrPedido()
     {
         return nrPedido;
@@ -46,9 +55,14 @@ public class Pedido
         return moradaEntrega;
     }
 
-    public Date getDataHoraEntrega()
+    public LocalDateTime getDataHoraEntrega()
     {
         return dataHoraEntrega;
+    }
+    
+    public String getDataHoraEntregaString()
+    {
+        return DateTimeFormatter.ofPattern("dd-MM-yyyy kk:mm").format(dataHoraEntrega);
     }
     
     public LinkedHashMap<ItemCardapio, Integer> getItemsPedido()
@@ -56,29 +70,21 @@ public class Pedido
         return itemsPedido;
     }
     //</editor-fold>
-
-    public void incrQuantidade(ItemCardapio item)
-    {
-        if (item == null || !itemsPedido.containsKey(item))
-            throw new IllegalArgumentException("Item invalido!");
-        
-        int quant = itemsPedido.get(item);
-        quant++;
-        itemsPedido.replace(item, quant);
-    }
     
-    public void decrQuantidade(ItemCardapio item)
+    //<editor-fold defaultstate="collapsed" desc="Setters">
+    private void setNrPedido(int nrPedido)
     {
-        if (item == null || !itemsPedido.containsKey(item))
-            throw new IllegalArgumentException("Item invalido!");
-        
-        int quant = itemsPedido.get(item);
-        quant--;
-        
-        if (quant <= 0)
-            removerItem(item);
-        else
-            itemsPedido.replace(item, quant);
+        if (nrPedido <= 0)
+            throw new IllegalArgumentException("Numero de pedido invalido!");
+            
+        this.nrPedido = nrPedido;
+    }
+    //</editor-fold>
+
+
+    public void limparItemsPedido()
+    {
+        itemsPedido.clear();
     }
     
     public void adicionarItem(ItemCardapio item)
@@ -87,7 +93,7 @@ public class Pedido
             throw new IllegalArgumentException("Item invalido!");
             
         itemsPedido.putIfAbsent(item, 0);
-        incrQuantidade(item);
+        incrQuantidade(item, 1);
     }
     
     public void removerItem(ItemCardapio item)
@@ -97,4 +103,99 @@ public class Pedido
             
         itemsPedido.remove(item);
     }
+    
+    
+    private void addRemQuantidade(ItemCardapio item, int addrem)
+    {
+        if (item == null || !itemsPedido.containsKey(item))
+            throw new IllegalArgumentException("Item invalido!");
+        
+        int quant = itemsPedido.get(item);
+        quant += addrem;
+        
+        if (quant <= 0)
+            removerItem(item);
+        else
+            itemsPedido.replace(item, quant);
+    }
+    
+    public void incrQuantidade(ItemCardapio item, int incr)
+    {
+        if (incr < 0)
+            throw new IllegalArgumentException("Incremento invalido!");
+        
+        addRemQuantidade(item, incr);
+    }
+    
+    public void decrQuantidade(ItemCardapio item, int decr)
+    {
+        if (decr < 0)
+            throw new IllegalArgumentException("Decremento invalido!");
+        
+        addRemQuantidade(item, -decr);
+    }
+    
+    
+    public void alterQuantidade(ItemCardapio item, int quant)
+    {
+        if (item == null || !itemsPedido.containsKey(item))
+            throw new IllegalArgumentException("Item invalido!");
+        
+        if (quant <= 0)
+            removerItem(item);
+        else
+            itemsPedido.replace(item, quant);
+    }
+    
+
+    @Override
+    public boolean equals(Object obj)
+    {
+        if (obj == this)
+            return true;
+        
+        if (obj == null)
+            return false;
+
+        if (!(obj instanceof Pedido))
+            return false;
+        
+        Pedido other = (Pedido)obj;
+        
+        if (!cliente.equals(other.cliente))
+            return false;
+        
+        if (this.nrPedido != other.nrPedido)
+            return false;
+        
+        if (!moradaEntrega.equals(other.moradaEntrega))
+            return false;
+        
+        if (!dataHoraEntrega.equals(other.dataHoraEntrega))
+            return false;
+        
+        return itemsPedido.equals(other.itemsPedido);
+    }
+    
+    @Override
+    public int hashCode()
+    {
+        int hash = 7;
+        hash = 37 * hash + nrPedido;
+        return hash;
+    }
+
+    @Override
+    public String toString()
+    {
+        StringBuilder sb = new StringBuilder();
+        sb.append("Pedido{");
+        sb.append("nrPedido=").append(nrPedido);
+        sb.append(", cliente=").append(cliente);
+        sb.append(", moradaEntrega=").append(moradaEntrega);
+        sb.append(", dataHoraEntrega=").append(getDataHoraEntregaString());
+        sb.append(", itemsPedido=").append(itemsPedido);
+        sb.append('}');
+        return sb.toString();
+    }   
 }

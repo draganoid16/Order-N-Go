@@ -1,15 +1,19 @@
 package orderngo.utilizador;
 
+import orderngo.basedados.SavableInDatabase;
+import orderngo.utils.PasswordUtils;
+
 /**
  *
  * @author grupo1
  */
-public abstract class Utilizador
+public abstract class Utilizador implements SavableInDatabase
 {
     private final String email;
     private String nome;
     private String telemovel;
     private String morada;
+    private String passwordEncriptada;
 
     public Utilizador(String email, String nome, String telemovel, String morada)
     {
@@ -20,6 +24,7 @@ public abstract class Utilizador
         setNome(nome);
         setTelemovel(telemovel);
         setMorada(morada);
+        setPasswordEncriptada(null);
     }
         
     //<editor-fold defaultstate="collapsed" desc="Getters">
@@ -41,6 +46,11 @@ public abstract class Utilizador
     public String getMorada()
     {
         return morada;
+    }
+    
+    public String getPasswordEncriptada()
+    {
+        return passwordEncriptada;
     }
     //</editor-fold>
     
@@ -68,5 +78,66 @@ public abstract class Utilizador
         
         this.morada = morada;
     }
+
+    public void setPasswordEncriptada(String passwordEncriptada)
+    {
+        if (passwordEncriptada != null && !PasswordUtils.isBCryptHash(passwordEncriptada))
+            throw new IllegalArgumentException("Password encriptada nao e uma BCrypt hash!");
+        
+        this.passwordEncriptada = passwordEncriptada;
+    }
+    
+    public void setPassword(char[] password)
+    {
+        setPasswordEncriptada(PasswordUtils.encriptarPassword(password));
+    }
     //</editor-fold>
+    
+    
+    @Override
+    public boolean equals(Object obj)
+    {
+        if (obj == this)
+            return true;
+        
+        if (obj == null)
+            return false;
+        
+        if (!(obj instanceof Utilizador))
+            return false;
+        
+        Utilizador other = (Utilizador)obj;
+        
+        if (!email.equals(other.email))
+            return false;
+        
+        if (!nome.equals(other.nome))
+            return false;
+        
+        if (!telemovel.equals(other.telemovel))
+            return false;
+        
+        return morada.equals(other.morada);
+    }
+
+    @Override
+    public int hashCode()
+    {
+        int hash = 7;
+        hash = 79 * hash + email.hashCode();
+        return hash;
+    }
+
+    @Override
+    public String toString()
+    {
+        StringBuilder sb = new StringBuilder();
+        sb.append("Utilizador{");
+        sb.append("email=").append(email);
+        sb.append(", nome=").append(nome);
+        sb.append(", telemovel=").append(telemovel);
+        sb.append(", morada=").append(morada);
+        sb.append('}');
+        return sb.toString();
+    }
 }

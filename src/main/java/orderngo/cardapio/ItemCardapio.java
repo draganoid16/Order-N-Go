@@ -1,24 +1,34 @@
 package orderngo.cardapio;
 
+import orderngo.utilizador.Restaurante;
+import orderngo.basedados.SavableInDatabase;
+
 import java.awt.image.BufferedImage;
+import java.util.Objects;
 
 /**
  *
  * @author grupo1
  */
-public abstract class ItemCardapio
+public abstract class ItemCardapio implements SavableInDatabase
 {
+    private final Restaurante restaurante;
     private final String nome;
     private String detalhes;
     private float precoUnitario;
     private BufferedImage imagem;
 
-    public ItemCardapio(String nome, String detalhes, float precoUnitario)
+    public ItemCardapio(Restaurante restaurante, String nome, String detalhes, float precoUnitario)
     {
         if (nome == null || nome.isBlank())
             throw new IllegalArgumentException("Nome invalido!");
         
         this.nome = nome;
+        
+        if (restaurante == null)
+            throw new IllegalArgumentException("Restaurante invalido!");
+        
+        this.restaurante = restaurante;
         
         setDetalhes(detalhes);
         setPrecoUnitario(precoUnitario);
@@ -26,6 +36,11 @@ public abstract class ItemCardapio
     }
 
     //<editor-fold defaultstate="collapsed" desc="Getters">
+    public Restaurante getRestaurante()
+    {
+        return restaurante;
+    }
+    
     public String getNome()    
     {
         return nome;
@@ -70,4 +85,54 @@ public abstract class ItemCardapio
     }
     //</editor-fold>
 
+    @Override
+    public boolean equals(Object obj)
+    {
+        if (obj == this)
+            return true;
+        
+        if (obj == null)
+            return false;
+        
+        if (!(obj instanceof ItemCardapio))
+            return false;
+        
+        ItemCardapio other = (ItemCardapio)obj;
+        
+        if (!restaurante.equals(other.restaurante))
+            return false;
+        
+        if (!nome.equals(other.nome))
+            return false;
+        
+        if (!detalhes.equals(other.detalhes))
+            return false;
+
+        if (precoUnitario != other.precoUnitario)
+            return false;
+        
+        return Objects.equals(imagem, other.imagem);
+    }
+
+    @Override
+    public int hashCode()
+    {
+        int hash = 7;
+        hash = 89 * hash + restaurante.hashCode();
+        hash = 89 * hash + nome.hashCode();
+        return hash;
+    }
+
+    @Override
+    public String toString()
+    {
+        StringBuilder sb = new StringBuilder();
+        sb.append("ItemCardapio{");
+        sb.append("nome=").append(nome);
+        sb.append(", detalhes=").append(detalhes);
+        sb.append(", precoUnitario=").append(precoUnitario);
+        sb.append(", imagem=").append(imagem);
+        sb.append('}');
+        return sb.toString();
+    }
 }
