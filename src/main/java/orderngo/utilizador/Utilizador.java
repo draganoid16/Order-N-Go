@@ -24,6 +24,7 @@ public abstract class Utilizador implements SavableInDatabase
         setNome(nome);
         setTelemovel(telemovel);
         setMorada(morada);
+        setPasswordEncriptada(null);
     }
         
     //<editor-fold defaultstate="collapsed" desc="Getters">
@@ -80,12 +81,15 @@ public abstract class Utilizador implements SavableInDatabase
 
     public void setPasswordEncriptada(String passwordEncriptada)
     {
+        if (passwordEncriptada != null && !PasswordUtils.isBCryptHash(passwordEncriptada))
+            throw new IllegalArgumentException("Password encriptada nao e uma BCrypt hash!");
+        
         this.passwordEncriptada = passwordEncriptada;
     }
     
     public void setPassword(char[] password)
     {
-        passwordEncriptada = PasswordUtils.encriptarPassword(password);
+        setPasswordEncriptada(PasswordUtils.encriptarPassword(password));
     }
     //</editor-fold>
     

@@ -59,7 +59,7 @@ public class TestarAlteracoes
     
     
     public void main()
-    {
+    {   
         Restaurante rest = new Restaurante("teste@teste.teste", "restaurante teste", "000000000", "teste");
         rest.setPassword("teste".toCharArray());
         rest.setImagem(ImagemUtils.ficheiroToImage("src\\imageresources\\profile.png"));

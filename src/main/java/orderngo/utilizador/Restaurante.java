@@ -110,6 +110,9 @@ public class Restaurante extends Utilizador
     @Override
     public void save() throws SQLException
     {
+        if (!PasswordUtils.isBCryptHash(getPasswordEncriptada()))
+            throw new IllegalStateException("Restaurante com password inválida!");
+        
         var cbd = ConectorBD.getInstance();
     
         try

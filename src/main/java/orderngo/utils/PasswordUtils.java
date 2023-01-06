@@ -22,6 +22,9 @@ public class PasswordUtils
     
     public static String encriptarPassword(char[] password)
     {
+        if (!isPasswordValida(password))
+            throw new IllegalArgumentException("Password invalida!");
+        
         CharBuffer charBuffer = CharBuffer.wrap(password);
         String encriptada = new BCryptPasswordEncoder().encode(charBuffer);
         
@@ -34,6 +37,12 @@ public class PasswordUtils
     
     public static boolean verificarPassword(char[] password, String encriptada)
     {
+        if (!isPasswordValida(password))
+            throw new IllegalArgumentException("Password invalida!");
+        
+        if (!isBCryptHash(encriptada))
+            throw new IllegalArgumentException("Password encriptada nao e uma BCrypt hash!");
+        
         CharBuffer charBuffer = CharBuffer.wrap(password);
         boolean isCorreta = new BCryptPasswordEncoder().matches(charBuffer, encriptada);
         
@@ -42,5 +51,21 @@ public class PasswordUtils
         Arrays.fill(password, '\000');
         
         return isCorreta;
+    }
+    
+    public static boolean isBCryptHash(String str)
+    {
+        if (str == null)
+            return false;
+        
+        return str.matches("^\\$2[ayb]\\$.{56}$");
+    }
+    
+    public static boolean isPasswordValida(char[] password)
+    {
+        if (password == null)
+            return false;
+        
+        return password.length > 0;
     }
 }
