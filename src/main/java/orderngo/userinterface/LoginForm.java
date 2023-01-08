@@ -34,7 +34,7 @@ public class LoginForm extends JDialog {
 
         loginButton.addActionListener(new ActionListener() {
             @Override
-            public void actionPerformed(ActionEvent e) { //aqui devia ser quando se carrega no botão login e quando se carrega no Enter
+            public void actionPerformed(ActionEvent e) {
                 dispose();
                 String email = emailField.getText();
                 // String password = passwordField.getText(); // Deprecated
@@ -47,7 +47,7 @@ public class LoginForm extends JDialog {
                         loginFrame.dispatchEvent(new WindowEvent(loginFrame, WindowEvent.WINDOW_CLOSING));
 
                         //GestorForm que adiciona/remove restaurantes de agueda da base de dados
-                    } else if (GestorOrderAndGo.validarCredenciais(email, password) && gestorONGRadioButton.isSelected()) { //trocar isto
+                    } else if (GestorOrderAndGo.validarCredenciais(email, password) && gestorONGRadioButton.isSelected()) {
                         App.GestorMenu();
                         loginFrame.dispatchEvent(new WindowEvent(loginFrame, WindowEvent.WINDOW_CLOSING));
 

@@ -143,13 +143,14 @@ public class Prato extends ItemCardapio
             getPrato(getRestaurante(), getNome());
             
             // update
-            var ps = cbd.prepareStatement("UPDATE prato SET detalhes = ?, precoUnitario = ?, alergenios = ?, imagem = ? WHERE emailRestaurante = ? AND nome = ?");
+            var ps = cbd.prepareStatement("UPDATE prato SET detalhes = ?, precoUnitario = ?,  tipo = ?, alergenios = ?, imagem = ? WHERE emailRestaurante = ? AND nome = ?");
             ps.setString(1, getDetalhes());
             ps.setFloat(2, getPrecoUnitario());
-            ps.setString(3, alergenios);
-            ps.setBlob(4, ImagemUtils.imageToInputStream(getImagem()));
-            ps.setString(5, getRestaurante().getEmail());
-            ps.setString(6, getNome());
+            ps.setString(3, tipoPrato.toString());
+            ps.setString(4, alergenios);
+            ps.setBlob(5, ImagemUtils.imageToInputStream(getImagem()));
+            ps.setString(6, getRestaurante().getEmail());
+            ps.setString(7, getNome());
             
             cbd.executePreparedUpdate(ps);
         }
