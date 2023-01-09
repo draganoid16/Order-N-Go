@@ -23,17 +23,14 @@ public class Prato extends ItemCardapio
         CARNE, PEIXE, VEGETARIANO, VEGANO
     }
 
-    private final TipoPrato tipoPrato;
+    private TipoPrato tipoPrato;
     private String alergenios;
 
     public Prato(Restaurante restaurante, String nome, String detalhes, float precoUnitario, TipoPrato tipoPrato, String alergenios)
     {
         super(restaurante, nome, detalhes, precoUnitario);
         
-        if (tipoPrato == null)
-            throw new IllegalArgumentException("Tipo de prato invalido!");
-        
-        this.tipoPrato = tipoPrato;
+        setTipoPrato(tipoPrato);
         setAlergenios(alergenios);
     }
 
@@ -51,6 +48,14 @@ public class Prato extends ItemCardapio
     //</editor-fold>
 
     //<editor-fold defaultstate="collapsed" desc="Setters">
+    public void setTipoPrato(TipoPrato tipoPrato)
+    {
+        if (tipoPrato == null)
+            throw new IllegalArgumentException("Tipo de prato invalido!");
+        
+        this.tipoPrato = tipoPrato;
+    }
+    
     public void setAlergenios(String alergenios)
     {
         if (alergenios == null)
@@ -91,7 +96,7 @@ public class Prato extends ItemCardapio
         ArrayList<Prato> pratos = new ArrayList<>();
         
         var cbd = ConectorBD.getInstance();
-        var ps = cbd.prepareStatement("SELECT * FROM prato WHERE emailRestaurante = ?");
+        var ps = cbd.prepareStatement("SELECT * FROM prato WHERE emailRestaurante = ? AND visivel = true");
         ps.setString(1, restaurante.getEmail());
         
         try (ResultSet result = cbd.executePreparedQuery(ps))
@@ -115,7 +120,7 @@ public class Prato extends ItemCardapio
         Restaurante.getRestaurante(restaurante.getEmail());
             
         var cbd = ConectorBD.getInstance();
-        var ps = cbd.prepareStatement("SELECT * FROM prato WHERE emailRestaurante = ? AND nome = ?");
+        var ps = cbd.prepareStatement("SELECT * FROM prato WHERE emailRestaurante = ? AND nome = ? AND visivel = true");
         ps.setString(1, restaurante.getEmail());
         ps.setString(2, nome);
         
@@ -143,7 +148,7 @@ public class Prato extends ItemCardapio
             getPrato(getRestaurante(), getNome());
             
             // update
-            var ps = cbd.prepareStatement("UPDATE prato SET detalhes = ?, precoUnitario = ?,  tipo = ?, alergenios = ?, imagem = ? WHERE emailRestaurante = ? AND nome = ?");
+            var ps = cbd.prepareStatement("UPDATE prato SET detalhes = ?, precoUnitario = ?,  tipo = ?, alergenios = ?, imagem = ?, visivel = true WHERE emailRestaurante = ? AND nome = ?");
             ps.setString(1, getDetalhes());
             ps.setFloat(2, getPrecoUnitario());
             ps.setString(3, tipoPrato.toString());

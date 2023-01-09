@@ -6,6 +6,7 @@ import orderngo.utils.PasswordUtils;
 import java.sql.ResultSet;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 import orderngo.exceptions.GestorNotFoundException;
 
 /**
@@ -50,10 +51,26 @@ public class GestorOrderAndGo extends Utilizador
         return g;
     }
     
+    public static GestorOrderAndGo[] all() throws SQLException
+    {
+        ArrayList<GestorOrderAndGo> gests = new ArrayList<>();
+        
+        try (ResultSet result = ConectorBD.getInstance().executeQuery("SELECT * FROM gestorog WHERE visivel = true"))
+        {
+            while (result.next())
+            {
+                gests.add(criarGestor(result));
+            }
+        }
+        
+        return gests
+            .toArray(GestorOrderAndGo[]::new);
+    }
+    
     public static GestorOrderAndGo getGestor(String email) throws SQLException, GestorNotFoundException
     {
         var cbd = ConectorBD.getInstance();
-        var ps = cbd.prepareStatement("SELECT * FROM gestorog WHERE email = ?");
+        var ps = cbd.prepareStatement("SELECT * FROM gestorog WHERE email = ? AND visivel = true");
         ps.setString(1, email);
         
         GestorOrderAndGo g;
@@ -84,7 +101,7 @@ public class GestorOrderAndGo extends Utilizador
             getGestor(getEmail());
             
             // update
-            var ps = cbd.prepareStatement("UPDATE gestorog SET telemovel = ?, morada = ?, palavraPasse = ? WHERE email = ?");
+            var ps = cbd.prepareStatement("UPDATE gestorog SET telemovel = ?, morada = ?, palavraPasse = ?, visivel = true WHERE email = ?");
             ps.setString(1, getTelemovel());
             ps.setString(2, getMorada());
             ps.setString(3, getPasswordEncriptada());

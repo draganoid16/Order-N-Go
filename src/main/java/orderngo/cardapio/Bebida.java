@@ -65,7 +65,7 @@ public class Bebida extends ItemCardapio
         ArrayList<Bebida> bebidas = new ArrayList<>();
         
         var cbd = ConectorBD.getInstance();
-        var ps = cbd.prepareStatement("SELECT * FROM bebida WHERE emailRestaurante = ?");
+        var ps = cbd.prepareStatement("SELECT * FROM bebida WHERE emailRestaurante = ? AND visivel = true");
         ps.setString(1, restaurante.getEmail());
         
         try (ResultSet result = cbd.executePreparedQuery(ps))
@@ -89,7 +89,7 @@ public class Bebida extends ItemCardapio
         Restaurante.getRestaurante(restaurante.getEmail());
             
         var cbd = ConectorBD.getInstance();
-        var ps = cbd.prepareStatement("SELECT * FROM bebida WHERE emailRestaurante = ? AND nome = ?");
+        var ps = cbd.prepareStatement("SELECT * FROM bebida WHERE emailRestaurante = ? AND nome = ? AND visivel = true");
         ps.setString(1, restaurante.getEmail());
         ps.setString(2, nome);
         
@@ -117,7 +117,7 @@ public class Bebida extends ItemCardapio
             getBebida(getRestaurante(), getNome());
             
             // update
-            var ps = cbd.prepareStatement("UPDATE bebida SET detalhes = ?, precoUnitario = ?, imagem = ? WHERE emailRestaurante = ? AND nome = ?");
+            var ps = cbd.prepareStatement("UPDATE bebida SET detalhes = ?, precoUnitario = ?, imagem = ?, visivel = true WHERE emailRestaurante = ? AND nome = ?");
             ps.setString(1, getDetalhes());
             ps.setFloat(2, getPrecoUnitario());
             ps.setBlob(3, ImagemUtils.imageToInputStream(getImagem()));

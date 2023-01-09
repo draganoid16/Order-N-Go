@@ -76,7 +76,7 @@ public class Restaurante extends Utilizador
     {
         ArrayList<Restaurante> rests = new ArrayList<>();
         
-        try (ResultSet result = ConectorBD.getInstance().executeQuery("SELECT * FROM restaurante"))
+        try (ResultSet result = ConectorBD.getInstance().executeQuery("SELECT * FROM restaurante WHERE visivel = true"))
         {
             while (result.next())
             {
@@ -91,7 +91,7 @@ public class Restaurante extends Utilizador
     public static Restaurante getRestaurante(String email) throws SQLException, RestauranteNotFoundException
     {
         var cbd = ConectorBD.getInstance();
-        var ps = cbd.prepareStatement("SELECT * FROM restaurante WHERE email = ?");
+        var ps = cbd.prepareStatement("SELECT * FROM restaurante WHERE email = ? AND visivel = true");
         ps.setString(1, email);
         
         Restaurante r;
@@ -121,7 +121,7 @@ public class Restaurante extends Utilizador
             getRestaurante(getEmail());
             
             // update
-            var ps = cbd.prepareStatement("UPDATE restaurante SET telemovel = ?, morada = ?, imagem = ?, palavraPasse = ? WHERE email = ?");
+            var ps = cbd.prepareStatement("UPDATE restaurante SET telemovel = ?, morada = ?, imagem = ?, palavraPasse = ?, visivel = true WHERE email = ?");
             ps.setString(1, getTelemovel());
             ps.setString(2, getMorada());
             ps.setBlob(3, ImagemUtils.imageToInputStream(imagem));

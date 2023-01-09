@@ -12,6 +12,7 @@ BEGIN
         telemovel CHAR(9),
         palavraPasse CHAR(64) NOT NULL,
         nrEmpregado INT UNIQUE NOT NULL,
+        visivel BOOLEAN NOT NULL DEFAULT true,
         
         CONSTRAINT nrEmpregadoValida CHECK (nrEmpregado > 0),
         
@@ -26,6 +27,7 @@ BEGIN
         telemovel CHAR(9),
         palavraPasse CHAR(64) NOT NULL,
         imagem MEDIUMBLOB,
+        visivel BOOLEAN NOT NULL DEFAULT true,
         
         CONSTRAINT pk PRIMARY KEY (email)
     );
@@ -39,6 +41,7 @@ BEGIN
         tipo ENUM("CARNE", "PEIXE", "VEGETARIANO", "VEGANO") NOT NULL,
         alergenios VARCHAR(100),
         imagem MEDIUMBLOB,
+        visivel BOOLEAN NOT NULL DEFAULT true,
         
         CONSTRAINT precoPratoValido CHECK (precoUnitario > 0),
 
@@ -53,6 +56,7 @@ BEGIN
         precoUnitario FLOAT,
         capacidadeCL INT,
         imagem MEDIUMBLOB,
+        visivel BOOLEAN NOT NULL DEFAULT true,
         
         CONSTRAINT precoBebidaValido CHECK (precoUnitario > 0),
         CONSTRAINT capacidadeValida CHECK (capacidadeCL > 0),
