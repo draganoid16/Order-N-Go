@@ -4,7 +4,7 @@ package orderngo.exception;
  *
  * @author grupo1
  */
-public class ItemCardapioNotFoundException extends IllegalArgumentException
+public class ItemCardapioNotFoundException extends IllegalArgumentException implements IsApenasVisiveisInException
 {
     private final String emailRestauranteProcurado;
     private final String nomeProcurado;
@@ -35,6 +35,7 @@ public class ItemCardapioNotFoundException extends IllegalArgumentException
         return nomeProcurado;
     }
     
+    @Override
     public boolean isApenasVisiveis()
     {
         return apenasVisiveis;

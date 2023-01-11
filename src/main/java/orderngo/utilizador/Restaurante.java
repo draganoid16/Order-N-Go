@@ -157,6 +157,18 @@ public class Restaurante extends Utilizador
             cbd.executePreparedUpdate(ps);
         }
     }
+
+    @Override
+    public void delete() throws SQLException
+    {
+        var cbd = ConectorBD.getInstance();
+
+        // "delete" - visivel passa de true para false
+        var ps = cbd.prepareStatement("UPDATE restaurante SET visivel = false WHERE email = ?");
+        ps.setString(1, getEmail());
+
+        cbd.executePreparedUpdate(ps);
+    }
     
     public static boolean validarCredenciais(String email, char[] password) throws SQLException
     {

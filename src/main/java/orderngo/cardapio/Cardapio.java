@@ -2,6 +2,7 @@ package orderngo.cardapio;
 
 import orderngo.utilizador.Restaurante;
 import orderngo.basedados.SavableInDatabase;
+import orderngo.basedados.DeletableInDatabase;
 
 import java.util.HashSet; // HashSets, ao contrário de ArrayLists, não permitem duplicados!
 import java.util.Collections;
@@ -12,7 +13,7 @@ import java.sql.SQLException;
  *
  * @author grupo1
  */
-public class Cardapio implements SavableInDatabase
+public class Cardapio implements SavableInDatabase, DeletableInDatabase
 {
     private final Restaurante restaurante;
     private final HashSet<ItemCardapio> items;
@@ -81,14 +82,18 @@ public class Cardapio implements SavableInDatabase
     //</editor-fold>
     
     
-    public void fill() throws SQLException
+    public void fill(boolean apenasVisiveis) throws SQLException
     {
         limparCardapio();
         
-        Collections.addAll(items, Prato.from(restaurante));
-        Collections.addAll(items, Bebida.from(restaurante));
+        Collections.addAll(items, Prato.from(restaurante, apenasVisiveis));
+        Collections.addAll(items, Bebida.from(restaurante, apenasVisiveis));
     
         atualizarCardapioBackup();
+    }
+    public void fill() throws SQLException
+    {
+        fill(true);
     }
 
     @Override
@@ -103,6 +108,13 @@ public class Cardapio implements SavableInDatabase
             it.save();
         
         atualizarCardapioBackup();
+    }
+
+    @Override
+    public void delete() throws SQLException
+    {
+        limparCardapio();
+        save();
     }
     
     

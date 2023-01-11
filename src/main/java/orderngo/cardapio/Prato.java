@@ -124,7 +124,7 @@ public class Prato extends ItemCardapio
             throw new IllegalArgumentException("Restaurante invalido!");
             
         // verifica se o restaurante está visivel
-        Restaurante.getRestaurante(restaurante.getEmail());
+        Restaurante.getRestaurante(restaurante.getEmail(), apenasVisiveis);
         
         StringBuilder sql = new StringBuilder("SELECT * FROM prato WHERE emailRestaurante = ? AND nome = ?");
         if (apenasVisiveis) sql.append(" AND visivel = true");
@@ -186,6 +186,19 @@ public class Prato extends ItemCardapio
 
             cbd.executePreparedUpdate(ps);
         }
+    }
+    
+    @Override
+    public void delete() throws SQLException
+    {
+        var cbd = ConectorBD.getInstance();
+
+        // "delete" - visivel passa de true para false
+        var ps = cbd.prepareStatement("UPDATE prato SET visivel = false WHERE emailRestaurante = ? AND nome = ?");
+        ps.setString(1, getRestaurante().getEmail());
+        ps.setString(2, getNome());
+
+        cbd.executePreparedUpdate(ps);
     }
     
     
