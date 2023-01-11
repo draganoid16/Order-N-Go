@@ -51,11 +51,14 @@ public class GestorOrderAndGo extends Utilizador
         return g;
     }
     
-    public static GestorOrderAndGo[] all() throws SQLException
+    public static GestorOrderAndGo[] all(boolean apenasVisiveis) throws SQLException
     {
+        StringBuilder sql = new StringBuilder("SELECT * FROM gestorog");
+        if (apenasVisiveis) sql.append(" WHERE visivel = true");
+        
         ArrayList<GestorOrderAndGo> gests = new ArrayList<>();
         
-        try (ResultSet result = ConectorBD.getInstance().executeQuery("SELECT * FROM gestorog WHERE visivel = true"))
+        try (ResultSet result = ConectorBD.getInstance().executeQuery(sql.toString()))
         {
             while (result.next())
             {
@@ -66,23 +69,34 @@ public class GestorOrderAndGo extends Utilizador
         return gests
             .toArray(GestorOrderAndGo[]::new);
     }
-    
-    public static GestorOrderAndGo getGestor(String email) throws SQLException, GestorNotFoundException
+    public static GestorOrderAndGo[] all() throws SQLException
     {
+        return all(true);
+    }
+    
+    public static GestorOrderAndGo getGestor(String email, boolean apenasVisiveis) throws SQLException, GestorNotFoundException
+    {
+        StringBuilder sql = new StringBuilder("SELECT * FROM gestorog WHERE email = ?");
+        if (apenasVisiveis) sql.append(" AND visivel = true");
+        
         var cbd = ConectorBD.getInstance();
-        var ps = cbd.prepareStatement("SELECT * FROM gestorog WHERE email = ? AND visivel = true");
+        var ps = cbd.prepareStatement(sql.toString());
         ps.setString(1, email);
         
         GestorOrderAndGo g;
         try (ResultSet result = cbd.executePreparedQuery(ps))
         {
             if (!result.next())
-                throw new GestorNotFoundException(email);
+                throw new GestorNotFoundException(email, apenasVisiveis);
             
             g = criarGestor(result);
         }
         
         return g;
+    }
+    public static GestorOrderAndGo getGestor(String email) throws SQLException, GestorNotFoundException
+    {
+        return getGestor(email, true);
     }
     //</editor-fold>
     
@@ -97,8 +111,8 @@ public class GestorOrderAndGo extends Utilizador
     
         try
         {
-            // verifica se o gestor existe
-            getGestor(getEmail());
+            // verifica se o gestor existe (visivel ou invisivel)
+            getGestor(getEmail(), false);
             
             // update
             var ps = cbd.prepareStatement("UPDATE gestorog SET telemovel = ?, morada = ?, palavraPasse = ?, visivel = true WHERE email = ?");

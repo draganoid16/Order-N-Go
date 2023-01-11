@@ -136,3 +136,18 @@ DELIMITER ;
 
 CALL removerBD();
 CALL criarBD();
+
+DELIMITER ;;
+CREATE TRIGGER restVisivel
+AFTER UPDATE ON restaurante
+FOR EACH ROW
+BEGIN
+    IF (NEW.visivel = false) THEN
+        UPDATE prato SET visivel = false
+        WHERE emailRestaurante = NEW.email;
+
+        UPDATE bebida SET visivel = false
+        WHERE emailRestaurante = NEW.email;
+    END IF;
+END;;
+DELIMITER ;

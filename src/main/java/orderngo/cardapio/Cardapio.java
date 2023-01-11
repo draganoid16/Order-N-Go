@@ -3,7 +3,7 @@ package orderngo.cardapio;
 import orderngo.utilizador.Restaurante;
 import orderngo.basedados.SavableInDatabase;
 
-import java.util.ArrayList;
+import java.util.HashSet; // HashSets, ao contrário de ArrayLists, não permitem duplicados!
 import java.util.Collections;
 
 import java.sql.SQLException;
@@ -15,7 +15,8 @@ import java.sql.SQLException;
 public class Cardapio implements SavableInDatabase
 {
     private final Restaurante restaurante;
-    private final ArrayList<ItemCardapio> items;
+    private final HashSet<ItemCardapio> items;
+    private final HashSet<ItemCardapio> itemsBackup;
     
     public Cardapio(Restaurante restaurante)
     {
@@ -24,13 +25,19 @@ public class Cardapio implements SavableInDatabase
         
         this.restaurante = restaurante;
         
-        items = new ArrayList<>();
+        items = new HashSet<>();
+        itemsBackup = new HashSet<>();
     }
 
     
     public void limparCardapio()
     {
         items.clear();
+    }
+    private void atualizarCardapioBackup()
+    {
+        itemsBackup.clear();
+        itemsBackup.addAll(items);
     }
     
     public boolean adicionarItem(ItemCardapio item)
@@ -44,11 +51,6 @@ public class Cardapio implements SavableInDatabase
     public boolean removerItem(ItemCardapio item)
     {
         return items.remove(item);
-    }
-    
-    public ItemCardapio removerItem(int idx)
-    {
-        return items.remove(idx);
     }
     
     
@@ -74,11 +76,6 @@ public class Cardapio implements SavableInDatabase
             .toArray(Bebida[]::new);
     }
     
-    public ItemCardapio getItem(int idx)
-    {
-        return items.get(idx);
-    }
-    
     
     //<editor-fold defaultstate="collapsed" desc="BuscarDados">
     public void fill() throws SQLException
@@ -87,6 +84,8 @@ public class Cardapio implements SavableInDatabase
         
         Collections.addAll(items, Prato.from(restaurante));
         Collections.addAll(items, Bebida.from(restaurante));
+    
+        atualizarCardapioBackup();
     }
     //</editor-fold>
 
@@ -94,8 +93,16 @@ public class Cardapio implements SavableInDatabase
     @Override
     public void save() throws SQLException
     {
+        itemsBackup.removeAll(items);
+        /*
+        for (ItemCardapio it : items)
+            it.delete();
+        */
+        
         for (ItemCardapio it : items)
             it.save();
+        
+        atualizarCardapioBackup();
     }
     //</editor-fold>
     

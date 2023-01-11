@@ -72,11 +72,14 @@ public class Restaurante extends Utilizador
         return r;
     }
     
-    public static Restaurante[] all() throws SQLException
+    public static Restaurante[] all(boolean apenasVisiveis) throws SQLException
     {
+        StringBuilder sql = new StringBuilder("SELECT * FROM restaurante");
+        if (apenasVisiveis) sql.append(" WHERE visivel = true");
+        
         ArrayList<Restaurante> rests = new ArrayList<>();
         
-        try (ResultSet result = ConectorBD.getInstance().executeQuery("SELECT * FROM restaurante WHERE visivel = true"))
+        try (ResultSet result = ConectorBD.getInstance().executeQuery(sql.toString()))
         {
             while (result.next())
             {
@@ -87,22 +90,33 @@ public class Restaurante extends Utilizador
         return rests
             .toArray(Restaurante[]::new);
     }
-    
-    public static Restaurante getRestaurante(String email) throws SQLException, RestauranteNotFoundException
+    public static Restaurante[] all() throws SQLException
     {
+        return all(true);
+    }
+    
+    public static Restaurante getRestaurante(String email, boolean apenasVisiveis) throws SQLException, RestauranteNotFoundException
+    {
+        StringBuilder sql = new StringBuilder("SELECT * FROM restaurante WHERE email = ?");
+        if (apenasVisiveis) sql.append(" AND visivel = true");
+        
         var cbd = ConectorBD.getInstance();
-        var ps = cbd.prepareStatement("SELECT * FROM restaurante WHERE email = ? AND visivel = true");
+        var ps = cbd.prepareStatement(sql.toString());
         ps.setString(1, email);
         
         Restaurante r;
         try (ResultSet result = cbd.executePreparedQuery(ps))
         {
             if (!result.next())
-                throw new RestauranteNotFoundException(email);
+                throw new RestauranteNotFoundException(email, apenasVisiveis);
             
             r = criarRestaurante(result);
         }
         return r;
+    }
+    public static Restaurante getRestaurante(String email) throws SQLException, RestauranteNotFoundException
+    {
+        return getRestaurante(email, true);
     }
     //</editor-fold>
     
@@ -117,8 +131,8 @@ public class Restaurante extends Utilizador
     
         try
         {
-            // verifica se o restaurante existe
-            getRestaurante(getEmail());
+            // verifica se o restaurante existe (visivel ou invisivel)
+            getRestaurante(getEmail(), false);
             
             // update
             var ps = cbd.prepareStatement("UPDATE restaurante SET telemovel = ?, morada = ?, imagem = ?, palavraPasse = ?, visivel = true WHERE email = ?");

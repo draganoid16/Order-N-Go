@@ -57,15 +57,18 @@ public class Bebida extends ItemCardapio
         return b;
     }
         
-    public static Bebida[] from(Restaurante restaurante) throws SQLException
+    public static Bebida[] from(Restaurante restaurante, boolean apenasVisiveis) throws SQLException
     {
         if (restaurante == null)
             throw new IllegalArgumentException("Restaurante invalido!");
         
+        StringBuilder sql = new StringBuilder("SELECT * FROM bebida WHERE emailRestaurante = ?");
+        if (apenasVisiveis) sql.append(" AND visivel = true");
+        
         ArrayList<Bebida> bebidas = new ArrayList<>();
         
         var cbd = ConectorBD.getInstance();
-        var ps = cbd.prepareStatement("SELECT * FROM bebida WHERE emailRestaurante = ? AND visivel = true");
+        var ps = cbd.prepareStatement(sql.toString());
         ps.setString(1, restaurante.getEmail());
         
         try (ResultSet result = cbd.executePreparedQuery(ps))
@@ -79,17 +82,24 @@ public class Bebida extends ItemCardapio
         return bebidas
             .toArray(Bebida[]::new);
     }
+    public static Bebida[] from(Restaurante restaurante) throws SQLException
+    {
+        return from(restaurante, true);
+    }
     
-    public static Bebida getBebida(Restaurante restaurante, String nome) throws SQLException, RestauranteNotFoundException, ItemCardapioNotFoundException
+    public static Bebida getBebida(Restaurante restaurante, String nome, boolean apenasVisiveis) throws SQLException, RestauranteNotFoundException, ItemCardapioNotFoundException
     {
         if (restaurante == null)
             throw new IllegalArgumentException("Restaurante invalido!");
             
-        // verifica se o restaurante existe
+        // verifica se o restaurante está visivel
         Restaurante.getRestaurante(restaurante.getEmail());
+        
+        StringBuilder sql = new StringBuilder("SELECT * FROM bebida WHERE emailRestaurante = ? AND nome = ?");
+        if (apenasVisiveis) sql.append(" AND visivel = true");
             
         var cbd = ConectorBD.getInstance();
-        var ps = cbd.prepareStatement("SELECT * FROM bebida WHERE emailRestaurante = ? AND nome = ? AND visivel = true");
+        var ps = cbd.prepareStatement(sql.toString());
         ps.setString(1, restaurante.getEmail());
         ps.setString(2, nome);
         
@@ -97,11 +107,15 @@ public class Bebida extends ItemCardapio
         try (ResultSet result = cbd.executePreparedQuery(ps))
         {
             if (!result.next())
-                throw new ItemCardapioNotFoundException(restaurante.getEmail(), nome);
+                throw new ItemCardapioNotFoundException(restaurante.getEmail(), nome, apenasVisiveis);
             
             b = criarBebida(restaurante, result);
         }
         return b;
+    }
+    public static Bebida getBebida(Restaurante restaurante, String nome) throws SQLException, RestauranteNotFoundException, ItemCardapioNotFoundException
+    {
+        return getBebida(restaurante, nome, true);
     }
     //</editor-fold>
     
@@ -113,8 +127,8 @@ public class Bebida extends ItemCardapio
     
         try
         {
-            // verifica se a bebida existe
-            getBebida(getRestaurante(), getNome());
+            // verifica se a bebida existe (visivel ou invisivel)
+            getBebida(getRestaurante(), getNome(), false);
             
             // update
             var ps = cbd.prepareStatement("UPDATE bebida SET detalhes = ?, precoUnitario = ?, imagem = ?, visivel = true WHERE emailRestaurante = ? AND nome = ?");
