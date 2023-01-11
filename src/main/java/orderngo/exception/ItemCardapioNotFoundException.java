@@ -1,4 +1,4 @@
-package orderngo.exceptions;
+package orderngo.exception;
 
 /**
  *
@@ -24,6 +24,7 @@ public class ItemCardapioNotFoundException extends IllegalArgumentException
     }
 
     
+    //<editor-fold defaultstate="collapsed" desc="Getters">
     public String getEmailRestauranteProcurado()
     {
         return emailRestauranteProcurado;
@@ -38,4 +39,5 @@ public class ItemCardapioNotFoundException extends IllegalArgumentException
     {
         return apenasVisiveis;
     }
+    //</editor-fold>
 }

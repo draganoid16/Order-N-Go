@@ -10,8 +10,11 @@ import java.util.Arrays;
  */
 public class PasswordUtils
 {
+    private PasswordUtils() {}
+    
     /* Usar encriptarPassword(char[] password) por motivos de segurança
-    https://www.baeldung.com/java-storing-passwords Use char[] Array Over a String for Manipulating Passwords in Java?
+    https://www.baeldung.com/java-storing-passwords 
+    "Use char[] Array Over a String for Manipulating Passwords in Java?"
     
     @Deprecated
     public static String encriptarPassword(String password)

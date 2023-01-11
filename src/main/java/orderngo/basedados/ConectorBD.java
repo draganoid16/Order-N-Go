@@ -47,9 +47,9 @@ public class ConectorBD
             {
                 prop.store(fos, "Propriedades da ligacao a base de dados");
             }
-            catch (IOException ex) {}
+            catch (IOException ignored) {}
         }
-        catch (IOException ex) {}
+        catch (IOException ignored) {}
 
         return prop;
     }
@@ -66,6 +66,7 @@ public class ConectorBD
             prop
         );
     }
+    
     
     //<editor-fold defaultstate="collapsed" desc="Statements">
     public ResultSet executeQuery(String sql) throws SQLException
@@ -120,16 +121,23 @@ public class ConectorBD
     //</editor-fold>
     
     
+    //<editor-fold defaultstate="collapsed" desc="Instance">
     public static ConectorBD getInstance() throws SQLException
     {
-        if (instance != null)
-            return instance;
-            
-        instance = new ConectorBD();
+        if (instance == null)
+            setInstance(new ConectorBD());
+
         return instance;
     }
+    
+    public static void setInstance(ConectorBD instance)
+    {
+        ConectorBD.instance = instance;
+    }
+    //</editor-fold>
 
     
+    //<editor-fold defaultstate="collapsed" desc="equals/hashCode/toString">
     @Override
     public String toString()
     {
@@ -139,4 +147,5 @@ public class ConectorBD
         sb.append('}');
         return sb.toString();
     }
+    //</editor-fold>
 }

@@ -94,6 +94,7 @@ public abstract class Utilizador implements SavableInDatabase, DeletableInDataba
     }
     //</editor-fold>
     
+    
     //<editor-fold defaultstate="collapsed" desc="equals/hashCode/toString">
     @Override
     public boolean equals(Object obj)

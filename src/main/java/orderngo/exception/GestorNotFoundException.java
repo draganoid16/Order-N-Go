@@ -1,4 +1,4 @@
-package orderngo.exceptions;
+package orderngo.exception;
 
 /**
  *
@@ -21,6 +21,7 @@ public class GestorNotFoundException extends IllegalArgumentException
     }
 
     
+    //<editor-fold defaultstate="collapsed" desc="Getters">
     public String getEmailProcurado()
     {
         return emailProcurado;
@@ -30,4 +31,5 @@ public class GestorNotFoundException extends IllegalArgumentException
     {
         return apenasVisiveis;
     }
+    //</editor-fold>
 }

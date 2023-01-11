@@ -1,7 +1,7 @@
 package orderngo.userinterface;
 
 import orderngo.App;
-import orderngo.exceptions.RestauranteNotFoundException;
+import orderngo.exception.RestauranteNotFoundException;
 import orderngo.utilizador.GestorOrderAndGo;
 import orderngo.utilizador.Restaurante;
 

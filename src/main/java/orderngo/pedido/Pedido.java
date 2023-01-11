@@ -1,4 +1,4 @@
-package orderngo.pedidos;
+package orderngo.pedido;
 
 import orderngo.utilizador.Cliente;
 import orderngo.cardapio.ItemCardapio;
@@ -82,6 +82,7 @@ public class Pedido
     //</editor-fold>
 
 
+    //<editor-fold defaultstate="collapsed" desc="Adicionar/Remover">
     public void limparItemsPedido()
     {
         itemsPedido.clear();
@@ -103,8 +104,9 @@ public class Pedido
             
         itemsPedido.remove(item);
     }
+    //</editor-fold>
     
-    
+    //<editor-fold defaultstate="collapsed" desc="Quantidade">
     private void addRemQuantidade(ItemCardapio item, int addrem)
     {
         if (item == null || !itemsPedido.containsKey(item))
@@ -146,8 +148,10 @@ public class Pedido
         else
             itemsPedido.replace(item, quant);
     }
-    
+    //</editor-fold>
 
+    
+    //<editor-fold defaultstate="collapsed" desc="equals/hashCode/toString">
     @Override
     public boolean equals(Object obj)
     {
@@ -198,4 +202,5 @@ public class Pedido
         sb.append('}');
         return sb.toString();
     }   
+    //</editor-fold>
 }

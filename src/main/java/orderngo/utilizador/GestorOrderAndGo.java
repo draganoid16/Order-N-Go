@@ -7,7 +7,7 @@ import java.sql.ResultSet;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
-import orderngo.exceptions.GestorNotFoundException;
+import orderngo.exception.GestorNotFoundException;
 
 /**
  *

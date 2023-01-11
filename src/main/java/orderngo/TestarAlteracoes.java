@@ -3,18 +3,16 @@ package orderngo;
 import orderngo.basedados.*;
 import orderngo.cardapio.*;
 import orderngo.cardapio.Prato.TipoPrato;
-import orderngo.exceptions.*;
-import orderngo.pedidos.*;
+import orderngo.exception.*;
+import orderngo.pedido.*;
 import orderngo.utilizador.*;
 import orderngo.utils.*;
-
-import java.time.LocalDateTime;
-import java.awt.image.BufferedImage;
 
 import java.sql.SQLException;
 
 public class TestarAlteracoes 
 {
+    //<editor-fold defaultstate="collapsed" desc="Metodos prints">
     private static String stackTraceToString(Exception ex)
     {
         StringBuilder sb = new StringBuilder();
@@ -56,7 +54,7 @@ public class TestarAlteracoes
         
         System.out.println(sb);
     }
-    
+    //</editor-fold>
     
     public void main()
     {   

@@ -9,8 +9,8 @@ import java.util.ArrayList;
 import java.sql.ResultSet;
 
 import java.sql.SQLException;
-import orderngo.exceptions.ItemCardapioNotFoundException;
-import orderngo.exceptions.RestauranteNotFoundException;
+import orderngo.exception.ItemCardapioNotFoundException;
+import orderngo.exception.RestauranteNotFoundException;
 
 /**
  *

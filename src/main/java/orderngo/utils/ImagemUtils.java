@@ -18,6 +18,8 @@ import java.io.IOException;
  */
 public class ImagemUtils
 {
+    private ImagemUtils() {}
+    
     public static BufferedImage blobToImage(Blob imagemBlob) throws SQLException
     {
         BufferedImage imagem = null;
@@ -26,7 +28,7 @@ public class ImagemUtils
             imagem = ImageIO.read(imagemBlob.getBinaryStream());
             imagemBlob.free();
         }
-        catch (NullPointerException|IOException ex) {}
+        catch (NullPointerException|IOException ignored) {}
         
         return imagem;
     }
@@ -39,7 +41,7 @@ public class ImagemUtils
             ImageIO.write(imagem, "png", baos);
             is = new ByteArrayInputStream(baos.toByteArray());
         }
-        catch (IllegalArgumentException|IOException ex) {}
+        catch (IllegalArgumentException|IOException ignored) {}
         
         return is;
     }
