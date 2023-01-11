@@ -119,7 +119,6 @@ public class Bebida extends ItemCardapio
     }
     //</editor-fold>
     
-    //<editor-fold defaultstate="collapsed" desc="Save">
     @Override
     public void save() throws SQLException, RestauranteNotFoundException
     {
@@ -154,9 +153,9 @@ public class Bebida extends ItemCardapio
             cbd.executePreparedUpdate(ps);
         }
     }
-    //</editor-fold>
     
     
+    //<editor-fold defaultstate="collapsed" desc="equals/hashCode/toString">
     @Override
     public boolean equals(Object obj)
     {
@@ -181,4 +180,5 @@ public class Bebida extends ItemCardapio
         sb.append('}');
         return sb.toString();
     }
+    //</editor-fold>
 }

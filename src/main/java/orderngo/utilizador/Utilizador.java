@@ -1,13 +1,14 @@
 package orderngo.utilizador;
 
 import orderngo.basedados.SavableInDatabase;
+import orderngo.basedados.DeletableInDatabase;
 import orderngo.utils.PasswordUtils;
 
 /**
  *
  * @author grupo1
  */
-public abstract class Utilizador implements SavableInDatabase
+public abstract class Utilizador implements SavableInDatabase, DeletableInDatabase
 {
     private final String email;
     private String nome;
@@ -93,7 +94,7 @@ public abstract class Utilizador implements SavableInDatabase
     }
     //</editor-fold>
     
-    
+    //<editor-fold defaultstate="collapsed" desc="equals/hashCode/toString">
     @Override
     public boolean equals(Object obj)
     {
@@ -140,4 +141,5 @@ public abstract class Utilizador implements SavableInDatabase
         sb.append('}');
         return sb.toString();
     }
+    //</editor-fold>
 }

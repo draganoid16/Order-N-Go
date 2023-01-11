@@ -2,6 +2,7 @@ package orderngo.cardapio;
 
 import orderngo.utilizador.Restaurante;
 import orderngo.basedados.SavableInDatabase;
+import orderngo.basedados.DeletableInDatabase;
 
 import java.awt.image.BufferedImage;
 import java.util.Objects;
@@ -10,7 +11,7 @@ import java.util.Objects;
  *
  * @author grupo1
  */
-public abstract class ItemCardapio implements SavableInDatabase
+public abstract class ItemCardapio implements SavableInDatabase, DeletableInDatabase
 {
     private final Restaurante restaurante;
     private final String nome;
@@ -85,6 +86,8 @@ public abstract class ItemCardapio implements SavableInDatabase
     }
     //</editor-fold>
 
+    
+    //<editor-fold defaultstate="collapsed" desc="equals/hashCode/toString">
     @Override
     public boolean equals(Object obj)
     {
@@ -135,4 +138,5 @@ public abstract class ItemCardapio implements SavableInDatabase
         sb.append('}');
         return sb.toString();
     }
+    //</editor-fold>
 }

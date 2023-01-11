@@ -100,7 +100,6 @@ public class GestorOrderAndGo extends Utilizador
     }
     //</editor-fold>
     
-    //<editor-fold defaultstate="collapsed" desc="Save">
     @Override
     public void save() throws SQLException
     {
@@ -137,7 +136,6 @@ public class GestorOrderAndGo extends Utilizador
             cbd.executePreparedUpdate(ps);
         }
     }
-    //</editor-fold>
     
     public static boolean validarCredenciais(String email, char[] password) throws SQLException
     {
@@ -153,6 +151,7 @@ public class GestorOrderAndGo extends Utilizador
     }
 
     
+    //<editor-fold defaultstate="collapsed" desc="equals/hashCode/toString">
     @Override
     public boolean equals(Object obj)
     {
@@ -177,4 +176,5 @@ public class GestorOrderAndGo extends Utilizador
         sb.append('}');
         return sb.toString();
     }
+    //</editor-fold>
 }

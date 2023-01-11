@@ -27,15 +27,21 @@ public class Cliente extends Utilizador
     }
     //</editor-fold>
 
-    //<editor-fold defaultstate="collapsed" desc="Save">
+    
     @Override
     public void save() throws SQLException
     {
         throw new UnsupportedOperationException("Not supported yet.");
     }
-    //</editor-fold>
+
+    @Override
+    public void delete() throws SQLException
+    {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
     
     
+    //<editor-fold defaultstate="collapsed" desc="equals/hashCode/toString">
     @Override
     public boolean equals(Object obj)
     {
@@ -60,4 +66,5 @@ public class Cliente extends Utilizador
         sb.append('}');
         return sb.toString();
     }
+    //</editor-fold>
 }

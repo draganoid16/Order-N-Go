@@ -30,14 +30,16 @@ public class Cardapio implements SavableInDatabase
     }
 
     
-    public void limparCardapio()
-    {
-        items.clear();
-    }
     private void atualizarCardapioBackup()
     {
         itemsBackup.clear();
         itemsBackup.addAll(items);
+    }
+    
+    //<editor-fold defaultstate="collapsed" desc="Adicionar/Remover">
+    public void limparCardapio()
+    {
+        items.clear();
     }
     
     public boolean adicionarItem(ItemCardapio item)
@@ -52,8 +54,9 @@ public class Cardapio implements SavableInDatabase
     {
         return items.remove(item);
     }
+    //</editor-fold>
     
-    
+    //<editor-fold defaultstate="collapsed" desc="getItems">
     public ItemCardapio[] getAllItems()
     {
         return items
@@ -75,9 +78,9 @@ public class Cardapio implements SavableInDatabase
             .map(b -> (Bebida)b)
             .toArray(Bebida[]::new);
     }
+    //</editor-fold>
     
     
-    //<editor-fold defaultstate="collapsed" desc="BuscarDados">
     public void fill() throws SQLException
     {
         limparCardapio();
@@ -87,26 +90,23 @@ public class Cardapio implements SavableInDatabase
     
         atualizarCardapioBackup();
     }
-    //</editor-fold>
 
-    //<editor-fold defaultstate="collapsed" desc="Save">
     @Override
     public void save() throws SQLException
     {
         itemsBackup.removeAll(items);
-        /*
+        
         for (ItemCardapio it : items)
             it.delete();
-        */
         
         for (ItemCardapio it : items)
             it.save();
         
         atualizarCardapioBackup();
     }
-    //</editor-fold>
     
     
+    //<editor-fold defaultstate="collapsed" desc="equals/hashCode/toString">
     @Override
     public boolean equals(Object obj)
     {
@@ -145,4 +145,5 @@ public class Cardapio implements SavableInDatabase
         sb.append('}');
         return sb.toString();
     }
+    //</editor-fold>
 }
