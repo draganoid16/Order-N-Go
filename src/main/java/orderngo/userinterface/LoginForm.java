@@ -10,6 +10,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
+import java.io.IOException;
 import java.sql.SQLException;
 
 public class LoginForm extends JDialog {
@@ -58,6 +59,8 @@ public class LoginForm extends JDialog {
 
                 } catch (SQLException ex) {
                     JOptionPane.showMessageDialog(loginFrame, "Erro! Conexão a Base de Dados não foi estabelecido!", "Conexão não Estabelecida!", JOptionPane.ERROR_MESSAGE);
+                    throw new RuntimeException(ex);
+                } catch (IOException ex) {
                     throw new RuntimeException(ex);
                 }
 
