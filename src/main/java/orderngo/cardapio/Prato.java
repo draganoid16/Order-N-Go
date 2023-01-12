@@ -209,10 +209,9 @@ public class Prato extends ItemCardapio
         if (!super.equals(obj))
             return false;
         
-        if (!(obj instanceof Prato))
+        if (!(obj instanceof Prato other))
             return false;
-        
-        Prato other = (Prato)obj;
+
         
         if (!tipoPrato.equals(other.tipoPrato))
             return false;

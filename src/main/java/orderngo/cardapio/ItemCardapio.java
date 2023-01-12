@@ -97,10 +97,9 @@ public abstract class ItemCardapio implements SavableInDatabase, DeletableInData
         if (obj == null)
             return false;
         
-        if (!(obj instanceof ItemCardapio))
+        if (!(obj instanceof ItemCardapio other))
             return false;
         
-        ItemCardapio other = (ItemCardapio)obj;
         
         if (!restaurante.equals(other.restaurante))
             return false;

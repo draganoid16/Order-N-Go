@@ -170,10 +170,9 @@ public class GestorOrderAndGo extends Utilizador
         if (!super.equals(obj))
             return false;
         
-        if (!(obj instanceof GestorOrderAndGo))
+        if (!(obj instanceof GestorOrderAndGo other))
             return false;
         
-        GestorOrderAndGo other = (GestorOrderAndGo)obj;
         
         return nrEmpregado == other.nrEmpregado;
     }

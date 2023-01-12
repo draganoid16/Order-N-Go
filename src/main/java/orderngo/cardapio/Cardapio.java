@@ -128,10 +128,9 @@ public class Cardapio implements SavableInDatabase, DeletableInDatabase
         if (obj == null)
             return false;
         
-        if (!(obj instanceof Cardapio))
+        if (!(obj instanceof Cardapio other))
             return false;
         
-        Cardapio other = (Cardapio)obj;
         
         if (!restaurante.equals(other.restaurante))
             return false;

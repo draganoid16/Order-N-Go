@@ -191,10 +191,9 @@ public class Restaurante extends Utilizador
         if (!super.equals(obj))
             return false;
         
-        if (!(obj instanceof Restaurante))
+        if (!(obj instanceof Restaurante other))
             return false;
         
-        Restaurante other = (Restaurante)obj;
         
         return Objects.equals(imagem, other.imagem);
     }

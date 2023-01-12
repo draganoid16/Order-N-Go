@@ -48,10 +48,9 @@ public class Cliente extends Utilizador
         if (!super.equals(obj))
             return false;
         
-        if (!(obj instanceof Cliente))
+        if (!(obj instanceof Cliente other))
             return false;
         
-        Cliente other = (Cliente)obj;
         
         return nif.equals(other.nif);
     }

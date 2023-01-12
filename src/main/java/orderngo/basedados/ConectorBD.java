@@ -26,7 +26,8 @@ public class ConectorBD
     private final Connection con;
     private final String urlCon;
     
-    private static Properties getProperties()
+    //<editor-fold defaultstate="collapsed" desc="getProperties">
+    public static Properties getDefaultProperties()
     {
         // Properties por omissão
         Properties prop = new Properties();
@@ -36,6 +37,13 @@ public class ConectorBD
         prop.setProperty("autoReconnect", "false");
         prop.setProperty("maxReconnects", "3");
         prop.setProperty("initialTimeout", "2");
+        
+        return prop;
+    }
+    
+    private static Properties getFileProperties()
+    {
+        Properties prop = getDefaultProperties();
         
         try(FileInputStream fis = new FileInputStream(PROPERTIES_FILE))
         {
@@ -53,12 +61,12 @@ public class ConectorBD
 
         return prop;
     }
+    //</editor-fold>
     
     
-    private ConectorBD() throws SQLException
+    //<editor-fold defaultstate="collapsed" desc="Construtores">
+    protected ConectorBD(Properties prop) throws SQLException
     {
-        Properties prop = getProperties();
-        
         urlCon = prop.getProperty("url");
         
         con = DriverManager.getConnection(
@@ -66,6 +74,26 @@ public class ConectorBD
             prop
         );
     }
+    private ConectorBD() throws SQLException
+    {
+        this(getFileProperties());
+    }
+    //</editor-fold>
+    
+    //<editor-fold defaultstate="collapsed" desc="Instance">
+    public static ConectorBD getInstance() throws SQLException
+    {
+        if (instance == null)
+            setInstance(new ConectorBD());
+
+        return instance;
+    }
+    
+    public static void setInstance(ConectorBD instance)
+    {
+        ConectorBD.instance = instance;
+    }
+    //</editor-fold>
     
     
     //<editor-fold defaultstate="collapsed" desc="Statements">
@@ -119,25 +147,29 @@ public class ConectorBD
         return statement.executeUpdate();
     }
     //</editor-fold>
-    
-    
-    //<editor-fold defaultstate="collapsed" desc="Instance">
-    public static ConectorBD getInstance() throws SQLException
-    {
-        if (instance == null)
-            setInstance(new ConectorBD());
-
-        return instance;
-    }
-    
-    public static void setInstance(ConectorBD instance)
-    {
-        ConectorBD.instance = instance;
-    }
-    //</editor-fold>
 
     
     //<editor-fold defaultstate="collapsed" desc="equals/hashCode/toString">
+    @Override
+    public boolean equals(Object obj)
+    {
+        if (!super.equals(obj))
+            return false;
+        
+        if (!(obj instanceof ConectorBD other))
+            return false;
+
+        return urlCon.equals(other.urlCon);
+    }
+
+    @Override
+    public int hashCode()
+    {
+        int hash = 7;
+        hash = 23 * hash + urlCon.hashCode();
+        return hash;
+    }
+
     @Override
     public String toString()
     {

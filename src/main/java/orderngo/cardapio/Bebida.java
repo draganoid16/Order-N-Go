@@ -175,10 +175,9 @@ public class Bebida extends ItemCardapio
         if (!super.equals(obj))
             return false;
         
-        if (!(obj instanceof Bebida))
+        if (!(obj instanceof Bebida other))
             return false;
         
-        Bebida other = (Bebida)obj;
         
         return capacidadeCL == other.capacidadeCL;
     }

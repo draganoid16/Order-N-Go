@@ -53,7 +53,7 @@ public class ImagemUtils
         {
             imagem = ImageIO.read(fis);
         }
-        catch (NullPointerException|IOException ex) {}
+        catch (NullPointerException|IOException ignored) {}
         
         return imagem;
     }

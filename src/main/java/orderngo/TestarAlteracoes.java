@@ -76,11 +76,9 @@ public class TestarAlteracoes
         ic.setImagem(ImagemUtils.ficheiroToImage(null));
         card.adicionarItem(ic);
         
-        ic2 = ic;
-        
         GestorOrderAndGo gest = new GestorOrderAndGo("teste@teste.teste", "gestorog teste", "000000000", "teste", 999);
         gest.setPassword("teste".toCharArray());
-        
+
         
         try
         {        

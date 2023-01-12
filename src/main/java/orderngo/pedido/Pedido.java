@@ -161,10 +161,9 @@ public class Pedido
         if (obj == null)
             return false;
 
-        if (!(obj instanceof Pedido))
+        if (!(obj instanceof Pedido other))
             return false;
         
-        Pedido other = (Pedido)obj;
         
         if (!cliente.equals(other.cliente))
             return false;

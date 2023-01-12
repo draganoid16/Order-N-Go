@@ -105,10 +105,9 @@ public abstract class Utilizador implements SavableInDatabase, DeletableInDataba
         if (obj == null)
             return false;
         
-        if (!(obj instanceof Utilizador))
+        if (!(obj instanceof Utilizador other))
             return false;
         
-        Utilizador other = (Utilizador)obj;
         
         if (!email.equals(other.email))
             return false;
