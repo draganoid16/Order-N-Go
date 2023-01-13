@@ -170,16 +170,28 @@ public class Bebida extends ItemCardapio
     
     //<editor-fold defaultstate="collapsed" desc="equals/hashCode/toString">
     @Override
+    public boolean canEqual(Object obj) 
+    {
+        return (obj instanceof Bebida);
+    }
+    
+    @Override
     public boolean equals(Object obj)
     {
-        if (!super.equals(obj))
-            return false;
-        
+        if (obj == this)
+            return true;
+                    
         if (!(obj instanceof Bebida other))
             return false;
         
         
-        return capacidadeCL == other.capacidadeCL;
+        if (!other.canEqual(this))
+            return false;
+        
+        if (capacidadeCL != other.capacidadeCL)
+            return false;
+            
+        return super.equals(obj);
     }
 
     @Override

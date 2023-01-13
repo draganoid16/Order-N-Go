@@ -204,19 +204,31 @@ public class Prato extends ItemCardapio
     
     //<editor-fold defaultstate="collapsed" desc="equals/hashCode/toString">
     @Override
+    public boolean canEqual(Object obj) 
+    {
+        return (obj instanceof Prato);
+    }
+    
+    @Override
     public boolean equals(Object obj)
     {
-        if (!super.equals(obj))
-            return false;
+        if (obj == this)
+            return true;
         
         if (!(obj instanceof Prato other))
             return false;
-
+        
+        
+        if (!other.canEqual(this))
+            return false;
         
         if (!tipoPrato.equals(other.tipoPrato))
             return false;
         
-        return alergenios.equals(other.alergenios);
+        if (!alergenios.equals(other.alergenios))
+            return false;
+            
+        return super.equals(obj);
     }
 
     @Override

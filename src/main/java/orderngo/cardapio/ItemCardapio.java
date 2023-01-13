@@ -3,9 +3,10 @@ package orderngo.cardapio;
 import orderngo.utilizador.Restaurante;
 import orderngo.basedados.SavableInDatabase;
 import orderngo.basedados.DeletableInDatabase;
+import orderngo.utils.ImagemUtils;
 
 import java.awt.image.BufferedImage;
-import java.util.Objects;
+import java.util.Arrays;
 
 /**
  *
@@ -88,20 +89,22 @@ public abstract class ItemCardapio implements SavableInDatabase, DeletableInData
 
     
     //<editor-fold defaultstate="collapsed" desc="equals/hashCode/toString">
+    public boolean canEqual(Object obj) 
+    {
+        return (obj instanceof ItemCardapio);
+    }
+    
     @Override
     public boolean equals(Object obj)
     {
         if (obj == this)
             return true;
         
-        if (obj == null)
-            return false;
-        
         if (!(obj instanceof ItemCardapio other))
             return false;
         
         
-        if (!restaurante.equals(other.restaurante))
+        if (!other.canEqual(this))
             return false;
         
         if (!nome.equals(other.nome))
@@ -110,10 +113,16 @@ public abstract class ItemCardapio implements SavableInDatabase, DeletableInData
         if (!detalhes.equals(other.detalhes))
             return false;
 
-        if (precoUnitario != other.precoUnitario)
+        if (Float.compare(precoUnitario, other.precoUnitario) != 0)
             return false;
         
-        return Objects.equals(imagem, other.imagem);
+        if (!restaurante.equals(other.restaurante))
+            return false;
+        
+        return Arrays.equals(
+            ImagemUtils.imageToByteArray(imagem), 
+            ImagemUtils.imageToByteArray(other.imagem)
+        );
     }
 
     @Override

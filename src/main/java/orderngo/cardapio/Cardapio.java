@@ -119,18 +119,23 @@ public class Cardapio implements SavableInDatabase, DeletableInDatabase
     
     
     //<editor-fold defaultstate="collapsed" desc="equals/hashCode/toString">
+    public boolean canEqual(Object obj) 
+    {
+        return (obj instanceof Cardapio);
+    }
+    
     @Override
     public boolean equals(Object obj)
     {
         if (obj == this)
             return true;
         
-        if (obj == null)
-            return false;
-        
         if (!(obj instanceof Cardapio other))
             return false;
         
+        
+        if (!other.canEqual(this))
+            return false;
         
         if (!restaurante.equals(other.restaurante))
             return false;

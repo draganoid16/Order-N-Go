@@ -20,6 +20,7 @@ public class ImagemUtils
 {
     private ImagemUtils() {}
     
+    //<editor-fold defaultstate="collapsed" desc="xxx -> Imagem">
     public static BufferedImage blobToImage(Blob imagemBlob) throws SQLException
     {
         BufferedImage imagem = null;
@@ -33,19 +34,6 @@ public class ImagemUtils
         return imagem;
     }
     
-    public static InputStream imageToInputStream(BufferedImage imagem)
-    {
-        InputStream is = null;
-        try (ByteArrayOutputStream baos = new ByteArrayOutputStream())
-        {
-            ImageIO.write(imagem, "png", baos);
-            is = new ByteArrayInputStream(baos.toByteArray());
-        }
-        catch (IllegalArgumentException|IOException ignored) {}
-        
-        return is;
-    }
-    
     public static BufferedImage ficheiroToImage(String ficheiro)
     {
         BufferedImage imagem = null;
@@ -57,4 +45,37 @@ public class ImagemUtils
         
         return imagem;
     }
+    
+    public static BufferedImage createImage(int width, int height)
+    {
+        return new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+    }
+    //</editor-fold>
+    
+    //<editor-fold defaultstate="collapsed" desc="Imagem -> xxx">
+    public static byte[] imageToByteArray(BufferedImage imagem)
+    {
+        byte[] data = null;
+        try (ByteArrayOutputStream baos = new ByteArrayOutputStream())
+        {
+            ImageIO.write(imagem, "jpg", baos);
+            data = baos.toByteArray();
+        }
+        catch (IllegalArgumentException|IOException ignored) {}
+        
+        return data;
+    }
+    
+    public static InputStream imageToInputStream(BufferedImage imagem)
+    {
+        InputStream is = null;
+        try
+        {
+            is = new ByteArrayInputStream(imageToByteArray(imagem));
+        }
+        catch (IllegalArgumentException|NullPointerException ignored) {}
+        
+        return is;
+    }
+    //</editor-fold>
 }

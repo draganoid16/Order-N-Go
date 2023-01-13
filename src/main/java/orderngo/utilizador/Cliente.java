@@ -43,16 +43,28 @@ public class Cliente extends Utilizador
     
     //<editor-fold defaultstate="collapsed" desc="equals/hashCode/toString">
     @Override
+    public boolean canEqual(Object obj) 
+    {
+        return (obj instanceof Cliente);
+    }
+    
+    @Override
     public boolean equals(Object obj)
     {
-        if (!super.equals(obj))
-            return false;
+        if (obj == this)
+            return true;
         
         if (!(obj instanceof Cliente other))
             return false;
         
         
-        return nif.equals(other.nif);
+        if (!other.canEqual(this))
+            return false;
+        
+        if (!nif.equals(other.nif))
+            return false;
+        
+        return super.equals(obj);
     }
 
     @Override

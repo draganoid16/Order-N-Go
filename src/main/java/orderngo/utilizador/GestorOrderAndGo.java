@@ -165,16 +165,28 @@ public class GestorOrderAndGo extends Utilizador
     
     //<editor-fold defaultstate="collapsed" desc="equals/hashCode/toString">
     @Override
+    public boolean canEqual(Object obj) 
+    {
+        return (obj instanceof GestorOrderAndGo);
+    }
+    
+    @Override
     public boolean equals(Object obj)
     {
-        if (!super.equals(obj))
-            return false;
+        if (obj == this)
+            return true;
         
         if (!(obj instanceof GestorOrderAndGo other))
             return false;
         
         
-        return nrEmpregado == other.nrEmpregado;
+        if (!other.canEqual(this))
+            return false;
+        
+        if (nrEmpregado != other.nrEmpregado)
+            return false;
+        
+        return super.equals(obj);
     }
 
     @Override

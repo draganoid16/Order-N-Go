@@ -6,10 +6,9 @@ import orderngo.utils.PasswordUtils;
 import orderngo.utils.ImagemUtils;
 
 import java.awt.image.BufferedImage;
-import java.util.Objects;
-
 import java.util.ArrayList;
 import java.sql.ResultSet;
+import java.util.Arrays;
 
 import java.sql.SQLException;
 import orderngo.exception.RestauranteNotFoundException;
@@ -186,16 +185,31 @@ public class Restaurante extends Utilizador
     
     //<editor-fold defaultstate="collapsed" desc="equals/hashCode/toString">
     @Override
+    public boolean canEqual(Object obj) 
+    {
+        return (obj instanceof Restaurante);
+    }
+    
+    @Override
     public boolean equals(Object obj)
     {
-        if (!super.equals(obj))
-            return false;
+        if (obj == this)
+            return true;
         
         if (!(obj instanceof Restaurante other))
             return false;
         
         
-        return Objects.equals(imagem, other.imagem);
+        if (!other.canEqual(this))
+            return false;
+        
+        if (!super.equals(obj))
+            return false;
+
+        return Arrays.equals(
+            ImagemUtils.imageToByteArray(imagem), 
+            ImagemUtils.imageToByteArray(other.imagem)
+        );
     }
 
     @Override

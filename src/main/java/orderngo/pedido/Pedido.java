@@ -152,18 +152,23 @@ public class Pedido
 
     
     //<editor-fold defaultstate="collapsed" desc="equals/hashCode/toString">
+    public boolean canEqual(Object obj) 
+    {
+        return (obj instanceof Pedido);
+    }
+    
     @Override
     public boolean equals(Object obj)
     {
         if (obj == this)
             return true;
         
-        if (obj == null)
-            return false;
-
         if (!(obj instanceof Pedido other))
             return false;
         
+        
+        if (!other.canEqual(this))
+            return false;
         
         if (!cliente.equals(other.cliente))
             return false;

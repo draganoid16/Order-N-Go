@@ -150,15 +150,24 @@ public class ConectorBD
 
     
     //<editor-fold defaultstate="collapsed" desc="equals/hashCode/toString">
+    public boolean canEqual(Object obj) 
+    {
+        return (obj instanceof ConectorBD);
+    }
+    
     @Override
     public boolean equals(Object obj)
     {
-        if (!super.equals(obj))
-            return false;
+        if (obj == this)
+            return true;
         
         if (!(obj instanceof ConectorBD other))
             return false;
 
+        
+        if (!other.canEqual(this))
+            return false;
+        
         return urlCon.equals(other.urlCon);
     }
 
