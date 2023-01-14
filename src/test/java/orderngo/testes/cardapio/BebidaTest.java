@@ -2,10 +2,12 @@ package orderngo.testes.cardapio;
 
 import orderngo.testes.basedados.TestesComBD;
 import orderngo.basedados.ConectorBD;
-import orderngo.cardapio.Prato;
-import orderngo.cardapio.Prato.TipoPrato;
+
+import orderngo.cardapio.Bebida;
 import orderngo.utilizador.Restaurante;
 import orderngo.utils.ImagemUtils;
+
+import java.awt.image.BufferedImage;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.BeforeEach;
@@ -14,9 +16,8 @@ import static org.junit.jupiter.api.Assertions.*;
 import nl.jqno.equalsverifier.EqualsVerifier;
 import nl.jqno.equalsverifier.Warning;
 
-import java.awt.image.BufferedImage;
-
 import java.sql.SQLException;
+import orderngo.cardapio.Bebida;
 import orderngo.exception.ItemCardapioNotFoundException;
 import orderngo.exception.RestauranteNotFoundException;
 
@@ -24,70 +25,52 @@ import orderngo.exception.RestauranteNotFoundException;
  *
  * @author grupo1
  */
-public class PratoTeste extends TestesComBD
+public class BebidaTest extends TestesComBD
 {
-    private Prato instance;
+    private Bebida instance;
     
     @BeforeEach
     public void init()
     {
         Restaurante rest = new Restaurante("visivel@rest.com", "visivel", "111111111", "morada visivel");
-        instance = new Prato(rest, "prato teste", "detalhes teste", 69, TipoPrato.CARNE, "teste");
+        instance = new Bebida(rest, "bebida teste", "detalhes teste", 69, 50);
     }
-        
+
     
-    //<editor-fold defaultstate="collapsed" desc="testSet">
+    //<editor-fold defaultstate="collapsed" desc="testCamposFinal">
     /**
-     * Test of setTipoPrato method, of class Prato.
+     * Test of constructor and getCapacidadeCL method, of class Bebida.
      */
     @Test
     @SuppressWarnings("ThrowableResultIgnored")
-    public void testSetTipoPrato()
+    public void testCapacidadeCL()
     {
-        // setTipoPrato (null)
-        assertThrows(IllegalArgumentException.class, () -> {
-            instance.setTipoPrato(null);
-        });
-        
-        
-        // setTipoPrato
-        TipoPrato tipoPrato = TipoPrato.PEIXE;
-        instance.setTipoPrato(tipoPrato);
-        assertEquals(tipoPrato, instance.getTipoPrato());
-    }
+        // capacidade valida
+        int expResult = 50;
+        int result = instance.getCapacidadeCL();
+        assertEquals(expResult, result);
 
-    /**
-     * Test of setAlergenios method, of class Prato.
-     */
-    @Test
-    public void testSetAlergenios()
-    {
-        // setAlergenios (null)
-        instance.setAlergenios(null);
-        assertEquals("", instance.getAlergenios());
-        
-        
-        // setAlergenios
-        String alergenios = "alergenios";
-        instance.setAlergenios(alergenios);
-        assertEquals(alergenios, instance.getAlergenios());
+        // capacidade invalida
+        assertThrows(IllegalArgumentException.class, () -> {
+            int capacidadeCL = 0;
+            instance = new Bebida(instance.getRestaurante(), "bebida teste", "detalhes teste", 69, capacidadeCL);
+        });
     }
     //</editor-fold>
-
+    
     
     //<editor-fold defaultstate="collapsed" desc="testSave/Delete">
-    private boolean existePratoEspecifico(Prato instance, boolean visivel) throws SQLException
+    private boolean existeBebidaEspecifica(Bebida instance, boolean visivel) throws SQLException
     {
         var cbd = ConectorBD.getInstance();
-        var ps = cbd.prepareStatement("SELECT COUNT(nome) = 1 AS existe FROM prato WHERE emailRestaurante = ? AND nome = ? AND detalhes = ? AND precoUnitario = ? AND tipo = ? AND alergenios = ? AND visivel = ?");
+        var ps = cbd.prepareStatement("SELECT COUNT(nome) = 1 AS existe FROM bebida WHERE emailRestaurante = ? AND nome = ? AND detalhes = ? AND precoUnitario = ? AND capacidadeCL = ? AND visivel = ?");
         
         ps.setString(1, instance.getRestaurante().getEmail());
         ps.setString(2, instance.getNome());
         ps.setString(3, instance.getDetalhes());
         ps.setFloat(4, instance.getPrecoUnitario());
-        ps.setString(5, instance.getTipoPrato().toString());
-        ps.setString(6, instance.getAlergenios());
-        ps.setBoolean(7, visivel);
+        ps.setInt(5, instance.getCapacidadeCL());
+        ps.setBoolean(6, visivel);
         
         
         try(var result = cbd.executePreparedQuery(ps))
@@ -99,10 +82,10 @@ public class PratoTeste extends TestesComBD
         }
     }
     
-    private void removerPrato(Prato instance) throws SQLException
+    private void removerBebida(Bebida instance) throws SQLException
     {
         var cbd = ConectorBD.getInstance();
-        var ps = cbd.prepareStatement("DELETE FROM prato WHERE emailRestaurante = ? AND nome = ?");
+        var ps = cbd.prepareStatement("DELETE FROM bebida WHERE emailRestaurante = ? AND nome = ?");
          
         ps.setString(1, instance.getRestaurante().getEmail());
         ps.setString(2, instance.getNome());
@@ -111,34 +94,32 @@ public class PratoTeste extends TestesComBD
     }
     
     /**
-     * Test of save and delete methods, of class Prato.
+     * Test of save and delete methods, of class Bebida.
      */
     @Test
     public void testSaveDelete() throws SQLException
     {
         // save (insert)
         instance.save();
-        assertTrue(existePratoEspecifico(instance, true));
+        assertTrue(existeBebidaEspecifica(instance, true));
         
         
         // delete
         instance.delete();
-        assertTrue(existePratoEspecifico(instance, false));
+        assertTrue(existeBebidaEspecifica(instance, false));
         
         
         // save (update)
         instance.setDetalhes("detalhes altera");
         instance.setPrecoUnitario(999);
-        instance.setTipoPrato(TipoPrato.PEIXE);
-        instance.setAlergenios("");
         instance.save();
         
-        assertTrue(existePratoEspecifico(instance, true));
-        removerPrato(instance);
+        assertTrue(existeBebidaEspecifica(instance, true));
+        removerBebida(instance);
     }
     
     /**
-     * Test of save and delete methods, of class Prato.
+     * Test of save and delete methods, of class Bebida.
      */
     @Test
     @SuppressWarnings("ThrowableResultIgnored")
@@ -146,7 +127,7 @@ public class PratoTeste extends TestesComBD
     {
         // save (restaurante nao existe)
         Restaurante rest = new Restaurante("naoexiste@rest.com", "naoexiste", "999999999", "morada naoexiste");
-        instance = new Prato(rest, "prato erro", "detalhes erro", 999, TipoPrato.VEGANO, "");
+        instance = new Bebida(rest, "bebida erro", "detalhes erro", 999, 999);
         
         assertThrows(RestauranteNotFoundException.class, () -> {    
             instance.save();
@@ -157,20 +138,19 @@ public class PratoTeste extends TestesComBD
     
     //<editor-fold defaultstate="collapsed" desc="testEquals">
     /**
-     * Test of equals method, of class Prato.
+     * Test of equals method, of class Bebida.
      */
     @Test
     public void testEquals() 
     {
         // equals
-        
         Restaurante r1 = new Restaurante("rest1@rest.com", "Restaurante 1", "912345678", "Primeira Morada");
         Restaurante r2 = new Restaurante("rest2@rest.com", "Restaurante 2", "923456789", "Segunda Morada");
         
         BufferedImage b1 = ImagemUtils.createImage(100, 100);
         BufferedImage b2 = ImagemUtils.createImage(200, 200);
         
-        EqualsVerifier.simple().forClass(Prato.class)
+        EqualsVerifier.simple().forClass(Bebida.class)
             .suppress(
                 Warning.NULL_FIELDS, 
                 Warning.STRICT_HASHCODE, 
@@ -185,120 +165,117 @@ public class PratoTeste extends TestesComBD
     
     //<editor-fold defaultstate="collapsed" desc="testFrom">
     /**
-     * Test of from method, of class Prato.
+     * Test of from method, of class Bebida.
      */
     @Test
     @SuppressWarnings("ThrowableResultIgnored")
     public void testFrom_restauranteNull() throws SQLException
     {
         // from (restaurante = null)
-        
-        Restaurante rest = null;
         assertThrows(IllegalArgumentException.class, () -> {
-            Prato.from(rest);
+            Restaurante rest = null;
+            Bebida.from(rest);
         });
     }
 
     /**
-     * Test of from method, of class Prato.
+     * Test of from method, of class Bebida.
      */
     @Test
     public void testFrom_apenasVisivelSemValores() throws SQLException
     {
         // from (apenasVisivel = true) -> array vazio
-        
         Restaurante rest = new Restaurante("invisivel@rest.com", "invisivel", "000000000", "morada invisivel");
-        Prato[] expResult = new Prato[0];
-        Prato[] result = Prato.from(rest);
+        Bebida[] expResult = new Bebida[0];
+        Bebida[] result = Bebida.from(rest);
         
         assertArrayEquals(expResult, result);
     }
     
     /**
-     * Test of from method, of class Prato.
+     * Test of from method, of class Bebida.
      */
     @Test
     public void testFrom() throws SQLException
     {
         // from (apenasVisivel = false) -> array com valores
-        
         Restaurante rest = new Restaurante("invisivel@rest.com", "invisivel", "000000000", "morada invisivel");
         boolean apenasVisivel = false;
         
-        Prato[] expResult = new Prato[]
+        Bebida[] expResult = new Bebida[]
         {
-            new Prato(rest, "prato vegetariano invisivel", "detalhes invisivel", 12, TipoPrato.VEGETARIANO, "alergenio invisivel"),
-            new Prato(rest, "prato vegano invisivel", "detalhes invisivel", 15, TipoPrato.VEGANO, "")
+            new Bebida(rest, "bebida invisivel 1", "detalhes invisivel", 2.5f, 25),
+            new Bebida(rest, "bebida invisivel 2", "detalhes invisivel", 4, 100)
         };
-        Prato[] result = Prato.from(rest, apenasVisivel);
+        Bebida[] result = Bebida.from(rest, apenasVisivel);
         
         assertArrayEquals(expResult, result);
     }
     //</editor-fold>
     
 
-    //<editor-fold defaultstate="collapsed" desc="testGetPrato">
+    //<editor-fold defaultstate="collapsed" desc="testGetBebida">
     /**
-     * Test of getPrato method, of class Prato.
+     * Test of getBebida method, of class Bebida.
      */
     @Test
     @SuppressWarnings("ThrowableResultIgnored")
-    public void testGetPrato_restauranteNull() throws SQLException
+    public void testGetBebida_restauranteNull() throws SQLException
     {
-        // getPrato (restaurate = null)
+        // getBebida (restaurate = null)
         Restaurante rest = null;
-        String nome = "prato vegetariano invisivel";
+        String nome = "bebida invisivel 1";
         
         assertThrows(IllegalArgumentException.class, () -> {
-            Prato.getPrato(rest, nome);
+            Bebida.getBebida(rest, nome);
         });
     }
     
     /**
-     * Test of getPrato method, of class Prato.
+     * Test of getBebida method, of class Bebida.
      */
     @Test
     @SuppressWarnings("ThrowableResultIgnored")
-    public void testGetPrato_restauranteNaoExiste() throws SQLException
+    public void testGetBebida_restauranteNaoExiste() throws SQLException
     {
-        // getPrato (restaurate nao existe)
+        // getBebida (restaurate nao existe)
         Restaurante rest = new Restaurante("invisivel@rest.com", "invisivel", "000000000", "morada invisivel");
-        String nome = "prato vegetariano invisivel";
+        String nome = "bebida invisivel 1";
 
         assertThrows(RestauranteNotFoundException.class, () -> {
-            Prato.getPrato(rest, nome);
+            Bebida.getBebida(rest, nome);
         });
     }
     
     /**
-     * Test of getPrato method, of class Prato.
+     * Test of getBebida method, of class Bebida.
      */
     @Test
     @SuppressWarnings("ThrowableResultIgnored")
-    public void testGetPrato_pratoNaoExiste() throws SQLException
+    public void testGetBebida_bebidaNaoExiste() throws SQLException
     {
-        // getPrato (item nao existe)
+        // getBebida (item nao existe)
         Restaurante rest = instance.getRestaurante();
-        String nome = "prato vegetariano invisivel";
+        String nome = "bebida invisivel 1";
         
         assertThrows(ItemCardapioNotFoundException.class, () -> {
-            Prato.getPrato(rest, nome);
+            Bebida.getBebida(rest, nome);
         });
     }
     
     /**
-     * Test of getPrato method, of class Prato.
+     * Test of getBebida method, of class Bebida.
      */
     @Test
-    public void testGetPrato() throws SQLException
+    public void testGetBebida() throws SQLException
     {
-        // getPrato (apenasVisiveis = false e item existe)
+        // getBebida (apenasVisiveis = false e item existe)
         Restaurante rest = new Restaurante("invisivel@rest.com", "invisivel", "000000000", "morada invisivel");
-        String nome = "prato vegetariano invisivel";
+        String nome = "bebida invisivel 1";
         boolean apenasVisiveis = false;
         
-        Prato expResult = new Prato(rest, "prato vegetariano invisivel", "detalhes invisivel", 12, TipoPrato.VEGETARIANO, "alergenio invisivel");
-        Prato result = Prato.getPrato(rest, nome, apenasVisiveis);
+        Bebida expResult = new Bebida(rest, "bebida invisivel 1", "detalhes invisivel", 2.5f, 25);
+        Bebida result = Bebida.getBebida(rest, nome, apenasVisiveis);
         assertEquals(expResult, result);
     }
     //</editor-fold>

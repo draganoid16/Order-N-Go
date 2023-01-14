@@ -8,7 +8,7 @@ import java.util.Arrays;
  *
  * @author grupo1
  */
-public class PasswordUtils
+public final class PasswordUtils
 {
     private PasswordUtils() {}
     

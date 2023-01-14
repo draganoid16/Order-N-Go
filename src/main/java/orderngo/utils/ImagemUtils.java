@@ -16,7 +16,7 @@ import java.io.IOException;
  *
  * @author grupo1
  */
-public class ImagemUtils
+public final class ImagemUtils
 {
     private ImagemUtils() {}
     

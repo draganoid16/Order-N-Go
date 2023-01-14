@@ -1,30 +1,37 @@
 package orderngo.testes.basedados;
 
-import orderngo.basedados.ConectorBD;
-
 import java.util.Properties;
 import org.h2.tools.TriggerAdapter;
 import java.sql.Connection;
 import java.sql.ResultSet;
 
-import java.sql.SQLException;
 import org.junit.jupiter.api.BeforeAll;
+
+import java.sql.SQLException;
+import orderngo.basedados.ConectorBD;
 
 /**
  *
  * @author grupo1
  */
 
-public class TestesComBD
+public abstract class TestesComBD
 {
+    private static boolean isBDCreated = false;
+    
     @BeforeAll
     public static void setup() throws SQLException
     {
+        if (isBDCreated)
+            return;
+        
         var cbd = new ConectorBD(getH2Properties()){};
         ConectorBD.setInstance(cbd);
         
         criarTabelas();
         inserirDados();
+        
+        isBDCreated = true;
     }
     
     private static Properties getH2Properties()

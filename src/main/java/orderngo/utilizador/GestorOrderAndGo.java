@@ -3,10 +3,10 @@ package orderngo.utilizador;
 import orderngo.basedados.ConectorBD;
 import orderngo.utils.PasswordUtils;
 
+import java.util.ArrayList;
 import java.sql.ResultSet;
 
 import java.sql.SQLException;
-import java.util.ArrayList;
 import orderngo.exception.GestorNotFoundException;
 
 /**
