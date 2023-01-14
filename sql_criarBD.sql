@@ -73,6 +73,7 @@ BEGIN
         telemovel CHAR(9),
         palavraPasse VARCHAR(100) NOT NULL,
         nif CHAR(9) UNIQUE NOT NULL,
+        visivel BOOLEAN NOT NULL DEFAULT true,
         
         CONSTRAINT pk PRIMARY KEY (email)
     );

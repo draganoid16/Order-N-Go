@@ -1,6 +1,12 @@
 package orderngo.utilizador;
 
+import orderngo.basedados.ConectorBD;
+
+import java.sql.ResultSet;
+import java.util.ArrayList;
+
 import java.sql.SQLException;
+import orderngo.exception.ClienteNotFoundException;
 
 /**
  *
@@ -27,6 +33,72 @@ public class Cliente extends Utilizador
     }
     //</editor-fold>
 
+    
+    //<editor-fold defaultstate="collapsed" desc="BuscarDados">
+    private static Cliente criarCliente(ResultSet result) throws SQLException
+    {
+        Cliente c = new Cliente(
+            result.getString("email"),
+            result.getString("nome"),
+            result.getString("telemovel"),
+            result.getString("morada"),
+            result.getString("nif")
+        );
+        
+        c.setPasswordEncriptada(result.getString("palavraPasse"));
+        
+        return c;
+    }
+    
+    public static Cliente[] all(boolean apenasVisiveis) throws SQLException
+    {
+        StringBuilder sql = new StringBuilder("SELECT * FROM cliente");
+        if (apenasVisiveis) sql.append(" WHERE visivel = true");
+        
+        ArrayList<Cliente> clientes = new ArrayList<>();
+        
+        try (ResultSet result = ConectorBD.getInstance().executeQuery(sql.toString()))
+        {
+            while (result.next())
+            {
+                clientes.add(criarCliente(result));
+            }
+        }
+        
+        return clientes
+            .toArray(Cliente[]::new);
+    }
+    public static Cliente[] all() throws SQLException
+    {
+        return all(true);
+    }
+    
+    public static Cliente getCliente(String email, boolean apenasVisiveis) throws SQLException, ClienteNotFoundException
+    {
+        StringBuilder sql = new StringBuilder("SELECT * FROM cliente WHERE email = ?");
+        if (apenasVisiveis) sql.append(" AND visivel = true");
+        
+        var cbd = ConectorBD.getInstance();
+        var ps = cbd.prepareStatement(sql.toString());
+        ps.setString(1, email);
+        
+        Cliente c;
+        try (ResultSet result = cbd.executePreparedQuery(ps))
+        {
+            if (!result.next())
+                throw new ClienteNotFoundException(email, apenasVisiveis);
+            
+            c = criarCliente(result);
+        }
+        
+        return c;
+    }
+    public static Cliente getCliente(String email) throws SQLException, ClienteNotFoundException
+    {
+        return getCliente(email, true);
+    }
+    //</editor-fold>
+    
     
     @Override
     public void save() throws SQLException

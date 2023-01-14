@@ -4,33 +4,14 @@ package orderngo.exception;
  *
  * @author grupo1
  */
-public class GestorNotFoundException extends IllegalArgumentException implements IsApenasVisiveisInException
+public class ClienteNotFoundException extends UtilizadorNotFoundException
 {
-    private final String emailProcurado;
-    private final boolean apenasVisiveis;
-
-    public GestorNotFoundException(String emailProcurado, boolean apenasVisiveis)
+    public ClienteNotFoundException(String emailProcurado, boolean apenasVisiveis)
     {
-        super(String.format("Nao existe gestor com email %s", emailProcurado));
-        this.emailProcurado = emailProcurado;
-        this.apenasVisiveis = apenasVisiveis;
+        super(emailProcurado, apenasVisiveis, "cliente");
     }
-    public GestorNotFoundException(String emailProcurado)
+    public ClienteNotFoundException(String emailProcurado)
     {
         this(emailProcurado, true); 
     }
-
-    
-    //<editor-fold defaultstate="collapsed" desc="Getters">
-    public String getEmailProcurado()
-    {
-        return emailProcurado;
-    }
-
-    @Override
-    public boolean isApenasVisiveis()
-    {
-        return apenasVisiveis;
-    }
-    //</editor-fold>
 }
