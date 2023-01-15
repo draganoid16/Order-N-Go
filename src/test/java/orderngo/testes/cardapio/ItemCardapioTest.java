@@ -175,7 +175,7 @@ public class ItemCardapioTest
 
     
     //<editor-fold defaultstate="collapsed" desc="ItemCardapioImpl">
-    public class ItemCardapioImpl extends ItemCardapio
+    public static class ItemCardapioImpl extends ItemCardapio
     {
         public ItemCardapioImpl(Restaurante restaurante, String nome, String detalhes, float precoUnitario)
         {
@@ -183,16 +183,10 @@ public class ItemCardapioTest
         }
         
         @Override
-        public void save() throws SQLException
-        {
-            throw new UnsupportedOperationException("Not supported yet.");
-        }
+        public void save() throws SQLException {}
 
         @Override
-        public void delete() throws SQLException
-        {
-            throw new UnsupportedOperationException("Not supported yet.");
-        }
+        public void delete() throws SQLException {}
     }
     //</editor-fold>
 }

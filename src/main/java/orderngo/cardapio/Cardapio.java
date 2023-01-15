@@ -31,11 +31,19 @@ public class Cardapio implements SavableInDatabase, DeletableInDatabase
     }
 
     
+    //<editor-fold defaultstate="collapsed" desc="Backup">
     private void atualizarCardapioBackup()
     {
         itemsBackup.clear();
         itemsBackup.addAll(items);
     }
+    
+    public void retrocederCardapio()
+    {
+        limparCardapio();
+        items.addAll(itemsBackup);
+    }
+    //</editor-fold>
     
     //<editor-fold defaultstate="collapsed" desc="Adicionar/Remover">
     public void limparCardapio()
