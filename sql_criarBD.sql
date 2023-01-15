@@ -3,8 +3,8 @@ DROP PROCEDURE IF EXISTS removerBD;
 DROP PROCEDURE IF EXISTS limparTabelas;
 
 DROP PROCEDURE IF EXISTS getPedidosFromRestaurante;
-DROP PROCEDURE IF EXISTS getPedidoPratos;
-DROP PROCEDURE IF EXISTS getPedidoBebidas;
+DROP PROCEDURE IF EXISTS getpedidopratos;
+DROP PROCEDURE IF EXISTS getpedidobebidas;
 
 DELIMITER ;;
 CREATE PROCEDURE criarBD()
@@ -101,7 +101,7 @@ BEGIN
         
         CONSTRAINT quantPratoValida CHECK (quantidade > 0),
         
-        CONSTRAINT fkPedidoPrato FOREIGN KEY (nrPedido) REFERENCES pedido(nrPedido),
+        CONSTRAINT fkpedidoprato FOREIGN KEY (nrPedido) REFERENCES pedido(nrPedido),
         CONSTRAINT fkPrato FOREIGN KEY (emailRestaurante, nomePrato) REFERENCES prato(emailRestaurante, nome),
         CONSTRAINT pk PRIMARY KEY (nrPedido, emailRestaurante, nomePrato)
     );
@@ -114,7 +114,7 @@ BEGIN
         
         CONSTRAINT quantBebidaValida CHECK (quantidade > 0),
         
-        CONSTRAINT fkPedidoBebida FOREIGN KEY (nrPedido) REFERENCES pedido(nrPedido),
+        CONSTRAINT fkpedidobebida FOREIGN KEY (nrPedido) REFERENCES pedido(nrPedido),
         CONSTRAINT fkBebida FOREIGN KEY (emailRestaurante, nomeBebida) REFERENCES bebida(emailRestaurante, nome),
         CONSTRAINT pk PRIMARY KEY (nrPedido, emailRestaurante, nomeBebida)
     );
@@ -147,7 +147,7 @@ CREATE PROCEDURE getPedidosFromRestaurante(IN emailRest VARCHAR(100))
 BEGIN
     SELECT DISTINCT ped.*
     FROM pedido ped INNER JOIN (
-        pedidoPrato pprato INNER JOIN pedidoBebida pbebida
+        pedidoprato pprato INNER JOIN pedidobebida pbebida
         ON pprato.emailRestaurante = pbebida.emailRestaurante
     ) ON ped.nrPedido = pprato.nrPedido
     WHERE pprato.emailRestaurante = emailRest
@@ -157,7 +157,7 @@ END;;
 CREATE PROCEDURE getPedidoPratos(IN numeroPedido INT)
 BEGIN
     SELECT prato.*, quantidade
-    FROM pedidoPrato pprato INNER JOIN prato
+    FROM pedidoprato pprato INNER JOIN prato
     ON (pprato.emailRestaurante = prato.emailRestaurante AND nomePrato = nome)
     WHERE (nrPedido = numeroPedido);
 END;;
@@ -165,7 +165,7 @@ END;;
 CREATE PROCEDURE getPedidoBebidas(IN numeroPedido INT)
 BEGIN
     SELECT bebida.*, quantidade
-    FROM pedidoBebida pbebida INNER JOIN bebida
+    FROM pedidobebida pbebida INNER JOIN bebida
     ON (pbebida.emailRestaurante = bebida.emailRestaurante AND nomeBebida = nome)
     WHERE (nrPedido = numeroPedido);
 END;;
