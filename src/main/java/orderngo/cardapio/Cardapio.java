@@ -101,7 +101,7 @@ public class Cardapio implements SavableInDatabase, DeletableInDatabase
     {
         itemsBackup.removeAll(items);
         
-        for (ItemCardapio it : items)
+        for (ItemCardapio it : itemsBackup)
             it.delete();
         
         for (ItemCardapio it : items)
