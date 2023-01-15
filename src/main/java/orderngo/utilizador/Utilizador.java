@@ -66,7 +66,7 @@ public abstract class Utilizador implements SavableInDatabase, DeletableInDataba
 
     public void setTelemovel(String telemovel)
     {
-        if (!telemovel.matches("\\d{9}"))
+        if (telemovel == null || !telemovel.matches("\\d{9}"))
             throw new IllegalArgumentException("Telemovel invalido!");
         
         this.telemovel = telemovel;
