@@ -6,7 +6,6 @@ import orderngo.utilizador.*;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.time.ZoneId;
 
 import java.util.LinkedHashMap;
 import java.util.ArrayList;
