@@ -1,9 +1,8 @@
 package orderngo.userinterface;
 
 import orderngo.cardapio.Bebida;
-import orderngo.cardapio.Cardapio;
-import orderngo.cardapio.ItemCardapio;
 import orderngo.cardapio.Prato;
+import orderngo.pedido.Pedido;
 import orderngo.utilizador.Restaurante;
 import orderngo.utilizador.Utilizador;
 
@@ -17,8 +16,8 @@ import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.net.URI;
 import java.sql.SQLException;
-import java.util.ArrayList;
 
 import static javax.swing.WindowConstants.DISPOSE_ON_CLOSE;
 
@@ -73,6 +72,12 @@ public class GerenteForm {
     private JLabel nomedabebidaLabel;
     private JTextField nomedaBebidaTextField;
     private JLabel helpDescriptionBebida;
+    private JPanel restauranteHolderPanel;
+    private JLabel joaocoelhoimage;
+    private JLabel marciotavaresimage;
+    private JLabel linkedinJoao;
+    private JLabel githubMarcio;
+    private JPanel contactoPanel;
 
     private JLabel helpIcon;
 
@@ -90,6 +95,7 @@ public class GerenteForm {
         mainFrame.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         mainFrame.setVisible(true);
         //setup detalhado
+        Restaurante restaurante = Restaurante.getRestaurante(email);
         restauranteSetup(email);
         //cardapio
         adicionarPratodeSQL(Restaurante.getRestaurante(email));
@@ -556,6 +562,92 @@ public class GerenteForm {
                 }
             }
         });
+        verPedidosButton.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                JComboBox jcb = new JComboBox();
+
+                try {
+                    Pedido[] pedido = Pedido.from(restaurante);
+                    for(int i=0; i< pedido.length;i++){
+                        Pedido ped = Pedido.getPedido(i+1);
+                        ped.fill();
+                        jcb.addItem(pedido[i].getCliente());
+                        jcb.addItem("Numero de Pedido: " + pedido[i].getNrPedido() + " Morada de Entrega: " + pedido[i].getMoradaEntrega());
+                        jcb.addItem("Items do Pedido: " + ped.getItemsPedido());
+                    }
+
+                } catch (SQLException ex) {
+                    throw new RuntimeException(ex);
+                }
+
+                JOptionPane.showMessageDialog(mainFrame, jcb, "Pedidos", JOptionPane.INFORMATION_MESSAGE);
+            }
+        });
+        verListaCompletaButton.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                JComboBox jcb = new JComboBox();
+                try {
+                    Prato[] allPratos = Prato.from(restaurante);
+                    Bebida[] allBebidas = Bebida.from(restaurante);
+                    jcb.addItem("--PRATOS--");
+                    for(int i=0; i< allPratos.length;i++){
+                        jcb.addItem(" Nome: " + allPratos[i].getNome() + " Detalhes: " + allPratos[i].getDetalhes() + " Preço: " + allPratos[i].getPrecoUnitario() + " Tipo de Prato: " + allPratos[i].getTipoPrato() + " Alergias: " + allPratos[i].getAlergenios());
+                    }
+                    jcb.addItem("--BEBIDAS--");
+                    for(int i=0; i< allBebidas.length;i++){
+                        jcb.addItem(" Nome: " + allBebidas[i].getNome() + " Detalhes: " + allBebidas[i].getDetalhes() + " Preço: " + allBebidas[i].getPrecoUnitario() + " Capacidade: " + allBebidas[i].getCapacidadeCL());
+                    }
+
+                } catch (SQLException ex) {
+                    throw new RuntimeException(ex);
+                }
+                JOptionPane.showMessageDialog(mainFrame, jcb, "Todos os Pratos e Bebidas", JOptionPane.INFORMATION_MESSAGE);
+            }
+        });
+        linkedinJoao.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                try {
+                    Desktop desktop = java.awt.Desktop.getDesktop();
+                    URI oURL = new URI(linkedinJoao.getText().trim());
+                    desktop.browse(oURL);
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+            }
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                linkedinJoao.setForeground(Color.green);
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+                linkedinJoao.setForeground(Color.WHITE);
+            }
+        });
+        githubMarcio.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                try {
+                    Desktop desktop = java.awt.Desktop.getDesktop();
+                    URI oURL = new URI(githubMarcio.getText().trim());
+                    desktop.browse(oURL);
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+            }
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                githubMarcio.setForeground(Color.green);
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+                githubMarcio.setForeground(Color.WHITE);
+            }
+        });
     }
 
 
@@ -566,8 +658,8 @@ public class GerenteForm {
         infoPanel.setVisible(false);
         //Restaurante Setup
         Border border = BorderFactory.createLineBorder(Color.white);
-        Utilizador utilizador = Restaurante.getRestaurante(email);
         Restaurante restaurante = Restaurante.getRestaurante(email);
+        Utilizador utilizador = Restaurante.getRestaurante(email);
         usernameCustom.setText(utilizador.getNome());
         restauranteName.setText(utilizador.getNome());
         restauranteName.setBorder(border);
@@ -586,6 +678,8 @@ public class GerenteForm {
         menu2.setBorder(border);
         menu3.setBorder(border);
 
+        contactoPanel.setBorder(border);
+
     }
 
     public Icon resizeImage(Image image, JLabel restauranteImage) {
@@ -593,8 +687,13 @@ public class GerenteForm {
         return new ImageIcon(resizedimg);
     }
 
-    public Icon ImageSize(Image image) {
+    public Icon CardapioImageSize(Image image) {
         Image pratoImage = image.getScaledInstance(350, 250, Image.SCALE_DEFAULT);
+        return new ImageIcon(pratoImage);
+    }
+
+    public Icon InfoSize(Image image) {
+        Image pratoImage = image.getScaledInstance(250, 250, Image.SCALE_DEFAULT);
         return new ImageIcon(pratoImage);
     }
 
@@ -621,21 +720,21 @@ public class GerenteForm {
     }
 
 
-    private int adicionarPratodeSQL(Restaurante restaurante) throws SQLException, IOException {
+    private int adicionarPratodeSQL(Restaurante restaurante) throws SQLException, IOException, ArrayIndexOutOfBoundsException {
         Prato[] pratos = Prato.from(restaurante);
 
-        for (int i = 0; i < 3; i++) { //alterar para 99
+        for (int i = 0; i < 3; i++) {
             JLabel[] pratosVariaveis = {prato1, prato3, prato2};
             String tipoprato = String.valueOf(pratos[i].getNome());
             pratosVariaveis[i].setText(tipoprato);
 
             Image img = pratos[i].getImagem();
             if (img != null) {
-                Icon icon = ImageSize(img);
+                Icon icon = CardapioImageSize(img);
                 pratosVariaveis[i].setIcon(icon);
             }else{
             BufferedImage img2 = ImageIO.read(new File("src\\imageresources\\noimagefound.jpg"));
-            Icon icon = ImageSize(img2);
+            Icon icon = CardapioImageSize(img2);
             pratosVariaveis[i].setIcon(icon);
         }
 
@@ -644,9 +743,8 @@ public class GerenteForm {
         return pratos.length;
     }
 
-    //TODO: adicionar TODAS as bebidas e pratos
 
-    private void adicionarBebidadeSQL(Restaurante restaurante) throws SQLException, IOException {
+    private void adicionarBebidadeSQL(Restaurante restaurante) throws SQLException, IOException, ArrayIndexOutOfBoundsException {
         Bebida[] bebidas = Bebida.from(restaurante);
 
         for (int i = 0; i < 3; i++) { //alterar para 99
@@ -657,11 +755,11 @@ public class GerenteForm {
             Image img = bebidas[i].getImagem();
             //if not null setup X, else setup img
             if (img != null) {
-                Icon icon = ImageSize(img);
+                Icon icon = CardapioImageSize(img);
                 bebidasVariaveis[i].setIcon(icon);
             }else{
                 BufferedImage img2 = ImageIO.read(new File("src\\imageresources\\noimagefound.jpg"));
-                Icon icon = ImageSize(img2);
+                Icon icon = CardapioImageSize(img2);
                 bebidasVariaveis[i].setIcon(icon);
             }
 
@@ -710,6 +808,16 @@ public class GerenteForm {
         bebida2 = new JLabel(new ImageIcon("src\\imageresources\\noimagefound.jpg"));
         bebida3 = new JLabel(new ImageIcon("src\\imageresources\\noimagefound.jpg"));
         comboBoxTipoPrato = new JComboBox<Prato.TipoPrato>();
+
+        //infopanel
+        ImageIcon imgjoao = new ImageIcon("src\\imageresources\\joaocoelho.jpg");
+        ImageIcon resizedImageJoao = (ImageIcon) InfoSize(imgjoao.getImage());
+        ImageIcon imgmarcio = new ImageIcon("src\\imageresources\\marciotavares.jpg");
+        ImageIcon resizedImageMarcio = (ImageIcon) InfoSize(imgmarcio.getImage());
+
+
+        joaocoelhoimage = new JLabel(new ImageIcon(resizedImageJoao.getImage()));
+        marciotavaresimage = new JLabel(new ImageIcon(resizedImageMarcio.getImage()));
 
     }
 }
