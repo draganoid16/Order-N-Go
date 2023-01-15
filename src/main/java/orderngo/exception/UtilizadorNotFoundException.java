@@ -1,5 +1,7 @@
 package orderngo.exception;
 
+import orderngo.exception.IsApenasVisiveisInException;
+
 /**
  *
  * @author grupo1

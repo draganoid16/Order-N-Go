@@ -36,7 +36,7 @@ public class GestorOrderAndGo extends Utilizador
     
     
     //<editor-fold defaultstate="collapsed" desc="BuscarDados">
-    private static GestorOrderAndGo criarGestor(ResultSet result) throws SQLException
+    public static GestorOrderAndGo criarGestor(ResultSet result) throws SQLException
     {
         GestorOrderAndGo g = new GestorOrderAndGo(
             result.getString("email"),

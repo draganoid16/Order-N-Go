@@ -8,6 +8,8 @@ import orderngo.pedido.*;
 import orderngo.utilizador.*;
 import orderngo.utils.*;
 
+import java.util.Map;
+
 import java.sql.SQLException;
 
 public class TestarAlteracoes 
@@ -46,6 +48,19 @@ public class TestarAlteracoes
         System.out.println(sb);
     }
     
+    private static void printMap(Map<?, ?> map)
+    {
+        StringBuilder sb = new StringBuilder("[\n");
+        for (Map.Entry entr : map.entrySet())
+        {
+            sb.append("  ").append(entr.getKey());
+            sb.append(" -> ").append(entr.getValue()).append('\n');
+        }
+        sb.append("]\n");
+        
+        System.out.println(sb);
+    }
+    
     private static void printObjects(Object... objs)
     {
         StringBuilder sb = new StringBuilder();
@@ -58,10 +73,11 @@ public class TestarAlteracoes
     
     public void main()
     {   
+        Restaurante rest = new Restaurante("r1@r1.r1", "r1", "111111111", "Morada 1");
+                
         Cliente cliente = new Cliente("c1@c1.c1", "c1", "111111111", "Morada 1", "111111111");
         cliente.setPassword("1".toCharArray());
 
-        
         try
         {        
             /* Lançam exceções (não será implementado neste projeto)
@@ -69,19 +85,51 @@ public class TestarAlteracoes
             cliente.delete(); // throw UnsupportedOperationException
             */
             
-            // Busca dados visiveis da BD
+            // Obtem clientes
             System.out.println("Cliente.all() [apenasVisiveis = true]");
             printArray(Cliente.all());
             
-            // Busca dados da BD (visiveis/invisiveis "removidos")
             System.out.println("Cliente.all(false)");
             printArray(Cliente.all(false));
             
             // Obtem cliente
             cliente = Cliente.getCliente(cliente.getEmail());
             
-            System.out.println("toString() - Cliente");
-            printObjects(cliente);
+            
+            System.out.println();
+            
+            // Obtem pedidos
+            System.out.println("Pedido.from(restaurante)");
+            printArray(Pedido.from(rest));
+
+            System.out.println("Pedido.from(cliente)");
+            printArray(Pedido.from(cliente));
+            
+            // Obtem pedido
+            Pedido ped = Pedido.getPedido(1);
+            ped.fill();
+            
+            System.out.println("ped.getItemsPedido()");
+            var itemsPedido = ped.getItemsPedido();
+            printMap(itemsPedido);
+            
+            System.out.println("ped.getItemsPedido(restaurante)");
+            printMap(ped.getItemsPedido(rest)); 
+                    
+            
+            System.out.println();
+            
+            System.out.println("Pedido.getPratosItems(itemsPedido)");
+            printMap(Pedido.getPratosItems(itemsPedido)); 
+            
+            System.out.println("Pedido.getBebidasItems(itemsPedido)");
+            printMap(Pedido.getBebidasItems(itemsPedido)); 
+            
+            
+            System.out.println();
+            
+            System.out.println("toString() - Cliente, Pedido");
+            printObjects(cliente, ped);
         }
         catch (SQLException sqle)
         {

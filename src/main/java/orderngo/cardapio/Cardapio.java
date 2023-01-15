@@ -80,22 +80,25 @@ public class Cardapio implements SavableInDatabase, DeletableInDatabase
             .toArray(Bebida[]::new);
     }
     //</editor-fold>
+
     
-    
+    //<editor-fold defaultstate="collapsed" desc="BuscarDados">
     public void fill(boolean apenasVisiveis) throws SQLException
     {
         limparCardapio();
         
         Collections.addAll(items, Prato.from(restaurante, apenasVisiveis));
         Collections.addAll(items, Bebida.from(restaurante, apenasVisiveis));
-    
+        
         atualizarCardapioBackup();
     }
     public void fill() throws SQLException
     {
         fill(true);
     }
-
+    //</editor-fold>
+    
+    
     @Override
     public void save() throws SQLException
     {

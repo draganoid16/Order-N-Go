@@ -52,7 +52,7 @@ public class Restaurante extends Utilizador
 
     
     //<editor-fold defaultstate="collapsed" desc="BuscarDados">
-    private static Restaurante criarRestaurante(ResultSet result) throws SQLException
+    public static Restaurante criarRestaurante(ResultSet result) throws SQLException
     {
         Restaurante r = new Restaurante(
             result.getString("email"),

@@ -35,7 +35,7 @@ public class Cliente extends Utilizador
 
     
     //<editor-fold defaultstate="collapsed" desc="BuscarDados">
-    private static Cliente criarCliente(ResultSet result) throws SQLException
+    public static Cliente criarCliente(ResultSet result) throws SQLException
     {
         Cliente c = new Cliente(
             result.getString("email"),

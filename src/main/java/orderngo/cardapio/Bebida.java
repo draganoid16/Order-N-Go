@@ -39,7 +39,7 @@ public class Bebida extends ItemCardapio
     
     
     //<editor-fold defaultstate="collapsed" desc="BuscarDados">
-    private static Bebida criarBebida(Restaurante restaurante, ResultSet result) throws SQLException
+    public static Bebida criarBebida(Restaurante restaurante, ResultSet result) throws SQLException
     {
         Bebida b = new Bebida(
             restaurante,

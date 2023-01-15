@@ -67,7 +67,7 @@ public class Prato extends ItemCardapio
     
     
     //<editor-fold defaultstate="collapsed" desc="BuscarDados">
-    private static Prato criarPrato(Restaurante restaurante, ResultSet result) throws SQLException
+    public static Prato criarPrato(Restaurante restaurante, ResultSet result) throws SQLException
     {
         Prato p = new Prato(
             restaurante,

@@ -2,6 +2,10 @@ DROP PROCEDURE IF EXISTS criarBD;
 DROP PROCEDURE IF EXISTS removerBD;
 DROP PROCEDURE IF EXISTS limparTabelas;
 
+DROP PROCEDURE IF EXISTS getPedidosFromRestaurante;
+DROP PROCEDURE IF EXISTS getPedidoPratos;
+DROP PROCEDURE IF EXISTS getPedidoBebidas;
+
 DELIMITER ;;
 CREATE PROCEDURE criarBD()
 BEGIN
@@ -139,6 +143,33 @@ CALL removerBD();
 CALL criarBD();
 
 DELIMITER ;;
+CREATE PROCEDURE getPedidosFromRestaurante(IN emailRest VARCHAR(100))
+BEGIN
+    SELECT DISTINCT ped.*
+    FROM pedido ped INNER JOIN (
+        pedidoPrato pprato INNER JOIN pedidoBebida pbebida
+        ON pprato.emailRestaurante = pbebida.emailRestaurante
+    ) ON ped.nrPedido = pprato.nrPedido
+    WHERE pprato.emailRestaurante = emailRest
+    ORDER BY nrPedido;
+END;;
+
+CREATE PROCEDURE getPedidoPratos(IN numeroPedido INT)
+BEGIN
+    SELECT prato.*, quantidade
+    FROM pedidoPrato pprato INNER JOIN prato
+    ON (pprato.emailRestaurante = prato.emailRestaurante AND nomePrato = nome)
+    WHERE (nrPedido = numeroPedido);
+END;;
+
+CREATE PROCEDURE getPedidoBebidas(IN numeroPedido INT)
+BEGIN
+    SELECT bebida.*, quantidade
+    FROM pedidoBebida pbebida INNER JOIN bebida
+    ON (pbebida.emailRestaurante = bebida.emailRestaurante AND nomeBebida = nome)
+    WHERE (nrPedido = numeroPedido);
+END;;
+
 CREATE TRIGGER restVisivel
 AFTER UPDATE ON restaurante
 FOR EACH ROW

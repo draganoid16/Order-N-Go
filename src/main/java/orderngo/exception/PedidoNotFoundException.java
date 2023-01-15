@@ -4,41 +4,22 @@ package orderngo.exception;
  *
  * @author grupo1
  */
-public class ItemCardapioNotFoundException extends IllegalArgumentException implements IsApenasVisiveisInException
+public class PedidoNotFoundException extends IllegalArgumentException //implements IsApenasVisiveisInException
 {
-    private final String emailRestauranteProcurado;
-    private final String nomeProcurado;
-    private final boolean apenasVisiveis;
+    private final int nrPedidoProcurado;
 
-    public ItemCardapioNotFoundException(String emailRestauranteProcurado, String nomeProcurado, boolean apenasVisiveis)
+    public PedidoNotFoundException(int nrPedidoProcurado)
     {
-        super(String.format("Nao existe item com emailRestaurante %s e nome %s", emailRestauranteProcurado, nomeProcurado));
+        super(String.format("Nao existe pedido com nr pedido %d", nrPedidoProcurado));
         
-        this.emailRestauranteProcurado = emailRestauranteProcurado;
-        this.nomeProcurado = nomeProcurado;
-        this.apenasVisiveis = apenasVisiveis;
-    }
-    public ItemCardapioNotFoundException(String emailRestauranteProcurado, String nomeProcurado)
-    {
-        this(emailRestauranteProcurado, nomeProcurado, true);
+        this.nrPedidoProcurado = nrPedidoProcurado;
     }
 
     
     //<editor-fold defaultstate="collapsed" desc="Getters">
-    public String getEmailRestauranteProcurado()
+    public int getNrPedidoProcurado()
     {
-        return emailRestauranteProcurado;
-    }
-
-    public String getNomeProcurado()
-    {
-        return nomeProcurado;
-    }
-    
-    @Override
-    public boolean isApenasVisiveis()
-    {
-        return apenasVisiveis;
+        return nrPedidoProcurado;
     }
     //</editor-fold>
 }
