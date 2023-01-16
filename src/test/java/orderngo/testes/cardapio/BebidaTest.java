@@ -17,7 +17,6 @@ import nl.jqno.equalsverifier.EqualsVerifier;
 import nl.jqno.equalsverifier.Warning;
 
 import java.sql.SQLException;
-import orderngo.cardapio.Bebida;
 import orderngo.exception.ItemCardapioNotFoundException;
 import orderngo.exception.RestauranteNotFoundException;
 
