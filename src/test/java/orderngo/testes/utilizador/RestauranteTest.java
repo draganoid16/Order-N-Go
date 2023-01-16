@@ -181,7 +181,7 @@ public class RestauranteTest extends TestesComBD
     @Test
     public void testAll_apenasVisivel() throws SQLException
     {
-        // from (apenasVisivel = true)
+        // all (apenasVisivel = true)
         Restaurante[] expResult = new Restaurante[]{
             new Restaurante("visivel@rest.com", "visivel", "111111111", "morada visivel")
         };
@@ -196,7 +196,7 @@ public class RestauranteTest extends TestesComBD
     @Test
     public void testAll() throws SQLException
     {
-        // from (apenasVisivel = true)
+        // all (apenasVisivel = false)
         Restaurante[] expResult = new Restaurante[]{
             new Restaurante("visivel@rest.com", "visivel", "111111111", "morada visivel"),
             new Restaurante("invisivel@rest.com", "invisivel", "000000000", "morada invisivel")
@@ -232,7 +232,7 @@ public class RestauranteTest extends TestesComBD
     {
         // getRestaurate (restaurate existe)
         String email = "invisivel@rest.com";
-        Restaurante expResult = new Restaurante("invisivel@rest.com", "invisivel", "000000000", "morada invisivel");;
+        Restaurante expResult = new Restaurante("invisivel@rest.com", "invisivel", "000000000", "morada invisivel");
         
         Restaurante result = Restaurante.getRestaurante(email, false);
         assertEquals(expResult, result);
