@@ -1,7 +1,6 @@
 package orderngo.testes.utilizador;
 
 import orderngo.testes.basedados.TestesComBD;
-import orderngo.basedados.ConectorBD;
 
 import orderngo.utilizador.Cliente;
 
@@ -116,7 +115,7 @@ public class ClienteTest extends TestesComBD
      */
     @Test
     @SuppressWarnings("ThrowableResultIgnored")
-    public void testGetGestor_naoExiste() throws SQLException
+    public void testGetCliente_naoExiste() throws SQLException
     {
         // getCliente (gestor nao existe)
         String email = "invisivel@cli.com";
@@ -130,7 +129,7 @@ public class ClienteTest extends TestesComBD
      * Test of getCliente method, of class Cliente.
      */
     @Test
-    public void testGetGestor_existe() throws SQLException
+    public void testGetCliente_existe() throws SQLException
     {
         // getGestor (gestor existe)
         String email = "invisivel@cli.com";
