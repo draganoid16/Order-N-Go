@@ -78,6 +78,10 @@ public class GerenteForm {
     private JLabel linkedinJoao;
     private JLabel githubMarcio;
     private JPanel contactoPanel;
+    private JButton ENVIAREMAILButton;
+    private JLabel ruivieiraImage;
+    private JLabel sergioferreiraImage;
+    private JLabel gustavovitorinoImage;
 
     private JLabel helpIcon;
 
@@ -93,6 +97,7 @@ public class GerenteForm {
         mainFrame.setMinimumSize(new Dimension(1050, 1050));
         mainFrame.setLocationRelativeTo(parent);
         mainFrame.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+        mainFrame.setExtendedState(JFrame.MAXIMIZED_BOTH);
         mainFrame.setVisible(true);
         //setup detalhado
         Restaurante restaurante = Restaurante.getRestaurante(email);
@@ -648,6 +653,21 @@ public class GerenteForm {
                 githubMarcio.setForeground(Color.WHITE);
             }
         });
+        ENVIAREMAILButton.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                Desktop desktop = null;
+                if (Desktop.isDesktopSupported()) {
+                    desktop = Desktop.getDesktop();
+                }
+
+                try {
+                    desktop.mail();
+                } catch (IOException ex) {
+                    throw new RuntimeException(ex);
+                }
+            }
+        });
     }
 
 
@@ -723,8 +743,8 @@ public class GerenteForm {
     private int adicionarPratodeSQL(Restaurante restaurante) throws SQLException, IOException, ArrayIndexOutOfBoundsException {
         Prato[] pratos = Prato.from(restaurante);
 
-        for (int i = 0; i < 3; i++) {
-            JLabel[] pratosVariaveis = {prato1, prato3, prato2};
+        for (int i = 0; i < pratos.length; i++) {
+            JLabel[] pratosVariaveis = {prato1, prato2, prato3};
             String tipoprato = String.valueOf(pratos[i].getNome());
             pratosVariaveis[i].setText(tipoprato);
 
@@ -743,11 +763,11 @@ public class GerenteForm {
         return pratos.length;
     }
 
-
+  // TODO: REWRITE
     private void adicionarBebidadeSQL(Restaurante restaurante) throws SQLException, IOException, ArrayIndexOutOfBoundsException {
         Bebida[] bebidas = Bebida.from(restaurante);
 
-        for (int i = 0; i < 3; i++) { //alterar para 99
+        for (int i = 0; i < bebidas.length; i++) { //alterar para 99
             JLabel[] bebidasVariaveis = {bebida1, bebida2, bebida3};
             String tipoprato = String.valueOf(bebidas[i].getNome());
             bebidasVariaveis[i].setText(tipoprato);
@@ -814,10 +834,15 @@ public class GerenteForm {
         ImageIcon resizedImageJoao = (ImageIcon) InfoSize(imgjoao.getImage());
         ImageIcon imgmarcio = new ImageIcon("src\\imageresources\\marciotavares.jpg");
         ImageIcon resizedImageMarcio = (ImageIcon) InfoSize(imgmarcio.getImage());
+        ImageIcon noimage = new ImageIcon("src\\imageresources\\noimagefound.jpg");
+        ImageIcon resizedNoImage = (ImageIcon) InfoSize(noimage.getImage());
 
 
         joaocoelhoimage = new JLabel(new ImageIcon(resizedImageJoao.getImage()));
         marciotavaresimage = new JLabel(new ImageIcon(resizedImageMarcio.getImage()));
+        ruivieiraImage = new JLabel(new ImageIcon(resizedNoImage.getImage()));
+        sergioferreiraImage = new JLabel(new ImageIcon(resizedNoImage.getImage()));
+        gustavovitorinoImage = new JLabel(new ImageIcon(resizedNoImage.getImage()));
 
     }
 }
