@@ -111,7 +111,7 @@
             </constraints>
             <properties>
               <font name="Arial Black" size="20" style="0"/>
-              <text value="r1@r1.r1"/>
+              <text value="g1@g1.g1"/>
             </properties>
           </component>
           <component id="1a8f3" class="javax.swing.JLabel">
@@ -167,7 +167,7 @@
               <font name="Arial Black" size="18" style="0"/>
               <hideActionText value="false"/>
               <horizontalAlignment value="0"/>
-              <selected value="true"/>
+              <selected value="false"/>
               <text value="Restaurante"/>
             </properties>
           </component>
@@ -179,6 +179,7 @@
               <background color="-12365736"/>
               <font name="Arial Black" size="18" style="0"/>
               <horizontalAlignment value="0"/>
+              <selected value="true"/>
               <text value="GestorONG"/>
             </properties>
           </component>

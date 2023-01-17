@@ -1,6 +1,5 @@
 package orderngo.userinterface;
 
-import orderngo.App;
 import orderngo.exception.RestauranteNotFoundException;
 import orderngo.utilizador.GestorOrderAndGo;
 import orderngo.utilizador.Restaurante;
@@ -10,7 +9,6 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
-import java.io.IOException;
 import java.sql.SQLException;
 
 public class LoginForm extends JDialog {
@@ -49,7 +47,7 @@ public class LoginForm extends JDialog {
 
                         //GestorForm que adiciona/remove restaurantes de agueda da base de dados
                     } else if (GestorOrderAndGo.validarCredenciais(email, password) && gestorONGRadioButton.isSelected()) {
-                        App.GestorMenu();
+                        GestorForm gestorForm = new GestorForm(null,email);
                         loginFrame.dispatchEvent(new WindowEvent(loginFrame, WindowEvent.WINDOW_CLOSING));
 
                     } else {
@@ -59,8 +57,6 @@ public class LoginForm extends JDialog {
 
                 } catch (SQLException ex) {
                     JOptionPane.showMessageDialog(loginFrame, "Erro! Conexão a Base de Dados não foi estabelecido!", "Conexão não Estabelecida!", JOptionPane.ERROR_MESSAGE);
-                    throw new RuntimeException(ex);
-                } catch (IOException ex) {
                     throw new RuntimeException(ex);
                 }
 
