@@ -15,7 +15,6 @@ import java.sql.SQLException;
  *
  * @author grupo1
  */
-
 public abstract class TestesComBD
 {
     private static boolean isBDCreated = false;

@@ -15,7 +15,7 @@ import java.sql.SQLException;
 
 /**
  *
- * @author mahta
+ * @author grupo1
  */
 public class ClienteTest extends TestesComBD
 {

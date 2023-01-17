@@ -146,15 +146,13 @@ public class CardapioTest extends TestesComBD
             new Bebida(rest, "ItemCardapio", "ItemCardapio", 69, 69)
         };
         
-        Prato[] expPratos = Arrays.stream(expItems)
-            .filter(it -> it instanceof Prato)
-            .map(p -> (Prato)p)
-            .toArray(Prato[]::new);
+        Prato[] expPratos = new Prato[]{
+            new Prato(rest, "ItemCardapio", "ItemCardapio", 69, TipoPrato.CARNE, "")
+        };
         
-        Bebida[] expBebidas = Arrays.stream(expItems)
-            .filter(it -> it instanceof Bebida)
-            .map(b -> (Bebida)b)
-            .toArray(Bebida[]::new);
+        Bebida[] expBebidas = new Bebida[]{
+            new Bebida(rest, "ItemCardapio", "ItemCardapio", 69, 69)
+        };
         
         
         // adicionar items

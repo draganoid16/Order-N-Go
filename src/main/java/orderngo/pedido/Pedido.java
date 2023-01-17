@@ -162,9 +162,6 @@ public class Pedido
     
     public void removerItem(ItemCardapio item)
     {
-        if (item == null || !itemsPedido.containsKey(item))
-            throw new IllegalArgumentException("Item invalido!");
-            
         itemsPedido.remove(item);
     }
     //</editor-fold>
@@ -288,7 +285,7 @@ public class Pedido
     }
     //</editor-fold>
     
-    public static Pedido getPedido(int nrPedido) throws SQLException, PedidoNotFoundException, ClienteNotFoundException
+    public static Pedido getPedido(int nrPedido) throws SQLException, PedidoNotFoundException
     {
         if (nrPedido <= 0)
             throw new IllegalArgumentException("Numero do pedido invalido!");
@@ -310,6 +307,10 @@ public class Pedido
                 Cliente.getCliente(emailCliente, false),
                 result
             );
+        }
+        catch (ClienteNotFoundException cnfe)
+        {
+            throw new PedidoNotFoundException(nrPedido);
         }
         
         return p;
