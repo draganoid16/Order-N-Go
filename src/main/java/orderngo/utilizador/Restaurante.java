@@ -1,17 +1,16 @@
 package orderngo.utilizador;
 
-import orderngo.cardapio.Cardapio;
 import orderngo.basedados.ConectorBD;
-import orderngo.utils.PasswordUtils;
+import orderngo.cardapio.Cardapio;
+import orderngo.exception.RestauranteNotFoundException;
 import orderngo.utils.ImagemUtils;
+import orderngo.utils.PasswordUtils;
 
 import java.awt.image.BufferedImage;
-import java.util.ArrayList;
 import java.sql.ResultSet;
-import java.util.Arrays;
-
 import java.sql.SQLException;
-import orderngo.exception.RestauranteNotFoundException;
+import java.util.ArrayList;
+import java.util.Arrays;
 
 /**
  *
@@ -131,14 +130,13 @@ public class Restaurante extends Utilizador
         {
             // verifica se o restaurante existe (visivel ou invisivel)
             getRestaurante(getEmail(), false);
-            
+
             // update
-            var ps = cbd.prepareStatement("UPDATE restaurante SET telemovel = ?, morada = ?, imagem = ?, palavraPasse = ?, visivel = true WHERE email = ?");
+            var ps = cbd.prepareStatement("UPDATE restaurante SET telemovel = ?, morada = ?, imagem = ?, visivel = true WHERE email = ?");
             ps.setString(1, getTelemovel());
             ps.setString(2, getMorada());
-            ps.setBlob(3, ImagemUtils.imageToInputStream(imagem));
-            ps.setString(4, getPasswordEncriptada());
-            ps.setString(5, getEmail());
+            ps.setBlob(3, ImagemUtils.imageToInputStream(getImagem()));
+            ps.setString(4, getEmail());
             
             cbd.executePreparedUpdate(ps);
         }
@@ -150,7 +148,7 @@ public class Restaurante extends Utilizador
             ps.setString(2, getNome());
             ps.setString(3, getTelemovel());
             ps.setString(4, getMorada());
-            ps.setBlob(5, ImagemUtils.imageToInputStream(imagem));
+            ps.setBlob(5, ImagemUtils.imageToInputStream(getImagem()));
             ps.setString(6, getPasswordEncriptada());
 
             cbd.executePreparedUpdate(ps);

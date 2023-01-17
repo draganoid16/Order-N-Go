@@ -2,14 +2,22 @@ package orderngo.userinterface;
 
 
 import orderngo.basedados.ConectorBD;
-import orderngo.utilizador.Utilizador;
+import orderngo.utilizador.Restaurante;
+import orderngo.utils.ImagemUtils;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -24,17 +32,27 @@ import static javax.swing.WindowConstants.DISPOSE_ON_CLOSE;
         private JButton btnAtualizar,btnEliminar,cancelarButton,btnNovo;
         private JScrollPane RestaurantField;
         private JList restauranteList;
+        private JLabel restauranteImg;
+        private JLabel labelImageRest;
+        private JLabel lbteste;
+        private JCheckBox visivelCheckBox;
         private final ArrayList<String> rests = new ArrayList<>();
         private final ArrayList<String> restemails = new ArrayList<>();
         private String[] str;
         private String selectEmail;
+        private BufferedImage imageRestaurante;
+        private final BufferedImage[] bi = new BufferedImage[1];
 
         public GestorForm(JFrame parent, String email) throws SQLException {
             JFrame mainFrame = new JFrame();
             mainFrame.setTitle("Order-N-Go Gestor");
             mainFrame.setContentPane(gestorPanel);
             carregaRestaurante();
-            mainFrame.setMinimumSize(new Dimension(1050, 1050));
+            BufferedImage imagem = ImagemUtils.ficheiroToImage("src//imageresources//selectImage.jpg");
+            Image resizedimg = imagem.getScaledInstance(170, 170, Image.SCALE_SMOOTH);
+            Icon icon = new ImageIcon(resizedimg);
+            restauranteImg.setIcon(icon);
+            mainFrame.setMinimumSize(new Dimension(950, 750));
             mainFrame.setLocationRelativeTo(parent);
             mainFrame.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
             mainFrame.setVisible(true);
@@ -70,18 +88,11 @@ import static javax.swing.WindowConstants.DISPOSE_ON_CLOSE;
                             JOptionPane.YES_NO_OPTION,
                             JOptionPane.QUESTION_MESSAGE);
                     if (result == JOptionPane.YES_OPTION) {
-                        NomeTextField.setText("");
-                        emailTextField.setText("");
-                        moradaTextField.setText("");
-                        telemovelTextField.setText("");
-                        passwordPasswordField.setText("");
-                        NomeTextField.setVisible(false);
-                        lbNome.setVisible(false);
-                        lbEmail.setVisible(false);
-                        emailTextField.setVisible(false);
-                        lbPassword.setVisible(false);
-                        passwordPasswordField.setVisible(false);
-                        restauranteList.clearSelection();
+                        imageRestaurante = ImagemUtils.ficheiroToImage("src//imageresources//selectImage.jpg");
+                        Image resizedimg = imageRestaurante.getScaledInstance(160, 160, Image.SCALE_SMOOTH);
+                        Icon icon = new ImageIcon(resizedimg);
+                        restauranteImg.setIcon(icon);
+                        clearFields();
                     }
                 }
             });
@@ -93,35 +104,21 @@ import static javax.swing.WindowConstants.DISPOSE_ON_CLOSE;
                                 JOptionPane.YES_NO_OPTION,
                                 JOptionPane.QUESTION_MESSAGE);
                         if (result == JOptionPane.YES_OPTION) {
-                            String nome = str[restauranteList.getSelectedIndex()];
                             String telemovel = telemovelTextField.getText();
                             String morada = moradaTextField.getText();
-                            Utilizador utilizador = new Utilizador(selectEmail,nome,telemovel,morada) {
-                                @Override
-                                public void delete() throws SQLException {
-
+                            try {
+                                Restaurante rest = Restaurante.getRestaurante(selectEmail);
+                                rest.setTelemovel(telemovel);
+                                rest.setMorada(morada);
+                                if(bi[0]!=null) {
+                                    rest.setImagem(bi[0]);
                                 }
-
-                                @Override
-                                public void save() throws SQLException {
-
-                                }
-                            };
-                                try {
-                                    var cbd = ConectorBD.getInstance();
-                                    var ps = cbd.prepareStatement("UPDATE restaurante SET telemovel = ?, morada = ? ,visivel = true WHERE email = ?");
-                                    ps.setString(1, utilizador.getTelemovel());
-                                    ps.setString(2, utilizador.getMorada());
-                                    //ps.setBlob(3, ImagemUtils.imageToInputStream(imagem));
-                                    //ps.setString(4, getPasswordEncriptada());
-                                    ps.setString(3, selectEmail);
-                                    cbd.executePreparedUpdate(ps);
-                                } catch (SQLException sqlException) {
-                                    System.out.println(sqlException);
-                                }
-                                telemovelTextField.setText("");
-                                moradaTextField.setText("");
-                                restauranteList.clearSelection();
+                                rest.save();
+                            }catch(SQLException sqlException){
+                                throw new RuntimeException(sqlException);
+                            }
+                            clearFields();
+                            carregaRestaurante();
                         }
                     } else if (btnAtualizar.getText().equals("Guardar")) {
                         int result = JOptionPane.showConfirmDialog(parent, "Deseja inserir dados do restaurante?", "Novo Restaurante",
@@ -132,43 +129,20 @@ import static javax.swing.WindowConstants.DISPOSE_ON_CLOSE;
                             String nome = NomeTextField.getText();
                             String telemovel = telemovelTextField.getText();
                             String morada = moradaTextField.getText();
-                            Utilizador utilizador = new Utilizador(email,nome,telemovel,morada) {
-                                @Override
-                                public void delete() throws SQLException {
-
-                                }
-
-                                @Override
-                                public void save() throws SQLException {
-
-                                }
-                            };
-                            utilizador.setPassword(passwordPasswordField.getPassword());
+                            char[] password = passwordPasswordField.getPassword();
                             try {
-                                var cbd = ConectorBD.getInstance();
-                                var ps = cbd.prepareStatement("INSERT INTO restaurante(email, nome, telemovel, morada, palavraPasse) VALUES (?, ?, ?, ?, ?)");
-                                ps.setString(1, utilizador.getEmail());
-                                ps.setString(2, utilizador.getNome());
-                                ps.setString(3, utilizador.getTelemovel());
-                                ps.setString(4, utilizador.getMorada());
-                                //ps.setBlob(5, ImagemUtils.imageToInputStream(imagem));
-                                ps.setString(5, utilizador.getPasswordEncriptada());
+                                Restaurante restaurante = new Restaurante(email,nome,telemovel,morada);
+                                restaurante.setPassword(password);
+                                if(bi[0]!=null) {
+                                    restaurante.setImagem(bi[0]);
+                                }
+                                restaurante.save();
 
-                                cbd.executePreparedUpdate(ps);
-                                System.out.println(utilizador.getPasswordEncriptada());
-                                telemovelTextField.setText("");
-                                moradaTextField.setText("");
-                                restauranteList.clearSelection();
                             }catch(SQLException sqlException){
-                                System.out.println(sqlException);
+                                throw new RuntimeException(sqlException);
                             }
                         }
-                        NomeTextField.setVisible(false);
-                        lbNome.setVisible(false);
-                        lbEmail.setVisible(false);
-                        emailTextField.setVisible(false);
-                        lbPassword.setVisible(false);
-                        passwordPasswordField.setVisible(false);
+                        clearFields();
                         carregaRestaurante();
                     }
                 }
@@ -181,14 +155,9 @@ import static javax.swing.WindowConstants.DISPOSE_ON_CLOSE;
                             JOptionPane.QUESTION_MESSAGE);
                     if (result == JOptionPane.YES_OPTION) {
                         try {
-                            var cbd = ConectorBD.getInstance();
-                            var ps = cbd.prepareStatement("DELETE FROM restaurante where email=?");
-                            ps.setString(1, selectEmail);
-
-                            cbd.executePreparedUpdate(ps);
-                            telemovelTextField.setText("");
-                            moradaTextField.setText("");
-                            restauranteList.clearSelection();
+                            Restaurante rest = Restaurante.getRestaurante(selectEmail);
+                            rest.delete();
+                            clearFields();
                             carregaRestaurante();
                         } catch (SQLException sqlException) {
                             System.out.println(sqlException);
@@ -202,22 +171,53 @@ import static javax.swing.WindowConstants.DISPOSE_ON_CLOSE;
                     if (!restauranteList.isSelectionEmpty()) {
                         selectEmail = restemails.get(restauranteList.getSelectedIndex());
                         try {
-                            var cbd = ConectorBD.getInstance();
-                            var ps = cbd.prepareStatement("SELECT * FROM restaurante WHERE email=? AND visivel = true");
-
-                            ps.setString(1, restemails.get(restauranteList.getSelectedIndex()));
-                            try (ResultSet result = cbd.executePreparedQuery(ps)) {
-                                while (result.next()) {
-                                    moradaTextField.setText(result.getString("morada"));
-                                    telemovelTextField.setText((result.getString("telemovel")));
-                                }
+                            Restaurante rest = Restaurante.getRestaurante(selectEmail);
+                            moradaTextField.setText(rest.getMorada());
+                            telemovelTextField.setText(rest.getTelemovel());
+                            BufferedImage imagem = rest.getImagem();
+                            Image resizedimg;
+                            if (imagem != null) {
+                                resizedimg = imagem.getScaledInstance(160,160,Image.SCALE_SMOOTH);
+                            }else {
+                                imagem = ImagemUtils.ficheiroToImage("src//imageresources//noimagefound.jpg");
+                                resizedimg = imagem.getScaledInstance(160, 160, Image.SCALE_SMOOTH);
                             }
+                            Icon icon = new ImageIcon(resizedimg);
+                            restauranteImg.setIcon(icon);
                         } catch (SQLException sqlException) {
                             System.out.println(sqlException);
                         }
                     }
                 }
             });
+            restauranteImg.addMouseListener(new MouseAdapter() {
+                @Override
+                public void mouseClicked(MouseEvent e) {
+                    bi[0] = escolherImagem();
+                    Image resizedimg = bi[0].getScaledInstance(160, 160, Image.SCALE_SMOOTH);
+                    Icon icon = new ImageIcon(resizedimg);
+                    restauranteImg.setIcon(icon);
+                }
+            });
+        }
+        public BufferedImage escolherImagem(){
+            JFileChooser file = new JFileChooser();
+            file.setDialogTitle("Escolha a Imagem");
+            file.setCurrentDirectory(new File(System.getProperty("user.home")));
+            FileNameExtensionFilter filter = new FileNameExtensionFilter("*images", "jpg", "png");
+            file.addChoosableFileFilter(filter);
+            BufferedImage bi;
+            int result = file.showSaveDialog(null);
+            if(result == JFileChooser.APPROVE_OPTION){
+                File selectedfile = file.getSelectedFile();
+                try {
+                    bi = ImageIO.read(selectedfile);
+                    return bi;
+                }catch(IOException e){
+                    e.getStackTrace();
+                }
+            }
+            return null;
         }
 
         private void carregaRestaurante() {
@@ -226,6 +226,8 @@ import static javax.swing.WindowConstants.DISPOSE_ON_CLOSE;
             restauranteList.setModel(NwModl);
             restauranteList.setCellRenderer(NwRndrer);
             restauranteList.setVisibleRowCount(1);
+            restauranteList.setFixedCellWidth(230);
+            restauranteList.setFixedCellHeight(200);
             restauranteList.setLayoutOrientation(JList.HORIZONTAL_WRAP);
         }
 
@@ -243,18 +245,21 @@ import static javax.swing.WindowConstants.DISPOSE_ON_CLOSE;
                         while (result.next()) {
                             rests.add(result.getString("nome"));
                             restemails.add(result.getString("email"));
+                            BufferedImage imagem = ImagemUtils.blobToImage(result.getBlob("imagem"));
+                            if (imagem != null) {
+                                Image resizedimg = imagem.getScaledInstance(150,150,Image.SCALE_SMOOTH);
+                                addElement(new Object[]{result.getString("nome"), new ImageIcon(resizedimg)});
+                            }else{
+                                BufferedImage image = ImagemUtils.ficheiroToImage("src//imageresources//noimagefound.jpg");
+                                Image resizedimg = image.getScaledInstance(150,150,Image.SCALE_SMOOTH);
+                                addElement(new Object[]{result.getString("nome"), new ImageIcon(resizedimg)});
 
+                            }
                         }
                     }
                     str= new String[rests.size()];
                     for (int i = 0; i < rests.size(); i++) {
                         str[i] = rests.get(i);
-                    }
-                    for (int i = 0; i < str.length; i++) {
-                        //Image image = new image();
-
-                        //Image restauranteImage = image.getScaledInstance(350, 250, Image.SCALE_DEFAULT);
-                        addElement(new Object[] {str[i], new ImageIcon("src//imageresources//restauranteimageexample.jpg")});
                     }
                 }catch(SQLException sqlException){
                     System.out.println(sqlException);
@@ -284,6 +289,34 @@ import static javax.swing.WindowConstants.DISPOSE_ON_CLOSE;
                 }
                 return this;
             }
+        }
+        public static BufferedImage getBufferedImageFromIcon(Icon icon) {
+            BufferedImage buffer = new BufferedImage(icon.getIconWidth(), icon.getIconHeight(),
+                    BufferedImage.TYPE_INT_ARGB);
+            Graphics g = buffer.getGraphics();
+            icon.paintIcon(new JLabel(), g, 0, 0);
+            g.dispose();
+            return buffer;
+        }
+
+        public void clearFields(){
+            BufferedImage imagem = ImagemUtils.ficheiroToImage("src//imageresources//selectImage.jpg");
+            Image resizedimg = imagem.getScaledInstance(170, 170, Image.SCALE_SMOOTH);
+            Icon icon = new ImageIcon(resizedimg);
+            restauranteImg.setIcon(icon);
+            NomeTextField.setText("");
+            emailTextField.setText("");
+            moradaTextField.setText("");
+            telemovelTextField.setText("");
+            passwordPasswordField.setText("");
+            restauranteImg.setText("");
+            NomeTextField.setVisible(false);
+            lbNome.setVisible(false);
+            lbEmail.setVisible(false);
+            emailTextField.setVisible(false);
+            lbPassword.setVisible(false);
+            passwordPasswordField.setVisible(false);
+            restauranteList.clearSelection();
         }
         private void createUIComponents() {
             // TODO: place custom component creation code here

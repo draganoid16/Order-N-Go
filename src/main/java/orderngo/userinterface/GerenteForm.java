@@ -63,6 +63,25 @@ public class GerenteForm {
     private JComboBox comboBoxTipoPrato;
     private JButton escolherImagemButton;
     private JButton escolherImagemBebida;
+    private JPanel restauranteHolderPanel;
+    private JButton adicionarNoCardapioButton;
+    private JButton verListaCompletaButton;
+    private JButton removerDoCardapioButton;
+    private JPanel contactoPanel;
+    private JLabel joaocoelhoimage;
+    private JLabel gustavovitorinoImage;
+    private JLabel marciotavaresimage;
+    private JLabel ruivieiraImage;
+    private JLabel sergioferreiraImage;
+    private JLabel linkedinJoao;
+    private JLabel githubMarcio;
+    private JButton ENVIAREMAILButton;
+    private JLabel helpDescriptionBebida;
+    private JLabel nomedabebidaLabel;
+    private JTextField nomedaBebidaTextField;
+    private JLabel helpDescriptionPrato;
+    private JLabel nomedoPratoLabel;
+    private JTextField nomedoPratoTextField;
     private JLabel helpIcon;
     private JLabel restauranteEmail;
 
@@ -384,7 +403,7 @@ public class GerenteForm {
         //Setup imagem
         Image img = restaurante.getImagem();
         if (img != null) {
-            Icon icon = resizeImage(img, restauranteImage);
+            Icon icon = resizeImage(img,restauranteImage);
             restauranteImage.setIcon(icon);
         }
         restauranteImage.setBorder(border);
