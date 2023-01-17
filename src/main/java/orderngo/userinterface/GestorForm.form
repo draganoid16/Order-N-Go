@@ -220,15 +220,6 @@
                   <text value="Imagem:"/>
                 </properties>
               </component>
-              <component id="75283" class="javax.swing.JCheckBox" binding="visivelCheckBox" default-binding="true">
-                <constraints>
-                  <grid row="9" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
-                </constraints>
-                <properties>
-                  <font name="Arial" size="16" style="0"/>
-                  <text value="Visivel"/>
-                </properties>
-              </component>
             </children>
           </grid>
           <vspacer id="c140c">

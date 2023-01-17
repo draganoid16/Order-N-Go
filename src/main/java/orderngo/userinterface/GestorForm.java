@@ -35,12 +35,12 @@ import static javax.swing.WindowConstants.DISPOSE_ON_CLOSE;
         private JLabel restauranteImg;
         private JLabel labelImageRest;
         private JLabel lbteste;
-        private JCheckBox visivelCheckBox;
         private final ArrayList<String> rests = new ArrayList<>();
         private final ArrayList<String> restemails = new ArrayList<>();
         private String[] str;
         private String selectEmail;
         private BufferedImage imageRestaurante;
+
         private final BufferedImage[] bi = new BufferedImage[1];
 
         public GestorForm(JFrame parent, String email) throws SQLException {
@@ -135,6 +135,8 @@ import static javax.swing.WindowConstants.DISPOSE_ON_CLOSE;
                                 restaurante.setPassword(password);
                                 if(bi[0]!=null) {
                                     restaurante.setImagem(bi[0]);
+                                }else{
+                                    restaurante.setImagem(ImagemUtils.ficheiroToImage("src//imageresources//noimagefound.jpg"));
                                 }
                                 restaurante.save();
 
@@ -204,8 +206,9 @@ import static javax.swing.WindowConstants.DISPOSE_ON_CLOSE;
             JFileChooser file = new JFileChooser();
             file.setDialogTitle("Escolha a Imagem");
             file.setCurrentDirectory(new File(System.getProperty("user.home")));
-            FileNameExtensionFilter filter = new FileNameExtensionFilter("*images", "jpg", "png");
+            FileNameExtensionFilter filter = new FileNameExtensionFilter("All images", "jpg");
             file.addChoosableFileFilter(filter);
+            file.setFileFilter(filter);
             BufferedImage bi;
             int result = file.showSaveDialog(null);
             if(result == JFileChooser.APPROVE_OPTION){
