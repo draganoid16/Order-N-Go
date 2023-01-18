@@ -143,14 +143,14 @@ public class Restaurante extends Utilizador
         catch (RestauranteNotFoundException rnfe)
         {
             // insert
-            var ps = cbd.prepareStatement("INSERT INTO restaurante(email, nome, telemovel, morada, imagem, palavraPasse,visivel) VALUES (?, ?, ?, ?, ?, ?,?)");
+            var ps = cbd.prepareStatement("INSERT INTO restaurante(email, nome, telemovel, morada, imagem, palavraPasse) VALUES (?, ?, ?, ?, ?, ?)");
             ps.setString(1, getEmail());
             ps.setString(2, getNome());
             ps.setString(3, getTelemovel());
             ps.setString(4, getMorada());
             ps.setBlob(5, ImagemUtils.imageToInputStream(getImagem()));
             ps.setString(6, getPasswordEncriptada());
-            ps.setInt(7,1);
+
             cbd.executePreparedUpdate(ps);
         }
     }
