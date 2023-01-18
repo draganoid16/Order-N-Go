@@ -11,6 +11,7 @@ import javax.swing.*;
 import javax.swing.border.Border;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.*;
+import java.awt.event.KeyAdapter;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
@@ -82,11 +83,20 @@ public class GerenteForm {
     private JLabel ruivieiraImage;
     private JLabel sergioferreiraImage;
     private JLabel gustavovitorinoImage;
+    private JLabel githubRui;
+    private JLabel githubSergio;
 
     private JLabel helpIcon;
 
     private JLabel restauranteEmail;
 
+    /**
+     * Construtor do GerenteForm, define todos os parametros necessarios
+     * @param parent
+     * @param email
+     * @throws SQLException
+     * @throws IOException
+     */
     public GerenteForm(JFrame parent, String email) throws SQLException, IOException {
 
 
@@ -169,6 +179,7 @@ public class GerenteForm {
             }
         });
 
+
         prato1.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
@@ -241,6 +252,9 @@ public class GerenteForm {
                 }
             }
         });
+        /**
+         *
+         */
         alterarCardapioButton.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
@@ -668,9 +682,56 @@ public class GerenteForm {
                 }
             }
         });
+    githubRui.addKeyListener(new KeyAdapter() { } );
+        githubRui.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                try {
+                    Desktop desktop = java.awt.Desktop.getDesktop();
+                    URI oURL = new URI(githubRui.getText().trim());
+                    desktop.browse(oURL);
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+            }
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                githubRui.setForeground(Color.green);
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+                githubRui.setForeground(Color.WHITE);
+            }
+        });
+        githubSergio.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                try {
+                    Desktop desktop = java.awt.Desktop.getDesktop();
+                    URI oURL = new URI(githubSergio.getText().trim());
+                    desktop.browse(oURL);
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+            }
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                githubSergio.setForeground(Color.green);
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+                githubSergio.setForeground(Color.WHITE);
+            }
+        });
     }
 
-
+    /**
+     * Setup inicial do RestaurantePanel, define o texto e imagem da BD
+     * @param email
+     * @throws SQLException
+     */
     private void restauranteSetup(String email) throws SQLException {
         //panels comecam não visiveis e ficam visiveis on click no menu
         restaurantePanel.setVisible(false);
@@ -702,21 +763,33 @@ public class GerenteForm {
 
     }
 
+    /**
+     * Função para dar resize a uma imagem, baseado no tamanho do Jlabel em que ela está presente
+     * @param image
+     * @param restauranteImage
+     * @return
+     */
     public Icon resizeImage(Image image, JLabel restauranteImage) {
         Image resizedimg = image.getScaledInstance(restauranteImage.getWidth(), restauranteImage.getHeight(), Image.SCALE_SMOOTH);
         return new ImageIcon(resizedimg);
     }
 
-    public Icon CardapioImageSize(Image image) {
-        Image pratoImage = image.getScaledInstance(350, 250, Image.SCALE_DEFAULT);
-        return new ImageIcon(pratoImage);
+    /**
+     * Função para dar resize a uma imagem baseado em parametros pre-definidos
+     * @param image
+     * @param widght
+     * @param height
+     * @return
+     */
+    public Icon CardapioImageSize(Image image, int widght, int height) {
+        Image pratoImage = image.getScaledInstance(widght, height, Image.SCALE_DEFAULT);
+        return new ImageIcon(pratoImage); //350 250
     }
 
-    public Icon InfoSize(Image image) {
-        Image pratoImage = image.getScaledInstance(250, 250, Image.SCALE_DEFAULT);
-        return new ImageIcon(pratoImage);
-    }
-
+    /**
+     * Função para escolher uma image do Sistema Operativo, e retornar-la.
+     * @return
+     */
     public BufferedImage escolherImagem() {
         JFileChooser file = new JFileChooser();
         file.setDialogTitle("Escolha a Imagem");
@@ -739,22 +812,32 @@ public class GerenteForm {
         return null;
     }
 
-
+    /**
+     * Função que define os 3 primeiros pratos do UI visual no cardapioPanel
+     * @param restaurante
+     * @return
+     * @throws SQLException
+     * @throws IOException
+     * @throws ArrayIndexOutOfBoundsException
+     */
     private int adicionarPratodeSQL(Restaurante restaurante) throws SQLException, IOException, ArrayIndexOutOfBoundsException {
         Prato[] pratos = Prato.from(restaurante);
 
         for (int i = 0; i < pratos.length; i++) {
             JLabel[] pratosVariaveis = {prato1, prato2, prato3};
             String tipoprato = String.valueOf(pratos[i].getNome());
-            pratosVariaveis[i].setText(tipoprato);
-
+            if(tipoprato!= null) {
+                pratosVariaveis[i].setText(tipoprato);
+            }else{
+                pratosVariaveis[i].setText("Nome de Prato não encontrado");
+            }
             Image img = pratos[i].getImagem();
             if (img != null) {
-                Icon icon = CardapioImageSize(img);
+                Icon icon = CardapioImageSize(img, 350, 250);
                 pratosVariaveis[i].setIcon(icon);
             }else{
             BufferedImage img2 = ImageIO.read(new File("src\\imageresources\\noimagefound.jpg"));
-            Icon icon = CardapioImageSize(img2);
+            Icon icon = CardapioImageSize(img2, 350, 250);
             pratosVariaveis[i].setIcon(icon);
         }
 
@@ -763,23 +846,32 @@ public class GerenteForm {
         return pratos.length;
     }
 
-  // TODO: REWRITE
+    /**
+     * Função que define as 3 primeiras bebidas do UI visual no cardapioPanel
+     * @param restaurante
+     * @throws SQLException
+     * @throws IOException
+     * @throws ArrayIndexOutOfBoundsException
+     */
     private void adicionarBebidadeSQL(Restaurante restaurante) throws SQLException, IOException, ArrayIndexOutOfBoundsException {
         Bebida[] bebidas = Bebida.from(restaurante);
 
-        for (int i = 0; i < bebidas.length; i++) { //alterar para 99
+        for (int i = 0; i < bebidas.length; i++) {
             JLabel[] bebidasVariaveis = {bebida1, bebida2, bebida3};
             String tipoprato = String.valueOf(bebidas[i].getNome());
-            bebidasVariaveis[i].setText(tipoprato);
-
+            if(tipoprato!= null) {
+                bebidasVariaveis[i].setText(tipoprato);
+            }else{
+                bebidasVariaveis[i].setText("Nome de Bebida não encontrado");
+            }
             Image img = bebidas[i].getImagem();
             //if not null setup X, else setup img
             if (img != null) {
-                Icon icon = CardapioImageSize(img);
+                Icon icon = CardapioImageSize(img, 350, 250);
                 bebidasVariaveis[i].setIcon(icon);
             }else{
                 BufferedImage img2 = ImageIO.read(new File("src\\imageresources\\noimagefound.jpg"));
-                Icon icon = CardapioImageSize(img2);
+                Icon icon = CardapioImageSize(img2, 350, 250);
                 bebidasVariaveis[i].setIcon(icon);
             }
 
@@ -787,6 +879,13 @@ public class GerenteForm {
 
     }
 
+    /**
+     * Função que puxa o info do prato da BD
+     * @param email
+     * @param i
+     * @return
+     * @throws SQLException
+     */
     private String[] getInfoPrato(String email, int i) throws SQLException {
         Restaurante rest = Restaurante.getRestaurante(email);
         Prato[] pratos = Prato.from(rest);
@@ -798,6 +897,13 @@ public class GerenteForm {
         return new String[]{nomeprato, detalhesprato, precoprato, tipoprato, alergenio};
     }
 
+    /**
+     * Função que puxa o info da bebida da BD
+     * @param email
+     * @param i
+     * @return
+     * @throws SQLException
+     */
     private String[] getInfoBebida(String email, int i) throws SQLException {
         Restaurante rest = Restaurante.getRestaurante(email);
         Bebida[] bebidas = Bebida.from(rest);
@@ -811,6 +917,9 @@ public class GerenteForm {
         return new String[]{};
     }
 
+    /**
+     * Criação de componentes JSwing custom, onde tem que se definir no codigo os atributos
+     */
     private void createUIComponents() {
         userImage = new JLabel(new ImageIcon("src\\imageresources\\profile.png"));
         usernameCustom = new JLabel("placeholder");
@@ -831,11 +940,11 @@ public class GerenteForm {
 
         //infopanel
         ImageIcon imgjoao = new ImageIcon("src\\imageresources\\joaocoelho.jpg");
-        ImageIcon resizedImageJoao = (ImageIcon) InfoSize(imgjoao.getImage());
+        ImageIcon resizedImageJoao = (ImageIcon) CardapioImageSize(imgjoao.getImage(), 250, 250);
         ImageIcon imgmarcio = new ImageIcon("src\\imageresources\\marciotavares.jpg");
-        ImageIcon resizedImageMarcio = (ImageIcon) InfoSize(imgmarcio.getImage());
+        ImageIcon resizedImageMarcio = (ImageIcon) CardapioImageSize(imgmarcio.getImage(), 250, 250);
         ImageIcon noimage = new ImageIcon("src\\imageresources\\noimagefound.jpg");
-        ImageIcon resizedNoImage = (ImageIcon) InfoSize(noimage.getImage());
+        ImageIcon resizedNoImage = (ImageIcon) CardapioImageSize(noimage.getImage(), 250, 250);
 
 
         joaocoelhoimage = new JLabel(new ImageIcon(resizedImageJoao.getImage()));
