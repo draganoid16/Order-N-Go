@@ -1,9 +1,11 @@
 package orderngo.testes.pedido;
 
 import orderngo.testes.basedados.TestesComBD;
+import orderngo.testes.cardapio.ItemCardapioTest.ItemCardapioImpl;
 
 import orderngo.pedido.Pedido;
 import orderngo.cardapio.*;
+import orderngo.cardapio.Prato.TipoPrato;
 import orderngo.utilizador.*;
 import orderngo.utils.ImagemUtils;
 
@@ -14,12 +16,12 @@ import java.awt.image.BufferedImage;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.BeforeEach;
 import static org.junit.jupiter.api.Assertions.*;
-import org.junit.jupiter.api.Disabled;
 
 import nl.jqno.equalsverifier.EqualsVerifier;
 import nl.jqno.equalsverifier.Warning;
 
 import java.sql.SQLException;
+import orderngo.exception.PedidoNotFoundException;
 
 /**
  *
@@ -63,6 +65,7 @@ public class PedidoTest extends TestesComBD
      * Test of constructor and getNrPedido method, of class Pedido.
      */
     @Test
+    @SuppressWarnings("ThrowableResultIgnored")
     public void testGetNrPedido()
     {
         // nrPedido valido (por preencher)
@@ -70,6 +73,12 @@ public class PedidoTest extends TestesComBD
         int result = instance.getNrPedido();
         
         assertEquals(expResult, result);
+        
+        // nrPedido invalido (< 0)
+        assertThrows(IllegalArgumentException.class, () -> {
+            int nrPedido = -1;
+            instance = new Pedido(cli, "morada teste", LocalDateTime.of(2023, 01, 16, 20, 00), nrPedido){};
+        });
     }
 
     /**
@@ -135,85 +144,94 @@ public class PedidoTest extends TestesComBD
     
     //<editor-fold defaultstate="collapsed" desc="testGetItemsPedido">
     /**
-     * Test of getItemsPedido and limparItemsPedido methods, of class Pedido.
-     */
-    @Test
-    @Disabled
-    public void testGetItemsPedido_0args()
-    {
-        System.out.println("getItemsPedido");
-        Pedido instance = null;
-        LinkedHashMap<ItemCardapio, Integer> expResult = null;
-        LinkedHashMap<ItemCardapio, Integer> result = instance.getItemsPedido();
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
-    }
-    
-    /**
      * Test of getItemsPedido method, of class Pedido.
      */
     @Test
-    @Disabled
-    public void testGetItemsPedido_Restaurante()
+    public void testGetItemsPedido()
     {
-        System.out.println("getItemsPedido");
-        Restaurante restaurante = null;
-        Pedido instance = null;
-        LinkedHashMap<ItemCardapio, Integer> expResult = null;
-        LinkedHashMap<ItemCardapio, Integer> result = instance.getItemsPedido(restaurante);
+        Restaurante rest1 = new Restaurante("visivel@rest.com", "visivel", "111111111", "morada visivel");
+        Restaurante rest2 = new Restaurante("invisivel@rest.com", "invisivel", "000000000", "morada invisivel");
+        
+        ItemCardapio item1 = new ItemCardapioImpl(rest1, "item teste", "detalhes teste", 69);
+        ItemCardapio item2 = new ItemCardapioImpl(rest2, "item teste 2", "detalhes teste 2", 69);
+        
+        instance.adicionarItem(item1, 10);
+        instance.adicionarItem(item2, 20);
+        
+        // getItemsPedido
+        LinkedHashMap<ItemCardapio, Integer> expResult = new LinkedHashMap<>();
+        expResult.put(item1, 10);
+        expResult.put(item2, 20);
+        LinkedHashMap<ItemCardapio, Integer> result = instance.getItemsPedido();
+        
         assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+        
+        // getItemsPedido (rest2)
+        expResult.remove(item1);
+        result = instance.getItemsPedido(rest2);
+        
+        assertEquals(expResult, result);
+    }
+    
+    /**
+     * Test of limparItemsPedido methods, of class Pedido.
+     */
+    @Test
+    public void testLimparItemsPedido()
+    {
+        Restaurante rest1 = new Restaurante("visivel@rest.com", "visivel", "111111111", "morada visivel");
+        Restaurante rest2 = new Restaurante("invisivel@rest.com", "invisivel", "000000000", "morada invisivel");
+        
+        ItemCardapio item1 = new ItemCardapioImpl(rest1, "item teste", "detalhes teste", 69);
+        ItemCardapio item2 = new ItemCardapioImpl(rest2, "item teste 2", "detalhes teste 2", 69);
+        
+        instance.adicionarItem(item1, 10);
+        instance.adicionarItem(item2, 20);
+        
+        // limparItemsPedido
+        instance.limparItemsPedido();
+        
+        LinkedHashMap<ItemCardapio, Integer> expResult = new LinkedHashMap<>();
+        LinkedHashMap<ItemCardapio, Integer> result = instance.getItemsPedido();
+        
+        assertEquals(expResult, result);
     }
     //</editor-fold>
     
 
     //<editor-fold defaultstate="collapsed" desc="testAdicionarRemover">
     /**
-     * Test of adicionarItem method, of class Pedido.
+     * Test of adicionarItem and removerItem methods, of class Pedido.
      */
     @Test
-    @Disabled
-    public void testAdicionarItem_ItemCardapio_int()
+    @SuppressWarnings("ThrowableResultIgnored")
+    public void testAdicionarRemoverItem()
     {
-        System.out.println("adicionarItem");
-        ItemCardapio item = null;
-        int quantidade = 0;
-        Pedido instance = null;
-        instance.adicionarItem(item, quantidade);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
-    }
-
-    /**
-     * Test of adicionarItem method, of class Pedido.
-     */
-    @Test
-    @Disabled
-    public void testAdicionarItem_ItemCardapio()
-    {
-        System.out.println("adicionarItem");
-        ItemCardapio item = null;
-        Pedido instance = null;
+        Restaurante rest = new Restaurante("visivel@rest.com", "visivel", "111111111", "morada visivel");
+        ItemCardapio item = new ItemCardapioImpl(rest, "item teste", "detalhes teste", 69);
+        
+        // adicionar item válido
         instance.adicionarItem(item);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
-    }
-
-    /**
-     * Test of removerItem method, of class Pedido.
-     */
-    @Test
-    @Disabled
-    public void testRemoverItem()
-    {
-        System.out.println("removerItem");
-        ItemCardapio item = null;
-        Pedido instance = null;
+        
+        LinkedHashMap<ItemCardapio, Integer> expResult = new LinkedHashMap<>();
+        expResult.put(item, 1);
+        LinkedHashMap<ItemCardapio, Integer> result = instance.getItemsPedido();
+        
+        assertEquals(expResult, result);
+        
+        // adicionar item inválido
+        assertThrows(IllegalArgumentException.class, () -> {
+            ItemCardapio itemCardapio = null;
+            instance.adicionarItem(itemCardapio);
+        });
+        
+        
+        // remover item
         instance.removerItem(item);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+        expResult.remove(item);
+        result = instance.getItemsPedido();
+        
+        assertEquals(expResult, result);
     }
     //</editor-fold>
 
@@ -223,48 +241,105 @@ public class PedidoTest extends TestesComBD
      * Test of alterQuantidade method, of class Pedido.
      */
     @Test
-    @Disabled
+    @SuppressWarnings("ThrowableResultIgnored")
     public void testAlterQuantidade()
     {
-        System.out.println("alterQuantidade");
-        ItemCardapio item = null;
-        int quant = 0;
-        Pedido instance = null;
+        Restaurante rest = new Restaurante("visivel@rest.com", "visivel", "111111111", "morada visivel");
+        ItemCardapio item = new ItemCardapioImpl(rest, "item teste", "detalhes teste", 69);
+        
+        instance.adicionarItem(item);
+        
+        // item valido, quantidade > 0
+        int quant = 5;
         instance.alterQuantidade(item, quant);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+        
+        LinkedHashMap<ItemCardapio, Integer> expResult = new LinkedHashMap<>();
+        expResult.put(item, 5);
+        LinkedHashMap<ItemCardapio, Integer> result = instance.getItemsPedido();
+        
+        assertEquals(expResult, result);
+        
+        // item valido, quantidade <= 0
+        quant = 0;
+        instance.alterQuantidade(item, quant);
+        
+        expResult.clear();
+        result = instance.getItemsPedido();
+        
+        assertEquals(expResult, result);
+        
+        
+        // item invalido (nao existe)
+        assertThrows(IllegalArgumentException.class, () -> {
+            ItemCardapio itemCardapio = item;
+            int quantidade = 5;
+            instance.alterQuantidade(itemCardapio, quantidade);
+        });
+        
+        // item invalido (null)
+        assertThrows(IllegalArgumentException.class, () -> {
+            ItemCardapio itemCardapio = null;
+            int quantidade = 5;
+            instance.alterQuantidade(itemCardapio, quantidade);
+        });
     }
     
     /**
      * Test of incrQuantidade method, of class Pedido.
      */
     @Test
-    @Disabled
+    @SuppressWarnings("ThrowableResultIgnored")
     public void testIncrQuantidade()
     {
-        System.out.println("incrQuantidade");
-        ItemCardapio item = null;
-        int incr = 0;
-        Pedido instance = null;
+        Restaurante rest = new Restaurante("visivel@rest.com", "visivel", "111111111", "morada visivel");
+        ItemCardapio item = new ItemCardapioImpl(rest, "item teste", "detalhes teste", 69);
+        
+        instance.adicionarItem(item);
+        
+        // incremento valido
+        int incr = 2;
         instance.incrQuantidade(item, incr);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+        
+        LinkedHashMap<ItemCardapio, Integer> expResult = new LinkedHashMap<>();
+        expResult.put(item, 3);
+        LinkedHashMap<ItemCardapio, Integer> result = instance.getItemsPedido();
+        
+        assertEquals(expResult, result);
+        
+        // incremento invalido (< 0)
+        assertThrows(IllegalArgumentException.class, () -> {
+            int incremento = -1;
+            instance.incrQuantidade(item, incremento);
+        });
     }
 
     /**
      * Test of decrQuantidade method, of class Pedido.
      */
     @Test
-    @Disabled
+    @SuppressWarnings("ThrowableResultIgnored")
     public void testDecrQuantidade()
     {
-        System.out.println("decrQuantidade");
-        ItemCardapio item = null;
-        int decr = 0;
-        Pedido instance = null;
+        Restaurante rest = new Restaurante("visivel@rest.com", "visivel", "111111111", "morada visivel");
+        ItemCardapio item = new ItemCardapioImpl(rest, "item teste", "detalhes teste", 69);
+        
+        instance.adicionarItem(item, 5);
+        
+        // decremento valido
+        int decr = 2;
         instance.decrQuantidade(item, decr);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+        
+        LinkedHashMap<ItemCardapio, Integer> expResult = new LinkedHashMap<>();
+        expResult.put(item, 3);
+        LinkedHashMap<ItemCardapio, Integer> result = instance.getItemsPedido();
+        
+        assertEquals(expResult, result);
+        
+        // decremento invalido (< 0)
+        assertThrows(IllegalArgumentException.class, () -> {
+            int decremento = -1;
+            instance.decrQuantidade(item, decremento);
+        });
     }
     //</editor-fold>
 
@@ -274,14 +349,20 @@ public class PedidoTest extends TestesComBD
      * Test of fill method, of class Pedido.
      */
     @Test
-    @Disabled
     public void testFill() throws SQLException
     {
-        System.out.println("fill");
-        Pedido instance = null;
+        Restaurante rest = new Restaurante("visivel@rest.com", "visivel", "111111111", "morada visivel");
+        instance = Pedido.getPedido(31);
+        
+        // fill
+        LinkedHashMap<ItemCardapio, Integer> expResult = new LinkedHashMap<>();
+        expResult.put(new Prato(rest, "prato carne visivel", "detalhes visivel", 7.8f, TipoPrato.CARNE, "alergenios visivel"), 3);
+        expResult.put(new Bebida(rest, "bebida visivel", "detalhes visivel", 3, 50), 3);
+        
         instance.fill();
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+        LinkedHashMap<ItemCardapio, Integer> result = instance.getItemsPedido();
+        
+        assertEquals(expResult, result);
     }
     //</editor-fold>
     
@@ -315,35 +396,32 @@ public class PedidoTest extends TestesComBD
     
     //<editor-fold defaultstate="collapsed" desc="testGetPratos/Bebidas">
     /**
-     * Test of getPratosItems method, of class Pedido.
+     * Test of getPratosItems and getBebidasItems methods, of class Pedido.
      */
     @Test
-    @Disabled
-    public void testGetPratosItems()
+    public void testGetPratosBebidasItems()
     {
-        System.out.println("getPratosItems");
-        LinkedHashMap<ItemCardapio, Integer> itemsPedido = null;
-        LinkedHashMap<Prato, Integer> expResult = null;
-        LinkedHashMap<Prato, Integer> result = Pedido.getPratosItems(itemsPedido);
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
-    }
-
-    /**
-     * Test of getBebidasItems method, of class Pedido.
-     */
-    @Test
-    @Disabled
-    public void testGetBebidasItems()
-    {
-        System.out.println("getBebidasItems");
-        LinkedHashMap<ItemCardapio, Integer> itemsPedido = null;
-        LinkedHashMap<Bebida, Integer> expResult = null;
-        LinkedHashMap<Bebida, Integer> result = Pedido.getBebidasItems(itemsPedido);
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+        Restaurante rest = new Restaurante("visivel@rest.com", "visivel", "111111111", "morada visivel");
+        Prato prato = new Prato(rest, "prato carne visivel", "detalhes visivel", 7.8f, TipoPrato.CARNE, "alergenios visivel");
+        Bebida bebida = new Bebida(rest, "bebida visivel", "detalhes visivel", 3, 50);
+        
+        LinkedHashMap<ItemCardapio, Integer> itemsPedido = new LinkedHashMap<>();
+        itemsPedido.put(prato, 3);
+        itemsPedido.put(bebida, 3);
+        
+        // getPratosItems
+        LinkedHashMap<Prato, Integer> expResultPrato = new LinkedHashMap<>();
+        expResultPrato.put(prato, 3);
+        LinkedHashMap<Prato, Integer> resultPrato = Pedido.getPratosItems(itemsPedido);
+        
+        assertEquals(expResultPrato, resultPrato);
+        
+        // getBebidasItems
+        LinkedHashMap<Bebida, Integer> expResultBebida = new LinkedHashMap<>();
+        expResultBebida.put(bebida, 3);
+        LinkedHashMap<Bebida, Integer> resultBebida = Pedido.getBebidasItems(itemsPedido);
+        
+        assertEquals(expResultBebida, resultBebida);
     }
     //</editor-fold>
     
@@ -353,32 +431,65 @@ public class PedidoTest extends TestesComBD
      * Test of from method, of class Pedido.
      */
     @Test
-    @Disabled
-    public void testFrom_Restaurante() throws SQLException
+    @SuppressWarnings("ThrowableResultIgnored")
+    public void testFrom_restauranteNull() throws SQLException
     {
-        System.out.println("from");
-        Restaurante restaurante = null;
-        Pedido[] expResult = null;
-        Pedido[] result = Pedido.from(restaurante);
+        // restaurante invalido (null)
+        Restaurante rest = null;
+        
+        assertThrows(IllegalArgumentException.class, () -> {
+            Pedido.from(rest);
+        });
+    }
+    
+    /**
+     * Test of from method, of class Pedido.
+     */
+    @Test
+    public void testFrom_restaurante() throws SQLException
+    {
+        // restaurante valido
+        Cliente cli2 = new Cliente("invisivel@cli.com", "invisivel", "000000000", "morada invisivel", "000000000"); 
+        Restaurante rest = new Restaurante("visivel@rest.com", "visivel", "111111111", "morada visivel");
+        
+        Pedido[] expResult = new Pedido[] {
+            new Pedido(cli, "morada 1", LocalDateTime.of(2022, 12, 15, 01, 01), 11){},
+            new Pedido(cli2, "morada 1", LocalDateTime.of(2022, 12, 15, 01, 01), 31){}
+        };
+        Pedido[] result = Pedido.from(rest);
+        
         assertArrayEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
     }
 
     /**
      * Test of from method, of class Pedido.
      */
     @Test
-    @Disabled
-    public void testFrom_Cliente() throws SQLException
+    @SuppressWarnings("ThrowableResultIgnored")
+    public void testFrom_clienteNull() throws SQLException
     {
-        System.out.println("from");
+        // cliente invalido (null)
         Cliente cliente = null;
-        Pedido[] expResult = null;
-        Pedido[] result = Pedido.from(cliente);
+        
+        assertThrows(IllegalArgumentException.class, () -> {
+            Pedido.from(cliente);
+        });
+    }
+    
+    /**
+     * Test of from method, of class Pedido.
+     */
+    @Test
+    public void testFrom_cliente() throws SQLException
+    {
+        // cliente valido
+        Pedido[] expResult = new Pedido[] {
+            new Pedido(cli, "morada 1", LocalDateTime.of(2022, 12, 15, 01, 01), 11){},
+            new Pedido(cli, "morada 2", LocalDateTime.of(2022, 12, 15, 02, 02), 12){}
+        };
+        Pedido[] result = Pedido.from(cli);
+        
         assertArrayEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
     }
     //</editor-fold>
 
@@ -388,16 +499,44 @@ public class PedidoTest extends TestesComBD
      * Test of getPedido method, of class Pedido.
      */
     @Test
-    @Disabled
+    @SuppressWarnings("ThrowableResultIgnored")
+    public void testGetPedido_invalido() throws SQLException
+    {
+        // pedido invalido (nrPedido <= 0)
+        int nrPedido = 0;
+        
+        assertThrows(IllegalArgumentException.class, () -> {
+            Pedido.getPedido(nrPedido);
+        });
+    }
+    
+    /**
+     * Test of getPedido method, of class Pedido.
+     */
+    @Test
+    @SuppressWarnings("ThrowableResultIgnored")
+    public void testGetPedido_naoExiste() throws SQLException
+    {
+        // pedido nao existe
+        int nrPedido = 69;
+        
+        assertThrows(PedidoNotFoundException.class, () -> {
+            Pedido.getPedido(nrPedido);
+        });
+    }
+    
+    /**
+     * Test of getPedido method, of class Pedido.
+     */
+    @Test
     public void testGetPedido() throws SQLException
     {
-        System.out.println("getPedido");
-        int nrPedido = 0;
-        Pedido expResult = null;
+        // pedido existe
+        int nrPedido = 11;
+        Pedido expResult = new Pedido(cli, "morada 1", LocalDateTime.of(2022, 12, 15, 01, 01), nrPedido){};
         Pedido result = Pedido.getPedido(nrPedido);
+        
         assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
     }
     //</editor-fold>
 }

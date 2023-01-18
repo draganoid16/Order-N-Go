@@ -109,7 +109,7 @@ public class ClienteTest extends TestesComBD
     //</editor-fold>
     
 
-    //<editor-fold defaultstate="collapsed" desc="testGetGestor">
+    //<editor-fold defaultstate="collapsed" desc="testGetCliente">
     /**
      * Test of getCliente method, of class Cliente.
      */
