@@ -181,6 +181,10 @@ public class GerenteForm {
 
 
         prato1.addMouseListener(new MouseAdapter() {
+            /**
+             * Evento que obtem o info do prato especificado da BD
+             * @param e the event to be processed
+             */
             @Override
             public void mouseClicked(MouseEvent e) {
                 try {
@@ -193,6 +197,10 @@ public class GerenteForm {
             }
         });
         bebida1.addMouseListener(new MouseAdapter() {
+            /**
+             * Evento que obtem o info da bebida especificada da BD
+             * @param e the event to be processed
+             */
             @Override
             public void mouseClicked(MouseEvent e) {
                 try {
@@ -252,46 +260,43 @@ public class GerenteForm {
                 }
             }
         });
-        /**
-         *
-         */
+
         alterarCardapioButton.addMouseListener(new MouseAdapter() {
+            /**
+             * Evento que altera o item do cardapio escolhido pelo utilizador na Base de Dados
+             * @param e the event to be processed
+             */
             @Override
             public void mouseClicked(MouseEvent e) {
 
                 try {
-                    String[] arrayPrato = {};
-                    String[] arrayBebida = {};
                     JComboBox jcb = new JComboBox();
-                    int countPratos = adicionarPratodeSQL(Restaurante.getRestaurante(email));
-                    for (int i = 1; i <= countPratos; i++) {
-                        jcb.addItem(i);
-                    }
 
-                    JOptionPane.showMessageDialog(mainFrame, jcb, "Selecione o menu a alterar", JOptionPane.QUESTION_MESSAGE);
-                    int escolha = (Integer) jcb.getSelectedItem();
-                    JComboBox jcb2 = new JComboBox();
-                    arrayPrato = getInfoPrato(email, escolha - 1);
-                    arrayBebida = getInfoBebida(email, escolha - 1);
+                    jcb.addItem("Prato");
+                    jcb.addItem("Bebida");
+                    JOptionPane.showMessageDialog(mainFrame, jcb, "Quer alterar um prato ou uma bebida?", JOptionPane.QUESTION_MESSAGE);
 
 
-                    jcb2.addItem("Prato");
-                    jcb2.addItem("Bebida");
-                    JOptionPane.showMessageDialog(mainFrame, jcb2, "Quer alterar o prato ou a bebida?", JOptionPane.QUESTION_MESSAGE);
-
-
-                    String escolha2 = (String) jcb2.getSelectedItem();
+                    String escolha2 = (String) jcb.getSelectedItem();
 
                     switch (escolha2) {
                         case "Prato" -> {
+                            JComboBox jcb2 = new JComboBox();
 
-                            cardapioPanel.setVisible(false);
-                            JComboBox jcb3 = new JComboBox();
-                            //se so tiver bebida e não prato
-                            if (arrayPrato.length == 0) {
-                                JOptionPane.showMessageDialog(mainFrame, "", "Não existe prato para esse menu", JOptionPane.INFORMATION_MESSAGE);
+                            Prato[] allPratos = Prato.from(restaurante);
+                            for (int i = 0; i < allPratos.length; i++) {
+                                jcb2.addItem(allPratos[i].getNome());
+                            }
+                            if (jcb2 != null) {
+                                JOptionPane.showMessageDialog(mainFrame, jcb2, "Escolha o prato a alterar", JOptionPane.QUESTION_MESSAGE);
+                            } else {
+                                JOptionPane.showMessageDialog(mainFrame, jcb2, "Não existem pratos!", JOptionPane.ERROR_MESSAGE);
                                 break;
                             }
+                            String escolha = (String) jcb2.getSelectedItem();
+                            Prato prato = Prato.getPrato(restaurante, escolha);
+                            String preco = String.valueOf(prato.getPrecoUnitario());
+                            cardapioPanel.setVisible(false);
                             editarPratoPanel.setVisible(true);
                             final BufferedImage[] bi = new BufferedImage[1];
                             escolherImagemButton.addMouseListener(new MouseAdapter() {
@@ -302,10 +307,10 @@ public class GerenteForm {
                             });
                             comboBoxTipoPrato.setModel(new DefaultComboBoxModel(Prato.TipoPrato.values()));
                             try {
-                                detalhespratoField.setText(arrayPrato[1]);
-                                precopratoField.setText(arrayPrato[2]);
-                                comboBoxTipoPrato.setSelectedItem(arrayPrato[3]);
-                                alergiaspratoField.setText(arrayPrato[4]);
+                                detalhespratoField.setText(prato.getDetalhes());
+                                precopratoField.setText(preco);
+                                comboBoxTipoPrato.setSelectedItem(prato.getTipoPrato());
+                                alergiaspratoField.setText(prato.getAlergenios());
                             } catch (NullPointerException ex) {
                                 ex.printStackTrace();
                             }
@@ -313,18 +318,16 @@ public class GerenteForm {
                                 @Override
                                 public void mouseClicked(MouseEvent e) {
                                     try {
-                                        String[] arrayPratoaVerificar = getInfoPrato(email, escolha - 1);
-                                        Restaurante rest = Restaurante.getRestaurante(email);
                                         float preco = Float.parseFloat(precopratoField.getText());
                                         Prato.TipoPrato tipoprato = (Prato.TipoPrato) comboBoxTipoPrato.getSelectedItem();
-                                        Prato prato = new Prato(rest, arrayPratoaVerificar[0], detalhespratoField.getText(), preco, tipoprato, alergiaspratoField.getText());
+                                        Prato pratoalterado = new Prato(restaurante, escolha, detalhespratoField.getText(), preco, tipoprato, alergiaspratoField.getText());
 
                                         if (bi[0] != null) {
-                                            prato.setImagem(bi[0]);
+                                            pratoalterado.setImagem(bi[0]);
                                         }
 
-                                        prato.save();
-                                        adicionarPratodeSQL(rest);
+                                        pratoalterado.save();
+                                        adicionarPratodeSQL(restaurante);
 
                                     } catch (SQLException | IOException ex) {
                                         throw new RuntimeException(ex);
@@ -339,21 +342,32 @@ public class GerenteForm {
                         }
 
                         case "Bebida" -> {
-                            cardapioPanel.setVisible(false);
-                            JComboBox jcb4 = new JComboBox();
-                            //se so tiver prato e não bebida (testar com r3@r3.r3)
-                            if (arrayBebida.length == 0) {
-                                JOptionPane.showMessageDialog(mainFrame, "", "Não existe bebida para esse menu", JOptionPane.INFORMATION_MESSAGE);
+                            JComboBox jcb3 = new JComboBox();
+                            Bebida[] allBebidas = Bebida.from(restaurante);
+                            for (int i = 0; i < allBebidas.length; i++) {
+                                jcb3.addItem(allBebidas[i].getNome());
+                            }
+                            if (jcb3 != null) {
+                                JOptionPane.showMessageDialog(mainFrame, jcb3, "Escolha a bebida a alterar", JOptionPane.QUESTION_MESSAGE);
+                            } else {
+                                JOptionPane.showMessageDialog(mainFrame, jcb3, "Não existem bebidas!", JOptionPane.ERROR_MESSAGE);
                                 break;
                             }
+
+                            String escolha = (String) jcb3.getSelectedItem();
+                            Bebida bebida = Bebida.getBebida(restaurante, escolha);
+                            String preco = String.valueOf(bebida.getPrecoUnitario());
+                            String capacidade = String.valueOf(bebida.getCapacidadeCL());
+
                             try {
-                                detalhesbebidaField.setText(arrayBebida[1]);
-                                precobebidaField.setText(arrayBebida[2]);
-                                capacidadebebidaField.setText(arrayBebida[3]);
+                                detalhesbebidaField.setText(bebida.getDetalhes());
+                                precobebidaField.setText(preco);
+                                capacidadebebidaField.setText(capacidade);
 
                             } catch (NullPointerException ex) {
                                 ex.printStackTrace();
                             }
+                            cardapioPanel.setVisible(false);
                             editarBebidaPanel.setVisible(true);
                             final BufferedImage[] bi = new BufferedImage[1];
                             escolherImagemBebida.addMouseListener(new MouseAdapter() {
@@ -366,19 +380,17 @@ public class GerenteForm {
                                 @Override
                                 public void mouseClicked(MouseEvent e) {
                                     try {
-                                        String[] arrayBebidaaVerificar = getInfoBebida(email, escolha - 1);
-                                        Restaurante rest = Restaurante.getRestaurante(email);
                                         float preco = Float.parseFloat(precobebidaField.getText());
                                         int capacidade = Integer.parseInt(capacidadebebidaField.getText());
 
-                                        Bebida bebida = new Bebida(rest, arrayBebidaaVerificar[0], detalhesbebidaField.getText(), preco, capacidade);
+                                        Bebida bebida = new Bebida(restaurante, escolha, detalhesbebidaField.getText(), preco, capacidade);
 
                                         if (bi[0] != null) {
                                             bebida.setImagem(bi[0]);
                                         }
 
                                         bebida.save();
-                                        adicionarBebidadeSQL(rest);
+                                        adicionarBebidadeSQL(restaurante);
 
 
                                     } catch (SQLException | IOException ex) {
@@ -396,12 +408,16 @@ public class GerenteForm {
                     }
 
 
-                } catch (SQLException | IOException ex) {
+                } catch (SQLException ex) {
                     throw new RuntimeException(ex);
                 }
             }
         });
         adicionarNoCardapioButton.addMouseListener(new MouseAdapter() {
+            /**
+             * Evento que adiciona um item especificado pelo utilizador na Base de Dados
+             * @param e the event to be processed
+             */
             @Override
             public void mouseClicked(MouseEvent e) {
                 JComboBox jcb = new JComboBox();
@@ -509,6 +525,10 @@ public class GerenteForm {
             }
         });
         removerDoCardapioButton.addMouseListener(new MouseAdapter() {
+            /**
+             * Evento que remove um item especificado pelo utilizador da Base de Dados
+             * @param e the event to be processed
+             */
             @Override
             public void mouseClicked(MouseEvent e) {
                 JComboBox jcb = new JComboBox();
@@ -582,6 +602,10 @@ public class GerenteForm {
             }
         });
         verPedidosButton.addMouseListener(new MouseAdapter() {
+            /**
+             * Vé todos os pedidos de comida feitos por utilizadores ficticios
+             * @param e the event to be processed
+             */
             @Override
             public void mouseClicked(MouseEvent e) {
                 JComboBox jcb = new JComboBox();
@@ -604,6 +628,10 @@ public class GerenteForm {
             }
         });
         verListaCompletaButton.addMouseListener(new MouseAdapter() {
+            /**
+             * Mostra todos os pratos e bebidas presentes na Base de Dados para esse restaurante
+             * @param e the event to be processed
+             */
             @Override
             public void mouseClicked(MouseEvent e) {
                 JComboBox jcb = new JComboBox();
@@ -626,6 +654,10 @@ public class GerenteForm {
             }
         });
         linkedinJoao.addMouseListener(new MouseAdapter() {
+            /**
+             * Evento que mostra o LinkedIn
+             * @param e the event to be processed
+             */
             @Override
             public void mouseClicked(MouseEvent e) {
                 try {
@@ -647,6 +679,10 @@ public class GerenteForm {
             }
         });
         githubMarcio.addMouseListener(new MouseAdapter() {
+            /**
+             * Evento que mostra o Github
+             * @param e the event to be processed
+             */
             @Override
             public void mouseClicked(MouseEvent e) {
                 try {
@@ -668,6 +704,10 @@ public class GerenteForm {
             }
         });
         ENVIAREMAILButton.addMouseListener(new MouseAdapter() {
+            /**
+             * Evento que abre o email do Utilizador
+             * @param e the event to be processed
+             */
             @Override
             public void mouseClicked(MouseEvent e) {
                 Desktop desktop = null;
@@ -683,6 +723,9 @@ public class GerenteForm {
             }
         });
     githubRui.addKeyListener(new KeyAdapter() { } );
+        /**
+         * Evento que mostra o Github
+         */
         githubRui.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
@@ -705,6 +748,10 @@ public class GerenteForm {
             }
         });
         githubSergio.addMouseListener(new MouseAdapter() {
+            /**
+             * Evento que mostra o Github
+             * @param e the event to be processed
+             */
             @Override
             public void mouseClicked(MouseEvent e) {
                 try {
