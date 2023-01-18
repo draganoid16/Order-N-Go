@@ -33,7 +33,7 @@ public class Pedido
     private static final LinkedHashMap<String, Cliente> clienteCache = new LinkedHashMap<>();
     private static final LinkedHashMap<String, Restaurante> restauranteCache = new LinkedHashMap<>();
 
-    public Pedido(Cliente cliente, String moradaEntrega, LocalDateTime dataHoraEntrega)
+    protected Pedido(Cliente cliente, String moradaEntrega, LocalDateTime dataHoraEntrega, int nrPedido)
     {
         if (cliente == null)
             throw new IllegalArgumentException("Cliente invalido!");
@@ -50,9 +50,14 @@ public class Pedido
             
         this.dataHoraEntrega = dataHoraEntrega;
         
-        setNrPedido(0);
+        setNrPedido(nrPedido);
         
         itemsPedido = new LinkedHashMap<>();
+    }
+    
+    public Pedido(Cliente cliente, String moradaEntrega, LocalDateTime dataHoraEntrega)
+    {
+        this(cliente, moradaEntrega, dataHoraEntrega, 0);
     }
 
     //<editor-fold defaultstate="collapsed" desc="Getters">
@@ -208,7 +213,7 @@ public class Pedido
         Pedido p = new Pedido(
             cliente, 
             result.getString("moradaEntrega"),
-            result.getDate("dataHoraEntrega").toLocalDate().atStartOfDay()
+            result.getTimestamp("dataHoraEntrega").toLocalDateTime()
         );
         
         p.setNrPedido(result.getInt("nrPedido"));

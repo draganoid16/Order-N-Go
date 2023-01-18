@@ -193,9 +193,9 @@ public abstract class TestesComBD
                 ('invisivel@gong.com', 'invisivel', 'morada invisivel', '000000000', '$2a$10$g8P/Aek9gp1nd6bpkm/eFeMG3/pJYdx9M5SsuNmbF6SoHjf4eFvHW', 2); /* pass: invisivel */
             
             INSERT INTO prato(emailRestaurante, nome, detalhes, precoUnitario, tipo, alergenios) VALUES
-                ('visivel@rest.com', 'prato carne visivel', 'detalhes visivel', 7.80, 'CARNE', 'alergenio visivel'),
+                ('visivel@rest.com', 'prato carne visivel', 'detalhes visivel', 7.80, 'CARNE', 'alergenios visivel'),
                 ('visivel@rest.com', 'prato peixe invisivel', 'detalhes invisivel', 9.99, 'PEIXE', NULL),
-                ('invisivel@rest.com', 'prato vegetariano invisivel', 'detalhes invisivel', 12, 'VEGETARIANO', 'alergenio invisivel'),
+                ('invisivel@rest.com', 'prato vegetariano invisivel', 'detalhes invisivel', 12, 'VEGETARIANO', 'alergenios invisivel'),
                 ('invisivel@rest.com', 'prato vegano invisivel', 'detalhes invisivel', 15, 'VEGANO', NULL);
             
             INSERT INTO bebida(emailRestaurante, nome, detalhes, precoUnitario, capacidadeCL) VALUES
@@ -210,10 +210,10 @@ public abstract class TestesComBD
                 ('invisivel@cli.com', 'invisivel', 'morada invisivel', '000000000', '000000000', '$2a$10$g8P/Aek9gp1nd6bpkm/eFeMG3/pJYdx9M5SsuNmbF6SoHjf4eFvHW'); /* pass: invisivel */
                           
             INSERT INTO pedido(nrPedido, moradaEntrega, dataHoraEntrega, emailCliente) VALUES
-                (11, 'morada 1', '2022-12-15 01:01:01', 'visivel@cli.com'),
-                (12, 'morada 2', '2022-12-15 02:02:02', 'visivel@cli.com'),
-                (21, 'morada 1', '2022-12-15 01:01:01', 'invisivel@cli.com'),
-                (31, 'morada 1', '2022-12-15 01:01:01', 'invisivel@cli.com');
+                (11, 'morada 1', '2022-12-15 01:01', 'visivel@cli.com'),
+                (12, 'morada 2', '2022-12-15 02:02', 'visivel@cli.com'),
+                (21, 'morada 1', '2022-12-15 01:01', 'invisivel@cli.com'),
+                (31, 'morada 1', '2022-12-15 01:01', 'invisivel@cli.com');
                           
             INSERT INTO pedidoprato(nrPedido, emailRestaurante, nomePrato, quantidade) VALUES
                 (11, 'visivel@rest.com', 'prato carne visivel', 1),
