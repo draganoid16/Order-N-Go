@@ -74,12 +74,13 @@ public class TestarAlteracoes
     public void main()
     {   
         Restaurante rest = new Restaurante("r1@r1.r1", "r1", "111111111", "Morada 1");
-                
+        rest.setPassword("1".toCharArray());        
+        
         Cliente cliente = new Cliente("c1@c1.c1", "c1", "111111111", "Morada 1", "111111111");
         cliente.setPassword("1".toCharArray());
 
         try
-        {        
+        {  
             /* Lançam exceções (não será implementado neste projeto)
             cliente.save(); // throw UnsupportedOperationException
             cliente.delete(); // throw UnsupportedOperationException
