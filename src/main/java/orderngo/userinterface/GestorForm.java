@@ -11,10 +11,7 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
+import java.awt.event.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -26,32 +23,27 @@ import static javax.swing.WindowConstants.DISPOSE_ON_CLOSE;
 
     public class GestorForm {
         private JPanel gestorPanel,FieldPanel,UserPanel,RestaurantePanel;
-        private JLabel restauranteLabel,lbNome, lbTelemovel, lbPassword, lbEmail,lbMorada,usernameLabel,userImage;
+        private JLabel restauranteLabel,lbNome, lbTelemovel, lbPassword, lbEmail,lbMorada,usernameLabel,userImage,restauranteImg,labelImageRest;
         private JTextField NomeTextField,emailTextField,moradaTextField,telemovelTextField;
         private JPasswordField passwordPasswordField;
         private JButton btnAtualizar,btnEliminar,cancelarButton,btnNovo;
         private JScrollPane RestaurantField;
         private JList restauranteList;
-        private JLabel restauranteImg;
-        private JLabel labelImageRest;
-        private JLabel lbteste;
+        private JButton logoutbtn;
         private final ArrayList<String> rests = new ArrayList<>();
         private final ArrayList<String> restemails = new ArrayList<>();
         private String[] str;
         private String selectEmail;
         private BufferedImage imageRestaurante;
-
         private final BufferedImage[] bi = new BufferedImage[1];
+
 
         public GestorForm(JFrame parent, String email) throws SQLException {
             JFrame mainFrame = new JFrame();
             mainFrame.setTitle("Order-N-Go Gestor");
             mainFrame.setContentPane(gestorPanel);
+            clearFields();
             carregaRestaurante();
-            BufferedImage imagem = ImagemUtils.ficheiroToImage("src//imageresources//selectImage.jpg");
-            Image resizedimg = imagem.getScaledInstance(170, 170, Image.SCALE_SMOOTH);
-            Icon icon = new ImageIcon(resizedimg);
-            restauranteImg.setIcon(icon);
             mainFrame.setMinimumSize(new Dimension(950, 750));
             mainFrame.setLocationRelativeTo(parent);
             mainFrame.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
@@ -63,6 +55,7 @@ import static javax.swing.WindowConstants.DISPOSE_ON_CLOSE;
                  */
                 @Override
                 public void actionPerformed(ActionEvent e) {
+                    btnAtualizar.setText("Guardar");
                     restauranteList.clearSelection();
                     NomeTextField.setVisible(true);
                     lbNome.setVisible(true);
@@ -70,7 +63,6 @@ import static javax.swing.WindowConstants.DISPOSE_ON_CLOSE;
                     emailTextField.setVisible(true);
                     lbPassword.setVisible(true);
                     passwordPasswordField.setVisible(true);
-                    btnAtualizar.setText("Guardar");
                     NomeTextField.setText("");
                     moradaTextField.setText("");
                     emailTextField.setText("");
@@ -88,22 +80,19 @@ import static javax.swing.WindowConstants.DISPOSE_ON_CLOSE;
                             JOptionPane.YES_NO_OPTION,
                             JOptionPane.QUESTION_MESSAGE);
                     if (result == JOptionPane.YES_OPTION) {
-                        imageRestaurante = ImagemUtils.ficheiroToImage("src//imageresources//selectImage.jpg");
-                        Image resizedimg = imageRestaurante.getScaledInstance(160, 160, Image.SCALE_SMOOTH);
-                        Icon icon = new ImageIcon(resizedimg);
-                        restauranteImg.setIcon(icon);
                         clearFields();
                     }
                 }
             });
             btnAtualizar.addActionListener(new ActionListener() {
+                /**
+                 * @param e the event to be processed
+                 */
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    if (btnAtualizar.getText().equals("Atualizar")) {
-                        int result = JOptionPane.showConfirmDialog(parent, "Deseja atualizar dados do restaurante?", "Atualizar dados",
-                                JOptionPane.YES_NO_OPTION,
-                                JOptionPane.QUESTION_MESSAGE);
-                        if (result == JOptionPane.YES_OPTION) {
+                    if(btnAtualizar.getText().equals("Atualizar")) {
+                        int result = JOptionPane.showConfirmDialog(parent, "Deseja atualizar dados do restaurante?", "Atualizar dados",JOptionPane.YES_NO_OPTION,JOptionPane.QUESTION_MESSAGE);
+                        if(result == JOptionPane.YES_OPTION) {
                             String telemovel = telemovelTextField.getText();
                             String morada = moradaTextField.getText();
                             try {
@@ -120,10 +109,8 @@ import static javax.swing.WindowConstants.DISPOSE_ON_CLOSE;
                             clearFields();
                             carregaRestaurante();
                         }
-                    } else if (btnAtualizar.getText().equals("Guardar")) {
-                        int result = JOptionPane.showConfirmDialog(parent, "Deseja inserir dados do restaurante?", "Novo Restaurante",
-                                JOptionPane.YES_NO_OPTION,
-                                JOptionPane.QUESTION_MESSAGE);
+                    }else if (btnAtualizar.getText().equals("Guardar")) {
+                        int result = JOptionPane.showConfirmDialog(parent, "Deseja inserir dados do restaurante?", "Novo Restaurante",JOptionPane.YES_NO_OPTION,JOptionPane.QUESTION_MESSAGE);
                         if (result == JOptionPane.YES_OPTION) {
                             String email = emailTextField.getText();
                             String nome = NomeTextField.getText();
@@ -139,7 +126,6 @@ import static javax.swing.WindowConstants.DISPOSE_ON_CLOSE;
                                     restaurante.setImagem(ImagemUtils.ficheiroToImage("src//imageresources//noimagefound.jpg"));
                                 }
                                 restaurante.save();
-
                             }catch(SQLException sqlException){
                                 throw new RuntimeException(sqlException);
                             }
@@ -201,6 +187,17 @@ import static javax.swing.WindowConstants.DISPOSE_ON_CLOSE;
                     restauranteImg.setIcon(icon);
                 }
             });
+            logoutbtn.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    int result = JOptionPane.showConfirmDialog(parent, "Deseja fazer logout?", "Logout",JOptionPane.YES_NO_OPTION,JOptionPane.QUESTION_MESSAGE);
+                    if (result == JOptionPane.YES_OPTION) {
+                        LoginForm loginForm = new LoginForm(null);
+                        mainFrame.dispatchEvent(new WindowEvent(mainFrame, WindowEvent.WINDOW_CLOSING));
+                        JOptionPane.showMessageDialog(parent, "Logout com sucesso!", "Logout com sucesso", JOptionPane.INFORMATION_MESSAGE);
+                    }
+                }
+            });
         }
         public BufferedImage escolherImagem(){
             JFileChooser file = new JFileChooser();
@@ -250,11 +247,11 @@ import static javax.swing.WindowConstants.DISPOSE_ON_CLOSE;
                             restemails.add(result.getString("email"));
                             BufferedImage imagem = ImagemUtils.blobToImage(result.getBlob("imagem"));
                             if (imagem != null) {
-                                Image resizedimg = imagem.getScaledInstance(150,150,Image.SCALE_SMOOTH);
+                                Image resizedimg = imagem.getScaledInstance(160,160,Image.SCALE_SMOOTH);
                                 addElement(new Object[]{result.getString("nome"), new ImageIcon(resizedimg)});
                             }else{
                                 BufferedImage image = ImagemUtils.ficheiroToImage("src//imageresources//noimagefound.jpg");
-                                Image resizedimg = image.getScaledInstance(150,150,Image.SCALE_SMOOTH);
+                                Image resizedimg = image.getScaledInstance(160,160,Image.SCALE_SMOOTH);
                                 addElement(new Object[]{result.getString("nome"), new ImageIcon(resizedimg)});
 
                             }
@@ -304,7 +301,7 @@ import static javax.swing.WindowConstants.DISPOSE_ON_CLOSE;
 
         public void clearFields(){
             BufferedImage imagem = ImagemUtils.ficheiroToImage("src//imageresources//selectImage.jpg");
-            Image resizedimg = imagem.getScaledInstance(170, 170, Image.SCALE_SMOOTH);
+            Image resizedimg = imagem.getScaledInstance(160, 160, Image.SCALE_SMOOTH);
             Icon icon = new ImageIcon(resizedimg);
             restauranteImg.setIcon(icon);
             NomeTextField.setText("");

@@ -135,7 +135,7 @@
             </constraints>
             <properties>
               <background color="-14343389"/>
-              <visible value="false"/>
+              <visible value="true"/>
             </properties>
             <border type="none"/>
             <children>
@@ -542,7 +542,7 @@
             <properties>
               <background color="-14343389"/>
               <preferredSize width="414" height="357"/>
-              <visible value="true"/>
+              <visible value="false"/>
             </properties>
             <border type="none"/>
             <children>
