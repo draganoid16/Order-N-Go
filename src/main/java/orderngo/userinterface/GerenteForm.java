@@ -102,6 +102,12 @@ public class GerenteForm {
 
         //setup basico
         JFrame mainFrame = new JFrame();
+        try {
+            mainFrame.setIconImage(ImageIO.read(new File("src\\imageresources\\orderngo.png")));
+        }
+        catch (IOException exc) {
+            exc.printStackTrace();
+        }
         mainFrame.setTitle("Order-N-Go Main");
         mainFrame.setContentPane(mainPanel);
         mainFrame.setMinimumSize(new Dimension(1050, 1050));
@@ -122,6 +128,8 @@ public class GerenteForm {
                 menuPanel.setVisible(true);
                 cardapioPanel.setVisible(false);
                 infoPanel.setVisible(false);
+                editarBebidaPanel.setVisible(false);
+                editarPratoPanel.setVisible(false);
                 restaurantePanel.setVisible(true);
                 System.out.println("carregado");
             }
@@ -144,6 +152,8 @@ public class GerenteForm {
                 menuPanel.setVisible(true);
                 restaurantePanel.setVisible(false);
                 infoPanel.setVisible(false);
+                editarBebidaPanel.setVisible(false);
+                editarPratoPanel.setVisible(false);
                 cardapioPanel.setVisible(true);
                 System.out.println("carregado");
             }
@@ -164,6 +174,8 @@ public class GerenteForm {
                 menuPanel.setVisible(true);
                 restaurantePanel.setVisible(false);
                 cardapioPanel.setVisible(false);
+                editarBebidaPanel.setVisible(false);
+                editarPratoPanel.setVisible(false);
                 infoPanel.setVisible(true);
                 System.out.println("carregado");
             }
@@ -279,6 +291,7 @@ public class GerenteForm {
 
                     String escolha2 = (String) jcb.getSelectedItem();
 
+
                     switch (escolha2) {
                         case "Prato" -> {
                             JComboBox jcb2 = new JComboBox();
@@ -290,7 +303,7 @@ public class GerenteForm {
                             if (jcb2 != null) {
                                 JOptionPane.showMessageDialog(mainFrame, jcb2, "Escolha o prato a alterar", JOptionPane.QUESTION_MESSAGE);
                             } else {
-                                JOptionPane.showMessageDialog(mainFrame, jcb2, "Não existem pratos!", JOptionPane.ERROR_MESSAGE);
+                                JOptionPane.showMessageDialog(mainFrame, jcb2, "Não existem pratos ou nada escolhido!", JOptionPane.ERROR_MESSAGE);
                                 break;
                             }
                             String escolha = (String) jcb2.getSelectedItem();
@@ -323,6 +336,10 @@ public class GerenteForm {
                                         Prato pratoalterado = new Prato(restaurante, escolha, detalhespratoField.getText(), preco, tipoprato, alergiaspratoField.getText());
 
                                         if (bi[0] != null) {
+                                            pratoalterado.setImagem(bi[0]);
+                                        }
+                                        if(bi[0] == null){
+                                            bi[0] = prato.getImagem();
                                             pratoalterado.setImagem(bi[0]);
                                         }
 
@@ -383,13 +400,18 @@ public class GerenteForm {
                                         float preco = Float.parseFloat(precobebidaField.getText());
                                         int capacidade = Integer.parseInt(capacidadebebidaField.getText());
 
-                                        Bebida bebida = new Bebida(restaurante, escolha, detalhesbebidaField.getText(), preco, capacidade);
+                                        Bebida bebidaalterada = new Bebida(restaurante, escolha, detalhesbebidaField.getText(), preco, capacidade);
 
                                         if (bi[0] != null) {
-                                            bebida.setImagem(bi[0]);
+                                            bebidaalterada.setImagem(bi[0]);
+                                        }
+                                        if(bi[0] == null){
+                                            bi[0] = bebida.getImagem();
+                                            bebidaalterada.setImagem(bi[0]);
                                         }
 
-                                        bebida.save();
+
+                                        bebidaalterada.save();
                                         adicionarBebidadeSQL(restaurante);
 
 
@@ -450,17 +472,16 @@ public class GerenteForm {
                             @Override
                             public void mouseClicked(MouseEvent e) {
                                 try {
-                                    Restaurante rest = Restaurante.getRestaurante(email);
                                     float preco = Float.parseFloat(precopratoField.getText());
                                     Prato.TipoPrato tipoprato = (Prato.TipoPrato) comboBoxTipoPrato.getSelectedItem();
-                                    Prato prato = new Prato(rest, nomedoPratoTextField.getText(), detalhespratoField.getText(), preco, tipoprato, alergiaspratoField.getText());
+                                    Prato prato = new Prato(restaurante, nomedoPratoTextField.getText(), detalhespratoField.getText(), preco, tipoprato, alergiaspratoField.getText());
 
                                     if (bi[0] != null) {
                                         prato.setImagem(bi[0]);
                                     }
 
                                     prato.save();
-                                    adicionarPratodeSQL(rest);
+                                    adicionarPratodeSQL(restaurante);
 
                                 } catch (SQLException | IOException ex) {
                                     throw new RuntimeException(ex);
@@ -492,18 +513,17 @@ public class GerenteForm {
                             @Override
                             public void mouseClicked(MouseEvent e) {
                                 try {
-                                    Restaurante rest = Restaurante.getRestaurante(email);
                                     float preco = Float.parseFloat(precobebidaField.getText());
                                     int capacidade = Integer.parseInt(capacidadebebidaField.getText());
 
-                                    Bebida bebida = new Bebida(rest, nomedaBebidaTextField.getText(), detalhesbebidaField.getText(), preco, capacidade);
+                                    Bebida bebida = new Bebida(restaurante, nomedaBebidaTextField.getText(), detalhesbebidaField.getText(), preco, capacidade);
 
                                     if (bi[0] != null) {
                                         bebida.setImagem(bi[0]);
                                     }
 
                                     bebida.save();
-                                    adicionarBebidadeSQL(rest);
+                                    adicionarBebidadeSQL(restaurante);
 
 
                                 } catch (SQLException | IOException ex) {
@@ -546,8 +566,7 @@ public class GerenteForm {
                     case "Prato" -> {
                         try {
                             JComboBox jcb2 = new JComboBox();
-                            Restaurante rest = Restaurante.getRestaurante(email);
-                            Prato[] allPratos = Prato.from(rest);
+                            Prato[] allPratos = Prato.from(restaurante);
                             for (int i = 0; i < allPratos.length; i++) {
                                 jcb2.addItem(allPratos[i].getNome());
                             }
@@ -559,11 +578,11 @@ public class GerenteForm {
                             }
 
                             String escolha2 = (String) jcb2.getSelectedItem();
-                            Prato prato = new Prato(rest, escolha2, "null", 10, Prato.TipoPrato.PEIXE, "null");
+                            Prato prato = new Prato(restaurante, escolha2, "null", 10, Prato.TipoPrato.PEIXE, "null");
                             prato.delete();
 
                             JOptionPane.showMessageDialog(mainFrame, "", "Prato removido com sucesso!", JOptionPane.INFORMATION_MESSAGE);
-                            adicionarPratodeSQL(rest);
+                            adicionarPratodeSQL(restaurante);
 
                         } catch (SQLException | IOException ex) {
                             throw new RuntimeException(ex);
@@ -574,8 +593,7 @@ public class GerenteForm {
                     case "Bebida" -> {
                         try {
                             JComboBox jcb2 = new JComboBox();
-                            Restaurante rest = Restaurante.getRestaurante(email);
-                            Bebida[] allBebidas = Bebida.from(rest);
+                            Bebida[] allBebidas = Bebida.from(restaurante);
                             for (int i = 0; i < allBebidas.length; i++) {
                                 jcb2.addItem(allBebidas[i].getNome());
                             }
@@ -587,11 +605,11 @@ public class GerenteForm {
                             }
 
                             String escolha2 = (String) jcb2.getSelectedItem();
-                            Bebida bebida = new Bebida(rest, escolha2, "null", 10, 10);
+                            Bebida bebida = new Bebida(restaurante, escolha2, "null", 10, 10);
                             bebida.delete();
 
                             JOptionPane.showMessageDialog(mainFrame, "", "Bebida removida com sucesso!", JOptionPane.INFORMATION_MESSAGE);
-                            adicionarBebidadeSQL(rest);
+                            adicionarBebidadeSQL(restaurante);
 
                         } catch (SQLException | IOException ex) {
                             throw new RuntimeException(ex);
@@ -870,7 +888,7 @@ public class GerenteForm {
     private int adicionarPratodeSQL(Restaurante restaurante) throws SQLException, IOException, ArrayIndexOutOfBoundsException {
         Prato[] pratos = Prato.from(restaurante);
 
-        for (int i = 0; i < pratos.length; i++) {
+        for (int i = 0; i < 2; i++) {
             JLabel[] pratosVariaveis = {prato1, prato2, prato3};
             String tipoprato = String.valueOf(pratos[i].getNome());
             if(tipoprato!= null) {
@@ -903,7 +921,7 @@ public class GerenteForm {
     private void adicionarBebidadeSQL(Restaurante restaurante) throws SQLException, IOException, ArrayIndexOutOfBoundsException {
         Bebida[] bebidas = Bebida.from(restaurante);
 
-        for (int i = 0; i < bebidas.length; i++) {
+        for (int i = 0; i < 2; i++) {
             JLabel[] bebidasVariaveis = {bebida1, bebida2, bebida3};
             String tipoprato = String.valueOf(bebidas[i].getNome());
             if(tipoprato!= null) {
@@ -987,16 +1005,18 @@ public class GerenteForm {
 
         //infopanel
         ImageIcon imgjoao = new ImageIcon("src\\imageresources\\joaocoelho.jpg");
-        ImageIcon resizedImageJoao = (ImageIcon) CardapioImageSize(imgjoao.getImage(), 250, 250);
+        ImageIcon resizedImageJoao = (ImageIcon) CardapioImageSize(imgjoao.getImage(), 250, 280);
         ImageIcon imgmarcio = new ImageIcon("src\\imageresources\\marciotavares.jpg");
-        ImageIcon resizedImageMarcio = (ImageIcon) CardapioImageSize(imgmarcio.getImage(), 250, 250);
+        ImageIcon resizedImageMarcio = (ImageIcon) CardapioImageSize(imgmarcio.getImage(), 250, 280);
+        ImageIcon imgrui = new ImageIcon("src\\imageresources\\ruivieira.jpg");
+        ImageIcon resizedImageRui = (ImageIcon) CardapioImageSize(imgrui.getImage(), 280, 280);
         ImageIcon noimage = new ImageIcon("src\\imageresources\\noimagefound.jpg");
-        ImageIcon resizedNoImage = (ImageIcon) CardapioImageSize(noimage.getImage(), 250, 250);
+        ImageIcon resizedNoImage = (ImageIcon) CardapioImageSize(noimage.getImage(), 250, 280);
 
 
         joaocoelhoimage = new JLabel(new ImageIcon(resizedImageJoao.getImage()));
         marciotavaresimage = new JLabel(new ImageIcon(resizedImageMarcio.getImage()));
-        ruivieiraImage = new JLabel(new ImageIcon(resizedNoImage.getImage()));
+        ruivieiraImage = new JLabel(new ImageIcon(resizedImageRui.getImage()));
         sergioferreiraImage = new JLabel(new ImageIcon(resizedNoImage.getImage()));
         gustavovitorinoImage = new JLabel(new ImageIcon(resizedNoImage.getImage()));
 
