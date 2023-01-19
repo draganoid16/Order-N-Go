@@ -225,7 +225,7 @@ public class PratoTest extends TestesComBD
         
         Prato[] expResult = new Prato[]
         {
-            new Prato(rest, "prato vegetariano invisivel", "detalhes invisivel", 12, TipoPrato.VEGETARIANO, "alergenio invisivel"),
+            new Prato(rest, "prato vegetariano invisivel", "detalhes invisivel", 12, TipoPrato.VEGETARIANO, "alergenios invisivel"),
             new Prato(rest, "prato vegano invisivel", "detalhes invisivel", 15, TipoPrato.VEGANO, "")
         };
         Prato[] result = Prato.from(rest, apenasVisivel);
@@ -295,7 +295,7 @@ public class PratoTest extends TestesComBD
         String nome = "prato vegetariano invisivel";
         boolean apenasVisiveis = false;
         
-        Prato expResult = new Prato(rest, "prato vegetariano invisivel", "detalhes invisivel", 12, TipoPrato.VEGETARIANO, "alergenio invisivel");
+        Prato expResult = new Prato(rest, "prato vegetariano invisivel", "detalhes invisivel", 12, TipoPrato.VEGETARIANO, "alergenios invisivel");
         Prato result = Prato.getPrato(rest, nome, apenasVisiveis);
         assertEquals(expResult, result);
     }

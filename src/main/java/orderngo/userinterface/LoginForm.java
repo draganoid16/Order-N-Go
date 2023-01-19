@@ -4,11 +4,14 @@ import orderngo.exception.RestauranteNotFoundException;
 import orderngo.utilizador.GestorOrderAndGo;
 import orderngo.utilizador.Restaurante;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
+import java.io.File;
+import java.io.IOException;
 import java.sql.SQLException;
 
 public class LoginForm extends JDialog {
@@ -20,10 +23,17 @@ public class LoginForm extends JDialog {
     private JLabel loginImage;
     private JRadioButton restauranteRadioButton;
     private JRadioButton gestorONGRadioButton;
+    private JLabel orderngologo;
 
 
     public LoginForm(JFrame parent) {
         JFrame loginFrame = new JFrame();
+        try {
+            loginFrame.setIconImage(ImageIO.read(new File("src\\imageresources\\orderngo.png")));
+        }
+        catch (IOException exc) {
+            exc.printStackTrace();
+        }
         //RadioButtons agrupados
         ButtonGroup group = new ButtonGroup();
         group.add(restauranteRadioButton);
@@ -77,5 +87,6 @@ public class LoginForm extends JDialog {
     private void createUIComponents() {
         restaurantImage = new JLabel(new ImageIcon("src\\imageresources\\food-tray.png"));
         loginImage = new JLabel(new ImageIcon("src\\imageresources\\user.png"));
+        orderngologo = new JLabel(new ImageIcon("src\\imageresources\\orderngo.png"));
     }
 }

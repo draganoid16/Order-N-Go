@@ -9,7 +9,6 @@ import orderngo.cardapio.Prato.TipoPrato;
 import orderngo.utils.ImagemUtils;
 
 import java.awt.image.BufferedImage;
-import java.util.Arrays;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.BeforeEach;
@@ -255,7 +254,7 @@ public class CardapioTest extends TestesComBD
             new Prato(rest, "prato peixe invisivel", "detalhes invisivel", 9.99f, TipoPrato.PEIXE, null),
             new Bebida(rest, "bebida invisivel", "detalhes invisivel", 5.5f, 200),        
             new Bebida(rest, "bebida visivel", "detalhes visivel", 3, 50),
-            new Prato(rest, "prato carne visivel", "detalhes visivel", 7.80f, TipoPrato.CARNE, "alergenio visivel")
+            new Prato(rest, "prato carne visivel", "detalhes visivel", 7.80f, TipoPrato.CARNE, "alergenios visivel")
         };
         ItemCardapio[] result = instance.getAllItems();
         
