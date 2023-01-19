@@ -11,7 +11,8 @@ import java.sql.SQLException;
 /**
  * @author grupo1
  */
-public class App {
+public class App
+{
     public static void main(String[] args){
         LoginForm loginForm = new LoginForm(null);
     }
