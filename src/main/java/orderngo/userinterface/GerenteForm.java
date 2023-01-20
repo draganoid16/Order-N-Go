@@ -11,9 +11,7 @@ import javax.swing.*;
 import javax.swing.border.Border;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.*;
-import java.awt.event.KeyAdapter;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
+import java.awt.event.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -85,6 +83,8 @@ public class GerenteForm {
     private JLabel gustavovitorinoImage;
     private JLabel githubRui;
     private JLabel githubSergio;
+    private JPanel logoutPanel;
+    private JButton logoutbtn;
 
     private JLabel helpIcon;
 
@@ -788,6 +788,17 @@ public class GerenteForm {
             @Override
             public void mouseExited(MouseEvent e) {
                 githubSergio.setForeground(Color.WHITE);
+            }
+        });
+        logoutbtn.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                int result = JOptionPane.showConfirmDialog(parent, "Deseja fazer logout?", "Logout",JOptionPane.YES_NO_OPTION,JOptionPane.QUESTION_MESSAGE);
+                if (result == JOptionPane.YES_OPTION) {
+                    LoginForm loginForm = new LoginForm(null);
+                    mainFrame.dispatchEvent(new WindowEvent(mainFrame, WindowEvent.WINDOW_CLOSING));
+                    JOptionPane.showMessageDialog(parent, "Logout com sucesso!", "Logout com sucesso", JOptionPane.INFORMATION_MESSAGE);
+                }
             }
         });
     }
