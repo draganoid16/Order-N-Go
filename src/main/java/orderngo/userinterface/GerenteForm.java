@@ -659,6 +659,7 @@ public class GerenteForm {
                         jcb.addItem("Cliente : " + pedido[i].getCliente().getNome() + "; Numero telemovel: "+ pedido[i].getCliente().getTelemovel());
                         jcb.addItem("Numero de Pedido: " + pedido[i].getNrPedido() + "; Morada de Entrega: " + pedido[i].getMoradaEntrega());
                         ped.getItemsPedido(restaurante);
+
                         for (var entry : ped.getItemsPedido().entrySet()) {
                             jcb.addItem("Items do Pedido: " + entry.getKey().getNome() + " Quantidade: " + entry.getValue());
                         }
