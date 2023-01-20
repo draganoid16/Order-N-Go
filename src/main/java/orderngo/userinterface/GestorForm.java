@@ -331,6 +331,7 @@ import static javax.swing.WindowConstants.DISPOSE_ON_CLOSE;
                 setHorizontalTextPosition(0);
                 setVerticalTextPosition(BOTTOM);
                 setIcon((Icon)((Object[])ob1)[1]);
+                setHorizontalAlignment(0);
                 if(!isSelected)
                 {
                     setBackground(JLst.getBackground());
