@@ -177,7 +177,6 @@ public class GerenteForm {
                 editarBebidaPanel.setVisible(false);
                 editarPratoPanel.setVisible(false);
                 infoPanel.setVisible(true);
-                System.out.println("carregado");
             }
 
             @Override
@@ -909,11 +908,11 @@ public class GerenteForm {
             }
             Image img = pratos[i].getImagem();
             if (img != null) {
-                Icon icon = CardapioImageSize(img, 350, 250);
+                Icon icon = CardapioImageSize(img, 250, 150);
                 pratosVariaveis[i].setIcon(icon);
             }else{
             BufferedImage img2 = ImageIO.read(new File("src\\imageresources\\noimagefound.jpg"));
-            Icon icon = CardapioImageSize(img2, 350, 250);
+            Icon icon = CardapioImageSize(img2, 250, 150);
             pratosVariaveis[i].setIcon(icon);
         }
 
@@ -943,11 +942,11 @@ public class GerenteForm {
             Image img = bebidas[i].getImagem();
             //if not null setup X, else setup img
             if (img != null) {
-                Icon icon = CardapioImageSize(img, 350, 250);
+                Icon icon = CardapioImageSize(img, 250, 150);
                 bebidasVariaveis[i].setIcon(icon);
             }else{
                 BufferedImage img2 = ImageIO.read(new File("src\\imageresources\\noimagefound.jpg"));
-                Icon icon = CardapioImageSize(img2, 350, 250);
+                Icon icon = CardapioImageSize(img2, 250, 150);
                 bebidasVariaveis[i].setIcon(icon);
             }
 
