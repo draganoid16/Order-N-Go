@@ -1,6 +1,5 @@
 package orderngo.userinterface;
 
-import orderngo.App;
 import orderngo.exception.RestauranteNotFoundException;
 import orderngo.utilizador.GestorOrderAndGo;
 import orderngo.utilizador.Restaurante;
@@ -58,7 +57,7 @@ public class LoginForm extends JDialog {
 
                         //GestorForm que adiciona/remove restaurantes de agueda da base de dados
                     } else if (GestorOrderAndGo.validarCredenciais(email, password) && gestorONGRadioButton.isSelected()) {
-                        App.GestorMenu();
+                        GestorForm gestorForm = new GestorForm(null, email);
                         loginFrame.dispatchEvent(new WindowEvent(loginFrame, WindowEvent.WINDOW_CLOSING));
 
                     } else {

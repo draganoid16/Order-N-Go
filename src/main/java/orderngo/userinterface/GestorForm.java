@@ -2,6 +2,7 @@ package orderngo.userinterface;
 
 
 import orderngo.basedados.ConectorBD;
+import orderngo.utilizador.GestorOrderAndGo;
 import orderngo.utilizador.Restaurante;
 import orderngo.utils.ImagemUtils;
 
@@ -43,6 +44,8 @@ import static javax.swing.WindowConstants.DISPOSE_ON_CLOSE;
             mainFrame.setTitle("Order-N-Go Gestor");
             mainFrame.setContentPane(gestorPanel);
             clearFields();
+            GestorOrderAndGo gest = GestorOrderAndGo.getGestor(email);
+            usernameLabel.setText(gest.getNome());
             carregaRestaurante();
             mainFrame.setMinimumSize(new Dimension(950, 750));
             mainFrame.setLocationRelativeTo(parent);
@@ -305,6 +308,7 @@ import static javax.swing.WindowConstants.DISPOSE_ON_CLOSE;
             Icon icon = new ImageIcon(resizedimg);
             restauranteImg.setIcon(icon);
             NomeTextField.setText("");
+
             emailTextField.setText("");
             moradaTextField.setText("");
             telemovelTextField.setText("");
