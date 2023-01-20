@@ -58,14 +58,14 @@ public class GerenteForm {
     private JTextField precopratoField;
     private JTextField tipopratoField;
     private JTextField alergiaspratoField;
-    private JButton OKButtonPrato;
+    private JButton OKButtonAlterarPrato;
     private JPanel editarPratoPanel;
-    private JButton OKBebidaButton;
+    private JButton OKAdicionarBebidaButton;
     private JButton adicionarNoCardapioButton;
     private JButton verListaCompletaButton;
     private JComboBox comboBoxTipoPrato;
-    private JButton escolherImagemButton;
-    private JButton escolherImagemBebida;
+    private JButton escolherImagemAlterar;
+    private JButton AdicionarImagemBebida;
     private JButton removerDoCardapioButton;
     private JLabel nomedoPratoLabel;
     private JTextField nomedoPratoTextField;
@@ -85,6 +85,10 @@ public class GerenteForm {
     private JLabel gustavovitorinoImage;
     private JLabel githubRui;
     private JLabel githubSergio;
+    private JButton OkButtonAdicionarPrato;
+    private JButton OkButtonAlterarBebida;
+    private JButton escolherImagemBebidaAlterar;
+    private JButton escolherImagemAdicionar;
 
     private JLabel helpIcon;
 
@@ -92,6 +96,7 @@ public class GerenteForm {
 
     /**
      * Construtor do GerenteForm, define todos os parametros necessarios
+     *
      * @param parent
      * @param email
      * @throws SQLException
@@ -104,8 +109,7 @@ public class GerenteForm {
         JFrame mainFrame = new JFrame();
         try {
             mainFrame.setIconImage(ImageIO.read(new File("src\\imageresources\\orderngo.png")));
-        }
-        catch (IOException exc) {
+        } catch (IOException exc) {
             exc.printStackTrace();
         }
         mainFrame.setTitle("Order-N-Go Main");
@@ -295,12 +299,11 @@ public class GerenteForm {
                     switch (escolha2) {
                         case "Prato" -> {
                             JComboBox jcb2 = new JComboBox();
-
                             Prato[] allPratos = Prato.from(restaurante);
                             for (int i = 0; i < allPratos.length; i++) {
                                 jcb2.addItem(allPratos[i].getNome());
                             }
-                            if (jcb2 != null) {
+                            if (jcb2.getSelectedItem() != null) {
                                 JOptionPane.showMessageDialog(mainFrame, jcb2, "Escolha o prato a alterar", JOptionPane.QUESTION_MESSAGE);
                             } else {
                                 JOptionPane.showMessageDialog(mainFrame, jcb2, "Não existem pratos ou nada escolhido!", JOptionPane.ERROR_MESSAGE);
@@ -310,9 +313,12 @@ public class GerenteForm {
                             Prato prato = Prato.getPrato(restaurante, escolha);
                             String preco = String.valueOf(prato.getPrecoUnitario());
                             cardapioPanel.setVisible(false);
+                            helpDescriptionPrato.setText("Para alterar o seu prato, introduza os detalhes abaixo e carregue em OK");
+                            OKButtonAlterarPrato.setVisible(true);
+                            escolherImagemAlterar.setVisible(true);
                             editarPratoPanel.setVisible(true);
                             final BufferedImage[] bi = new BufferedImage[1];
-                            escolherImagemButton.addMouseListener(new MouseAdapter() {
+                            escolherImagemAlterar.addMouseListener(new MouseAdapter() {
                                 @Override
                                 public void mouseClicked(MouseEvent e) {
                                     bi[0] = escolherImagem();
@@ -327,7 +333,7 @@ public class GerenteForm {
                             } catch (NullPointerException ex) {
                                 ex.printStackTrace();
                             }
-                            OKButtonPrato.addMouseListener(new MouseAdapter() {
+                            OKButtonAlterarPrato.addMouseListener(new MouseAdapter() {
                                 @Override
                                 public void mouseClicked(MouseEvent e) {
                                     try {
@@ -338,7 +344,7 @@ public class GerenteForm {
                                         if (bi[0] != null) {
                                             pratoalterado.setImagem(bi[0]);
                                         }
-                                        if(bi[0] == null){
+                                        if (bi[0] == null) {
                                             bi[0] = prato.getImagem();
                                             pratoalterado.setImagem(bi[0]);
                                         }
@@ -354,6 +360,7 @@ public class GerenteForm {
                                     JOptionPane.showMessageDialog(mainFrame, "", "Prato atualizado com sucesso!", JOptionPane.INFORMATION_MESSAGE);
                                     editarPratoPanel.setVisible(false);
                                     cardapioPanel.setVisible(true);
+                                    clearLabels();
                                 }
                             });
                         }
@@ -364,7 +371,7 @@ public class GerenteForm {
                             for (int i = 0; i < allBebidas.length; i++) {
                                 jcb3.addItem(allBebidas[i].getNome());
                             }
-                            if (jcb3 != null) {
+                            if (jcb3.getSelectedItem() != null) {
                                 JOptionPane.showMessageDialog(mainFrame, jcb3, "Escolha a bebida a alterar", JOptionPane.QUESTION_MESSAGE);
                             } else {
                                 JOptionPane.showMessageDialog(mainFrame, jcb3, "Não existem bebidas!", JOptionPane.ERROR_MESSAGE);
@@ -376,24 +383,25 @@ public class GerenteForm {
                             String preco = String.valueOf(bebida.getPrecoUnitario());
                             String capacidade = String.valueOf(bebida.getCapacidadeCL());
 
-                            try {
-                                detalhesbebidaField.setText(bebida.getDetalhes());
-                                precobebidaField.setText(preco);
-                                capacidadebebidaField.setText(capacidade);
 
-                            } catch (NullPointerException ex) {
-                                ex.printStackTrace();
-                            }
+                            helpDescriptionPrato.setText("Para alterar o sua bebida, introduza os detalhes abaixo e carregue em OK");
+                            OkButtonAlterarBebida.setVisible(true);
+                            escolherImagemBebidaAlterar.setVisible(true);
+                            detalhesbebidaField.setText(bebida.getDetalhes());
+                            precobebidaField.setText(preco);
+                            capacidadebebidaField.setText(capacidade);
+
+
                             cardapioPanel.setVisible(false);
                             editarBebidaPanel.setVisible(true);
                             final BufferedImage[] bi = new BufferedImage[1];
-                            escolherImagemBebida.addMouseListener(new MouseAdapter() {
+                            escolherImagemBebidaAlterar.addMouseListener(new MouseAdapter() {
                                 @Override
                                 public void mouseClicked(MouseEvent e) {
                                     bi[0] = escolherImagem();
                                 }
                             });
-                            OKBebidaButton.addMouseListener(new MouseAdapter() {
+                            OkButtonAlterarBebida.addMouseListener(new MouseAdapter() {
                                 @Override
                                 public void mouseClicked(MouseEvent e) {
                                     try {
@@ -405,7 +413,7 @@ public class GerenteForm {
                                         if (bi[0] != null) {
                                             bebidaalterada.setImagem(bi[0]);
                                         }
-                                        if(bi[0] == null){
+                                        if (bi[0] == null) {
                                             bi[0] = bebida.getImagem();
                                             bebidaalterada.setImagem(bi[0]);
                                         }
@@ -423,6 +431,8 @@ public class GerenteForm {
                                     JOptionPane.showMessageDialog(mainFrame, "", "Bebida atualizada com sucesso!", JOptionPane.INFORMATION_MESSAGE);
                                     editarBebidaPanel.setVisible(false);
                                     cardapioPanel.setVisible(true);
+                                    OkButtonAlterarBebida.setVisible(true);
+                                    clearLabels();
                                 }
                             });
                         }
@@ -455,20 +465,22 @@ public class GerenteForm {
                 switch (escolha) {
                     case "Prato" -> {
                         helpDescriptionPrato.setText("Para adicionar o seu prato, introduza os detalhes abaixo e carregue em OK");
+                        OkButtonAdicionarPrato.setVisible(true);
+                        escolherImagemAdicionar.setVisible(true);
                         nomedoPratoLabel.setVisible(true);
                         nomedoPratoTextField.setVisible(true);
                         comboBoxTipoPrato.setModel(new DefaultComboBoxModel(Prato.TipoPrato.values()));
                         cardapioPanel.setVisible(false);
                         editarPratoPanel.setVisible(true);
                         final BufferedImage[] bi = new BufferedImage[1];
-                        escolherImagemButton.addMouseListener(new MouseAdapter() {
+                        escolherImagemAdicionar.addMouseListener(new MouseAdapter() {
                             @Override
                             public void mouseClicked(MouseEvent e) {
                                 bi[0] = escolherImagem();
                             }
                         });
 
-                        OKButtonPrato.addMouseListener(new MouseAdapter() {
+                        OkButtonAdicionarPrato.addMouseListener(new MouseAdapter() {
                             @Override
                             public void mouseClicked(MouseEvent e) {
                                 try {
@@ -491,25 +503,28 @@ public class GerenteForm {
                                 nomedoPratoTextField.setVisible(false);
                                 editarPratoPanel.setVisible(false);
                                 cardapioPanel.setVisible(true);
+                                clearLabels();
                             }
                         });
                     }
 
                     case "Bebida" -> {
                         helpDescriptionBebida.setText("Para adicionar a sua bebida, introduza os detalhes abaixo e carregue em OK");
+                        OKAdicionarBebidaButton.setVisible(true);
+                        AdicionarImagemBebida.setVisible(true);
                         nomedabebidaLabel.setVisible(true);
                         nomedaBebidaTextField.setVisible(true);
                         cardapioPanel.setVisible(false);
                         editarBebidaPanel.setVisible(true);
                         final BufferedImage[] bi = new BufferedImage[1];
-                        escolherImagemBebida.addMouseListener(new MouseAdapter() {
+                        AdicionarImagemBebida.addMouseListener(new MouseAdapter() {
                             @Override
                             public void mouseClicked(MouseEvent e) {
                                 bi[0] = escolherImagem();
                             }
                         });
 
-                        OKBebidaButton.addMouseListener(new MouseAdapter() {
+                        OKAdicionarBebidaButton.addMouseListener(new MouseAdapter() {
                             @Override
                             public void mouseClicked(MouseEvent e) {
                                 try {
@@ -536,6 +551,7 @@ public class GerenteForm {
                                 nomedaBebidaTextField.setVisible(false);
                                 editarBebidaPanel.setVisible(false);
                                 cardapioPanel.setVisible(true);
+                                clearLabels();
                             }
                         });
                     }
@@ -570,7 +586,7 @@ public class GerenteForm {
                             for (int i = 0; i < allPratos.length; i++) {
                                 jcb2.addItem(allPratos[i].getNome());
                             }
-                            if (jcb2 != null) {
+                            if (jcb2.getSelectedItem() != null) {
                                 JOptionPane.showMessageDialog(mainFrame, jcb2, "Escolha o prato a remover", JOptionPane.QUESTION_MESSAGE);
                             } else {
                                 JOptionPane.showMessageDialog(mainFrame, jcb2, "Não existem pratos!", JOptionPane.ERROR_MESSAGE);
@@ -597,7 +613,7 @@ public class GerenteForm {
                             for (int i = 0; i < allBebidas.length; i++) {
                                 jcb2.addItem(allBebidas[i].getNome());
                             }
-                            if (jcb2 != null) {
+                            if (jcb2.getSelectedItem() != null) {
                                 JOptionPane.showMessageDialog(mainFrame, jcb2, "Escolha a bebida a remover", JOptionPane.QUESTION_MESSAGE);
                             } else {
                                 JOptionPane.showMessageDialog(mainFrame, jcb2, "Não existem bebidas!", JOptionPane.ERROR_MESSAGE);
@@ -630,8 +646,8 @@ public class GerenteForm {
 
                 try {
                     Pedido[] pedido = Pedido.from(restaurante);
-                    for(int i=0; i< pedido.length;i++){
-                        Pedido ped = Pedido.getPedido(i+1);
+                    for (int i = 0; i < pedido.length; i++) {
+                        Pedido ped = Pedido.getPedido(i + 1);
                         ped.fill();
                         jcb.addItem(pedido[i].getCliente());
                         jcb.addItem("Numero de Pedido: " + pedido[i].getNrPedido() + " Morada de Entrega: " + pedido[i].getMoradaEntrega());
@@ -657,11 +673,11 @@ public class GerenteForm {
                     Prato[] allPratos = Prato.from(restaurante);
                     Bebida[] allBebidas = Bebida.from(restaurante);
                     jcb.addItem("--PRATOS--");
-                    for(int i=0; i< allPratos.length;i++){
+                    for (int i = 0; i < allPratos.length; i++) {
                         jcb.addItem(" Nome: " + allPratos[i].getNome() + " Detalhes: " + allPratos[i].getDetalhes() + " Preço: " + allPratos[i].getPrecoUnitario() + " Tipo de Prato: " + allPratos[i].getTipoPrato() + " Alergias: " + allPratos[i].getAlergenios());
                     }
                     jcb.addItem("--BEBIDAS--");
-                    for(int i=0; i< allBebidas.length;i++){
+                    for (int i = 0; i < allBebidas.length; i++) {
                         jcb.addItem(" Nome: " + allBebidas[i].getNome() + " Detalhes: " + allBebidas[i].getDetalhes() + " Preço: " + allBebidas[i].getPrecoUnitario() + " Capacidade: " + allBebidas[i].getCapacidadeCL());
                     }
 
@@ -686,6 +702,7 @@ public class GerenteForm {
                     ex.printStackTrace();
                 }
             }
+
             @Override
             public void mouseEntered(MouseEvent e) {
                 linkedinJoao.setForeground(Color.green);
@@ -711,6 +728,7 @@ public class GerenteForm {
                     ex.printStackTrace();
                 }
             }
+
             @Override
             public void mouseEntered(MouseEvent e) {
                 githubMarcio.setForeground(Color.green);
@@ -740,7 +758,8 @@ public class GerenteForm {
                 }
             }
         });
-    githubRui.addKeyListener(new KeyAdapter() { } );
+        githubRui.addKeyListener(new KeyAdapter() {
+        });
         /**
          * Evento que mostra o Github
          */
@@ -755,6 +774,7 @@ public class GerenteForm {
                     ex.printStackTrace();
                 }
             }
+
             @Override
             public void mouseEntered(MouseEvent e) {
                 githubRui.setForeground(Color.green);
@@ -780,6 +800,7 @@ public class GerenteForm {
                     ex.printStackTrace();
                 }
             }
+
             @Override
             public void mouseEntered(MouseEvent e) {
                 githubSergio.setForeground(Color.green);
@@ -794,6 +815,7 @@ public class GerenteForm {
 
     /**
      * Setup inicial do RestaurantePanel, define o texto e imagem da BD
+     *
      * @param email
      * @throws SQLException
      */
@@ -830,6 +852,7 @@ public class GerenteForm {
 
     /**
      * Função para dar resize a uma imagem, baseado no tamanho do Jlabel em que ela está presente
+     *
      * @param image
      * @param restauranteImage
      * @return
@@ -841,6 +864,7 @@ public class GerenteForm {
 
     /**
      * Função para dar resize a uma imagem baseado em parametros pre-definidos
+     *
      * @param image
      * @param widght
      * @param height
@@ -853,6 +877,7 @@ public class GerenteForm {
 
     /**
      * Função para escolher uma image do Sistema Operativo, e retornar-la.
+     *
      * @return
      */
     public BufferedImage escolherImagem() {
@@ -879,33 +904,50 @@ public class GerenteForm {
 
     /**
      * Função que define os 3 primeiros pratos do UI visual no cardapioPanel
+     *
      * @param restaurante
      * @return
      * @throws SQLException
      * @throws IOException
      * @throws ArrayIndexOutOfBoundsException
      */
-    private int adicionarPratodeSQL(Restaurante restaurante) throws SQLException, IOException, ArrayIndexOutOfBoundsException {
+    private int adicionarPratodeSQL(Restaurante restaurante) throws SQLException, IOException {
         Prato[] pratos = Prato.from(restaurante);
+        JLabel[] pratosVariaveis = {prato1, prato2, prato3};
 
-        for (int i = 0; i < 2; i++) {
-            JLabel[] pratosVariaveis = {prato1, prato2, prato3};
-            String tipoprato = String.valueOf(pratos[i].getNome());
-            if(tipoprato!= null) {
-                pratosVariaveis[i].setText(tipoprato);
-            }else{
-                pratosVariaveis[i].setText("Nome de Prato não encontrado");
-            }
-            Image img = pratos[i].getImagem();
-            if (img != null) {
-                Icon icon = CardapioImageSize(img, 350, 250);
-                pratosVariaveis[i].setIcon(icon);
-            }else{
+        if (pratos.length == 0) {
+            pratosVariaveis[0].setText("Nome de Prato não encontrado");
+            pratosVariaveis[1].setText("Nome de Prato não encontrado");
+            pratosVariaveis[2].setText("Nome de Prato não encontrado");
             BufferedImage img2 = ImageIO.read(new File("src\\imageresources\\noimagefound.jpg"));
             Icon icon = CardapioImageSize(img2, 350, 250);
-            pratosVariaveis[i].setIcon(icon);
+            pratosVariaveis[0].setIcon(icon);
+            pratosVariaveis[1].setIcon(icon);
+            pratosVariaveis[2].setIcon(icon);
+            return pratos.length;
         }
+        try {
+            for (int i = 0; i < 3; i++) {
+                String tipoprato = String.valueOf(pratos[i].getNome());
+                if (tipoprato != null) {
+                    pratosVariaveis[i].setText(tipoprato);
+                } else {
+                    pratosVariaveis[i].setText("Nome de Prato não encontrado");
+                }
+                Image img = pratos[i].getImagem();
+                if (img != null) {
+                    Icon icon = CardapioImageSize(img, 350, 250);
+                    pratosVariaveis[i].setIcon(icon);
+                } else {
+                    BufferedImage img2 = ImageIO.read(new File("src\\imageresources\\noimagefound.jpg"));
+                    Icon icon = CardapioImageSize(img2, 350, 250);
+                    pratosVariaveis[i].setIcon(icon);
+                }
 
+            }
+
+        } catch (ArrayIndexOutOfBoundsException ex) {
+            return pratos.length;
         }
 
         return pratos.length;
@@ -913,6 +955,7 @@ public class GerenteForm {
 
     /**
      * Função que define as 3 primeiras bebidas do UI visual no cardapioPanel
+     *
      * @param restaurante
      * @throws SQLException
      * @throws IOException
@@ -920,13 +963,25 @@ public class GerenteForm {
      */
     private void adicionarBebidadeSQL(Restaurante restaurante) throws SQLException, IOException, ArrayIndexOutOfBoundsException {
         Bebida[] bebidas = Bebida.from(restaurante);
+        JLabel[] bebidasVariaveis = {bebida1, bebida2, bebida3};
 
-        for (int i = 0; i < 2; i++) {
-            JLabel[] bebidasVariaveis = {bebida1, bebida2, bebida3};
+        if (bebidas.length == 0) {
+            bebidasVariaveis[0].setText("Nome da Bebida não encontrado");
+            bebidasVariaveis[1].setText("Nome da Bebida não encontrado");
+            bebidasVariaveis[2].setText("Nome da Bebida não encontrado");
+            BufferedImage img2 = ImageIO.read(new File("src\\imageresources\\noimagefound.jpg"));
+            Icon icon = CardapioImageSize(img2, 350, 250);
+            bebidasVariaveis[0].setIcon(icon);
+            bebidasVariaveis[1].setIcon(icon);
+            bebidasVariaveis[2].setIcon(icon);
+            return;
+        }
+
+        for (int i = 0; i < 3; i++) {
             String tipoprato = String.valueOf(bebidas[i].getNome());
-            if(tipoprato!= null) {
+            if (tipoprato != null) {
                 bebidasVariaveis[i].setText(tipoprato);
-            }else{
+            } else {
                 bebidasVariaveis[i].setText("Nome de Bebida não encontrado");
             }
             Image img = bebidas[i].getImagem();
@@ -934,7 +989,7 @@ public class GerenteForm {
             if (img != null) {
                 Icon icon = CardapioImageSize(img, 350, 250);
                 bebidasVariaveis[i].setIcon(icon);
-            }else{
+            } else {
                 BufferedImage img2 = ImageIO.read(new File("src\\imageresources\\noimagefound.jpg"));
                 Icon icon = CardapioImageSize(img2, 350, 250);
                 bebidasVariaveis[i].setIcon(icon);
@@ -945,7 +1000,30 @@ public class GerenteForm {
     }
 
     /**
+     * Função que da clear aos labels do adicionar e alterar
+     */
+    public void clearLabels() {
+        nomedoPratoTextField.setText("");
+        detalhespratoField.setText("");
+        precopratoField.setText("");
+        alergiaspratoField.setText("");
+        nomedaBebidaTextField.setText("");
+        detalhesbebidaField.setText("");
+        precobebidaField.setText("");
+        capacidadebebidaField.setText("");
+        OKAdicionarBebidaButton.setVisible(false);
+        OkButtonAdicionarPrato.setVisible(false);
+        OkButtonAlterarBebida.setVisible(false);
+        OKButtonAlterarPrato.setVisible(false);
+        escolherImagemAlterar.setVisible(false);
+        escolherImagemAdicionar.setVisible(false);
+        escolherImagemBebidaAlterar.setVisible(false);
+        AdicionarImagemBebida.setVisible(false);
+    }
+
+    /**
      * Função que puxa o info do prato da BD
+     *
      * @param email
      * @param i
      * @return
@@ -964,6 +1042,7 @@ public class GerenteForm {
 
     /**
      * Função que puxa o info da bebida da BD
+     *
      * @param email
      * @param i
      * @return
