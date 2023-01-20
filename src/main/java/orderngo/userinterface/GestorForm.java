@@ -23,14 +23,13 @@ import java.util.ArrayList;
 import static javax.swing.WindowConstants.DISPOSE_ON_CLOSE;
 
     public class GestorForm {
-        private JPanel gestorPanel,FieldPanel,UserPanel,RestaurantePanel;
-        private JLabel restauranteLabel,lbNome, lbTelemovel, lbPassword, lbEmail,lbMorada,usernameLabel,userImage,restauranteImg,labelImageRest;
+        private JPanel gestorPanel,FieldPanel,UserPanel,RestaurantePanel,logoutPanel;
+        private JLabel restauranteLabel,lbNome, lbTelemovel, lbPassword, lbEmail,lbMorada,usernameLabel,restauranteImg,userimagelb,labelImageRest;
         private JTextField NomeTextField,emailTextField,moradaTextField,telemovelTextField;
         private JPasswordField passwordPasswordField;
-        private JButton btnAtualizar,btnEliminar,cancelarButton,btnNovo;
+        private JButton btnAtualizar,btnEliminar,cancelarButton,btnNovo,logoutbtn;
         private JScrollPane RestaurantField;
         private JList restauranteList;
-        private JButton logoutbtn;
         private final ArrayList<String> rests = new ArrayList<>();
         private final ArrayList<String> restemails = new ArrayList<>();
         private String[] str;
@@ -41,41 +40,47 @@ import static javax.swing.WindowConstants.DISPOSE_ON_CLOSE;
 
         public GestorForm(JFrame parent, String email) throws SQLException {
             JFrame mainFrame = new JFrame();
+            BufferedImage imutil = ImagemUtils.ficheiroToImage("src//imageresources//profile.png");
+            Image resizedimg = imutil.getScaledInstance(100, 100, Image.SCALE_SMOOTH);
+            Icon icon = new ImageIcon(resizedimg);
+            userimagelb.setIcon(icon);
+            try {
+                mainFrame.setIconImage(ImageIO.read(new File("src\\imageresources\\orderngo.png")));
+            }
+            catch (IOException exc) {
+                exc.printStackTrace();
+            }
             mainFrame.setTitle("Order-N-Go Gestor");
             mainFrame.setContentPane(gestorPanel);
             clearFields();
             GestorOrderAndGo gest = GestorOrderAndGo.getGestor(email);
             usernameLabel.setText(gest.getNome());
             carregaRestaurante();
-            mainFrame.setMinimumSize(new Dimension(950, 750));
+            mainFrame.setMinimumSize(new Dimension(950, 700));
             mainFrame.setLocationRelativeTo(parent);
             mainFrame.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
             mainFrame.setVisible(true);
 
             btnNovo.addActionListener(new ActionListener() {
                 /**
-                 * @param e the event to be processed
+                 * Limpa todos os campos e muda o estado dos campos necessários para criar um novo restaurante para "visivel" e muda o texto do 'btnAtualizar' para "Guardar" para mudar a funcionalidade do botão.
                  */
                 @Override
                 public void actionPerformed(ActionEvent e) {
+                    clearFields();
+                    restauranteList.setEnabled(false);
                     btnAtualizar.setText("Guardar");
-                    restauranteList.clearSelection();
                     NomeTextField.setVisible(true);
                     lbNome.setVisible(true);
                     lbEmail.setVisible(true);
                     emailTextField.setVisible(true);
                     lbPassword.setVisible(true);
                     passwordPasswordField.setVisible(true);
-                    NomeTextField.setText("");
-                    moradaTextField.setText("");
-                    emailTextField.setText("");
-                    telemovelTextField.setText("");
-                    passwordPasswordField.setText("");
                 }
             });
             cancelarButton.addActionListener(new ActionListener() {
                 /**
-                 * @param e the event to be processed
+                 *Após confirmação por parte do operador, é cancelado tudo o que se estava a alterar ou inserido na BD limpando os campos por completo através do metodo 'clearFields'.
                  */
                 @Override
                 public void actionPerformed(ActionEvent e) {
@@ -83,13 +88,19 @@ import static javax.swing.WindowConstants.DISPOSE_ON_CLOSE;
                             JOptionPane.YES_NO_OPTION,
                             JOptionPane.QUESTION_MESSAGE);
                     if (result == JOptionPane.YES_OPTION) {
+                        btnAtualizar.setText("Atualizar");
                         clearFields();
                     }
                 }
             });
             btnAtualizar.addActionListener(new ActionListener() {
                 /**
-                 * @param e the event to be processed
+                 * - O botão btnAtualizar possui 2 funcionalidades que mudam respetivamente com o texto que possui: "Atualizar" e "Guardar",
+                 * em ambos os casos o operador é exigido a confirmar ambas as operações para evitar alterações acidentais à BD bem como limpa os Textfields e da refresh a lista de restaurantes.
+                 * - Função "Atualizar" permite atualizar os fields "telemovel" ,"morada" e " imagem" fazendo verificações em métodos na classe "Restaurante" para não existir valores inválidos na BD e
+                 * não exige a alteração de todos para realizar a alteração.
+                 * - Função "Guardar" permite inserir novos restaurantes, a password inserida é encriptada em Hash de forma a criar segurança na BD, é verificado o formato do email se corresponde a "aa@bb.cc",
+                 * verifica se foi ou não escolhida uma imagem para o restaurante, caso não tenha sido feita é guardada uma imagem padrão.
                  */
                 @Override
                 public void actionPerformed(ActionEvent e) {
@@ -107,6 +118,7 @@ import static javax.swing.WindowConstants.DISPOSE_ON_CLOSE;
                                 }
                                 rest.save();
                             }catch(SQLException sqlException){
+
                                 throw new RuntimeException(sqlException);
                             }
                             clearFields();
@@ -125,7 +137,7 @@ import static javax.swing.WindowConstants.DISPOSE_ON_CLOSE;
                                 restaurante.setPassword(password);
                                 if(bi[0]!=null) {
                                     restaurante.setImagem(bi[0]);
-                                }else{
+                                } else if (bi[0]==null) {
                                     restaurante.setImagem(ImagemUtils.ficheiroToImage("src//imageresources//noimagefound.jpg"));
                                 }
                                 restaurante.save();
@@ -138,7 +150,11 @@ import static javax.swing.WindowConstants.DISPOSE_ON_CLOSE;
                     }
                 }
             });
+
             btnEliminar.addActionListener(new ActionListener() {
+                /**
+                 *Elimina o restaurante selecionado da lista e limpa os campos preenchidos pelo selecionar do mesmo
+                 */
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     int result = JOptionPane.showConfirmDialog(parent, "Deseja eliminar os dados do restaurante?", "Eliminar Restaurante",
@@ -157,9 +173,14 @@ import static javax.swing.WindowConstants.DISPOSE_ON_CLOSE;
                 }
             });
             restauranteList.addListSelectionListener(new ListSelectionListener() {
+                /**
+                 *Carrega os dados telemovel, morada e imagem correspondentes ao restaurante selecionado na lista.
+                 * Ao selecionar o restaurante, desbloqueia o botão de 'Eliminar' e bloqueia caso se remova o selected do item da lista.
+                 */
                 @Override
                 public void valueChanged(ListSelectionEvent e) {
                     if (!restauranteList.isSelectionEmpty()) {
+                        btnEliminar.setEnabled(true);
                         selectEmail = restemails.get(restauranteList.getSelectedIndex());
                         try {
                             Restaurante rest = Restaurante.getRestaurante(selectEmail);
@@ -178,12 +199,18 @@ import static javax.swing.WindowConstants.DISPOSE_ON_CLOSE;
                         } catch (SQLException sqlException) {
                             System.out.println(sqlException);
                         }
+                    }else{
+                        btnEliminar.setEnabled(false);
                     }
                 }
             });
+
             restauranteImg.addMouseListener(new MouseAdapter() {
                 @Override
                 public void mouseClicked(MouseEvent e) {
+                    /**
+                     * Invoca o metodo de escolha da imagem e posteriormente redimensiona a imagem e carrega o a 'restauranteImg' com a mesma
+                     */
                     bi[0] = escolherImagem();
                     Image resizedimg = bi[0].getScaledInstance(160, 160, Image.SCALE_SMOOTH);
                     Icon icon = new ImageIcon(resizedimg);
@@ -191,6 +218,9 @@ import static javax.swing.WindowConstants.DISPOSE_ON_CLOSE;
                 }
             });
             logoutbtn.addActionListener(new ActionListener() {
+                /**
+                 *Pergunta ao utilizador se o mesmo deseja fazer logout e caso seja confirmado o form atual é fechado e abre o form de login.
+                 */
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     int result = JOptionPane.showConfirmDialog(parent, "Deseja fazer logout?", "Logout",JOptionPane.YES_NO_OPTION,JOptionPane.QUESTION_MESSAGE);
@@ -202,6 +232,10 @@ import static javax.swing.WindowConstants.DISPOSE_ON_CLOSE;
                 }
             });
         }
+
+        /**
+         *Abre uma janela do tipo 'FileChooser' no qual mostra todos os ficheiros do tipo "*.jpg" para carregar posteriormente o registo do restaurante na BD
+         */
         public BufferedImage escolherImagem(){
             JFileChooser file = new JFileChooser();
             file.setDialogTitle("Escolha a Imagem");
@@ -223,6 +257,9 @@ import static javax.swing.WindowConstants.DISPOSE_ON_CLOSE;
             return null;
         }
 
+        /**
+         *Carrega a lista de restaurantes existentes na BD com um Model personalizado constituido por uma imagem e o nome do restaurante
+         */
         private void carregaRestaurante() {
             newModel NwModl = new newModel();
             newRenderer NwRndrer = new newRenderer();
@@ -236,6 +273,9 @@ import static javax.swing.WindowConstants.DISPOSE_ON_CLOSE;
 
         class newModel extends DefaultListModel
         {
+            /**
+             *Carrega os dados vindos da BD na lista usando o  estilo criado como base para cada row e correspondentes emails
+             */
             public newModel()
             {
                 rests.clear();
@@ -269,6 +309,10 @@ import static javax.swing.WindowConstants.DISPOSE_ON_CLOSE;
                 }
             }
         }
+
+        /**
+         * Personaliza o item da lista dando a composição de imagem e descrição
+         */
         class newRenderer extends JLabel implements ListCellRenderer
         {
             public newRenderer()
@@ -293,27 +337,27 @@ import static javax.swing.WindowConstants.DISPOSE_ON_CLOSE;
                 return this;
             }
         }
-        public static BufferedImage getBufferedImageFromIcon(Icon icon) {
-            BufferedImage buffer = new BufferedImage(icon.getIconWidth(), icon.getIconHeight(),
-                    BufferedImage.TYPE_INT_ARGB);
-            Graphics g = buffer.getGraphics();
-            icon.paintIcon(new JLabel(), g, 0, 0);
-            g.dispose();
-            return buffer;
-        }
 
+
+        /**
+         * Limpa todos os campos, restaura a imagem padrão do forme  e oculta os campo desnecessarios para as atualizações de dados
+         */
         public void clearFields(){
             BufferedImage imagem = ImagemUtils.ficheiroToImage("src//imageresources//selectImage.jpg");
             Image resizedimg = imagem.getScaledInstance(160, 160, Image.SCALE_SMOOTH);
             Icon icon = new ImageIcon(resizedimg);
             restauranteImg.setIcon(icon);
+            btnEliminar.setEnabled(false);
+            if(btnAtualizar.getText().equals("Atualizar")){
+                restauranteList.setEnabled(true);
+            }
             NomeTextField.setText("");
-
             emailTextField.setText("");
             moradaTextField.setText("");
             telemovelTextField.setText("");
             passwordPasswordField.setText("");
             restauranteImg.setText("");
+            btnAtualizar.setText("Atualizar");
             NomeTextField.setVisible(false);
             lbNome.setVisible(false);
             lbEmail.setVisible(false);
@@ -322,6 +366,7 @@ import static javax.swing.WindowConstants.DISPOSE_ON_CLOSE;
             passwordPasswordField.setVisible(false);
             restauranteList.clearSelection();
         }
+
         private void createUIComponents() {
             // TODO: place custom component creation code here
         }
