@@ -656,7 +656,7 @@ public class GerenteForm {
                     for (int i = 0; i < pedido.length; i++) {
                         Pedido ped = Pedido.getPedido(i + 1);
                         ped.fill();
-                        jcb.addItem("Cliente : " + pedido[i].getCliente().getNome() + "; Numero telemovel: "+ pedido[i].getCliente().getTelemovel());
+                        jcb.addItem("- Cliente : " + pedido[i].getCliente().getNome() + "; Numero telemovel: "+ pedido[i].getCliente().getTelemovel());
                         jcb.addItem("Numero de Pedido: " + pedido[i].getNrPedido() + "; Morada de Entrega: " + pedido[i].getMoradaEntrega());
                         ped.getItemsPedido(restaurante);
 
