@@ -6,6 +6,7 @@ DROP PROCEDURE IF EXISTS getPedidosFromRestaurante;
 DROP PROCEDURE IF EXISTS getpedidopratos;
 DROP PROCEDURE IF EXISTS getpedidobebidas;
 
+
 DELIMITER ;;
 CREATE PROCEDURE criarBD()
 BEGIN
@@ -138,6 +139,7 @@ BEGIN
     DELETE FROM gestorog;
 END;;
 DELIMITER ;
+
 
 CALL removerBD();
 CALL criarBD();
