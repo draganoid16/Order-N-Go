@@ -1,9 +1,9 @@
 package orderngo;
 
 
+import orderngo.userinterface.GerenteForm;
 import orderngo.userinterface.GestorForm;
 import orderngo.userinterface.LoginForm;
-import orderngo.userinterface.GerenteForm;
 
 import java.io.IOException;
 import java.sql.SQLException;
@@ -21,8 +21,8 @@ public class App
         GerenteForm gerenteForm = new GerenteForm(null, "");
     }
 
-    public static void GestorMenu(){
+    public static void GestorMenu() throws SQLException {
         //teste login form e main form
-        GestorForm gestorForm = new GestorForm(null);
+        GestorForm gestorForm = new GestorForm(null,"");
     }
 }
