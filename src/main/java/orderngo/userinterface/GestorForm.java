@@ -68,6 +68,8 @@ import static javax.swing.WindowConstants.DISPOSE_ON_CLOSE;
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     clearFields();
+                    btnAtualizar.setEnabled(true);
+                    cancelarButton.setEnabled(true);
                     restauranteList.setEnabled(false);
                     btnAtualizar.setText("Guardar");
                     NomeTextField.setVisible(true);
@@ -145,6 +147,7 @@ import static javax.swing.WindowConstants.DISPOSE_ON_CLOSE;
                                 throw new RuntimeException(sqlException);
                             }
                         }
+                        btnAtualizar.setText("Atualizar");
                         clearFields();
                         carregaRestaurante();
                     }
@@ -181,6 +184,8 @@ import static javax.swing.WindowConstants.DISPOSE_ON_CLOSE;
                 public void valueChanged(ListSelectionEvent e) {
                     if (!restauranteList.isSelectionEmpty()) {
                         btnEliminar.setEnabled(true);
+                        btnAtualizar.setEnabled(true);
+                        cancelarButton.setEnabled(true);
                         selectEmail = restemails.get(restauranteList.getSelectedIndex());
                         try {
                             Restaurante rest = Restaurante.getRestaurante(selectEmail);
@@ -267,7 +272,7 @@ import static javax.swing.WindowConstants.DISPOSE_ON_CLOSE;
             restauranteList.setCellRenderer(NwRndrer);
             restauranteList.setVisibleRowCount(1);
             restauranteList.setFixedCellWidth(230);
-            restauranteList.setFixedCellHeight(200);
+            restauranteList.setFixedCellHeight(230);
             restauranteList.setLayoutOrientation(JList.HORIZONTAL_WRAP);
         }
 
@@ -291,7 +296,7 @@ import static javax.swing.WindowConstants.DISPOSE_ON_CLOSE;
                             BufferedImage imagem = ImagemUtils.blobToImage(result.getBlob("imagem"));
                             if (imagem != null) {
                                 Image resizedimg = imagem.getScaledInstance(160,160,Image.SCALE_SMOOTH);
-                                addElement(new Object[]{result.getString("nome"), new ImageIcon(resizedimg)});
+                                addElement(new Object[]{result.getString("nome") , new ImageIcon(resizedimg)});
                             }else{
                                 BufferedImage image = ImagemUtils.ficheiroToImage("src//imageresources//noimagefound.jpg");
                                 Image resizedimg = image.getScaledInstance(160,160,Image.SCALE_SMOOTH);
@@ -323,7 +328,10 @@ import static javax.swing.WindowConstants.DISPOSE_ON_CLOSE;
             {
                 newModel Mdl = (newModel)JLst.getModel();
                 setText((String)((Object[])ob1)[0]);
+                setHorizontalTextPosition(0);
+                setVerticalTextPosition(BOTTOM);
                 setIcon((Icon)((Object[])ob1)[1]);
+                setHorizontalAlignment(0);
                 if(!isSelected)
                 {
                     setBackground(JLst.getBackground());
@@ -348,6 +356,8 @@ import static javax.swing.WindowConstants.DISPOSE_ON_CLOSE;
             Icon icon = new ImageIcon(resizedimg);
             restauranteImg.setIcon(icon);
             btnEliminar.setEnabled(false);
+            btnAtualizar.setEnabled(false);
+            cancelarButton.setEnabled(false);
             if(btnAtualizar.getText().equals("Atualizar")){
                 restauranteList.setEnabled(true);
             }
