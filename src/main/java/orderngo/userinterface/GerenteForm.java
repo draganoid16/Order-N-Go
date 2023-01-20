@@ -632,18 +632,22 @@ public class GerenteForm {
                     for(int i=0; i< pedido.length;i++){
                         Pedido ped = Pedido.getPedido(i+1);
                         ped.fill();
-                        jcb.addItem(pedido[i].getCliente());
-                        jcb.addItem("Numero de Pedido: " + pedido[i].getNrPedido() + " Morada de Entrega: " + pedido[i].getMoradaEntrega());
-                        jcb.addItem("Items do Pedido: " + ped.getItemsPedido());
+                        jcb.addItem("Cliente : " + pedido[i].getCliente().getNome() + "; Numero telemovel: "+ pedido[i].getCliente().getTelemovel());
+                        jcb.addItem("Numero de Pedido: " + pedido[i].getNrPedido() + "; Morada de Entrega: " + pedido[i].getMoradaEntrega());
+                        ped.getItemsPedido(restaurante);
+                        for (var entry : ped.getItemsPedido().entrySet()) {
+                            jcb.addItem("Items do Pedido: " + entry.getKey().getNome() + " Quantidade: " + entry.getValue());
+                        }
+
                     }
 
                 } catch (SQLException ex) {
                     throw new RuntimeException(ex);
                 }
-
-                JOptionPane.showMessageDialog(mainFrame, jcb, "Pedidos", JOptionPane.INFORMATION_MESSAGE);
+                JOptionPane.showMessageDialog(mainFrame,jcb,"Pedidos",JOptionPane.INFORMATION_MESSAGE);
             }
         });
+
         verListaCompletaButton.addMouseListener(new MouseAdapter() {
             /**
              * Mostra todos os pratos e bebidas presentes na Base de Dados para esse restaurante
