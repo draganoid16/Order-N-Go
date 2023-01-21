@@ -951,7 +951,7 @@ public class GerenteForm {
             return pratos.length;
         }
         try {
-            for (int i = 0; i < 3; i++) {
+            for (int i = 0; i < pratos.length; i++) {  //se for 2/3 não chega a atualizar, se for .length também não chega aos vazios
                 String tipoprato = String.valueOf(pratos[i].getNome());
                 if (tipoprato != null) {
                     pratosVariaveis[i].setText(tipoprato);
@@ -969,8 +969,23 @@ public class GerenteForm {
                 }
 
             }
+            BufferedImage img2 = ImageIO.read(new File("src\\imageresources\\noimagefound.jpg"));
+            Icon iconnotfound = CardapioImageSize(img2, 350, 250);
+
+            switch(pratos.length){
+                case 1:
+                    pratosVariaveis[1].setText("Nome de Prato não encontrado");
+                    pratosVariaveis[1].setIcon(iconnotfound);
+                    pratosVariaveis[2].setText("Nome de Prato não encontrado");
+                    pratosVariaveis[2].setIcon(iconnotfound);
+
+                case 2:
+                    pratosVariaveis[2].setText("Nome de Prato não encontrado");
+                    pratosVariaveis[2].setIcon(iconnotfound);
+            }
 
         } catch (ArrayIndexOutOfBoundsException ex) {
+            System.out.println("outofbounds");
             return pratos.length;
         }
 
@@ -1001,7 +1016,7 @@ public class GerenteForm {
             return;
         }
 
-        for (int i = 0; i < 3; i++) {
+        for (int i = 0; i < bebidas.length; i++) {
             String tipoprato = String.valueOf(bebidas[i].getNome());
             if (tipoprato != null) {
                 bebidasVariaveis[i].setText(tipoprato);
@@ -1019,6 +1034,20 @@ public class GerenteForm {
                 bebidasVariaveis[i].setIcon(icon);
             }
 
+        }
+        BufferedImage img2 = ImageIO.read(new File("src\\imageresources\\noimagefound.jpg"));
+        Icon iconnotfound = CardapioImageSize(img2, 350, 250);
+
+        switch(bebidas.length){
+            case 1:
+                bebidasVariaveis[1].setText("Nome de Prato não encontrado");
+                bebidasVariaveis[1].setIcon(iconnotfound);
+                bebidasVariaveis[2].setText("Nome de Prato não encontrado");
+                bebidasVariaveis[2].setIcon(iconnotfound);
+
+            case 2:
+                bebidasVariaveis[2].setText("Nome de Prato não encontrado");
+                bebidasVariaveis[2].setIcon(iconnotfound);
         }
 
     }
