@@ -939,55 +939,71 @@ public class GerenteForm {
         Prato[] pratos = Prato.from(restaurante);
         JLabel[] pratosVariaveis = {prato1, prato2, prato3};
 
-        if (pratos.length == 0) {
-            pratosVariaveis[0].setText("Nome de Prato não encontrado");
-            pratosVariaveis[1].setText("Nome de Prato não encontrado");
-            pratosVariaveis[2].setText("Nome de Prato não encontrado");
-            BufferedImage img2 = ImageIO.read(new File("src\\imageresources\\noimagefound.jpg"));
-            Icon icon = CardapioImageSize(img2, 350, 250);
-            pratosVariaveis[0].setIcon(icon);
-            pratosVariaveis[1].setIcon(icon);
-            pratosVariaveis[2].setIcon(icon);
-            return pratos.length;
-        }
-        try {
-            for (int i = 0; i < pratos.length; i++) {  //se for 2/3 não chega a atualizar, se for .length também não chega aos vazios
-                String tipoprato = String.valueOf(pratos[i].getNome());
-                if (tipoprato != null) {
-                    pratosVariaveis[i].setText(tipoprato);
-                } else {
-                    pratosVariaveis[i].setText("Nome de Prato não encontrado");
-                }
-                Image img = pratos[i].getImagem();
+        BufferedImage img2 = ImageIO.read(new File("src\\imageresources\\noimagefound.jpg"));
+        Icon iconnotfound = CardapioImageSize(img2, 350, 250);
+        switch (pratos.length) {
+            case 0 ->{
+                pratosVariaveis[0].setText("Nome de Prato não encontrado");
+                pratosVariaveis[1].setText("Nome de Prato não encontrado");
+                pratosVariaveis[2].setText("Nome de Prato não encontrado");
+                pratosVariaveis[0].setIcon(iconnotfound);
+                pratosVariaveis[1].setIcon(iconnotfound);
+                pratosVariaveis[2].setIcon(iconnotfound);
+            }
+            case 1 -> {
+                String tipoprato = String.valueOf(pratos[0].getNome());
+                pratosVariaveis[0].setText(tipoprato);
+                Image img = pratos[0].getImagem();
+                //if not null setup X, else setup img
                 if (img != null) {
                     Icon icon = CardapioImageSize(img, 350, 250);
-                    pratosVariaveis[i].setIcon(icon);
+                    pratosVariaveis[0].setIcon(icon);
                 } else {
-                    BufferedImage img2 = ImageIO.read(new File("src\\imageresources\\noimagefound.jpg"));
-                    Icon icon = CardapioImageSize(img2, 350, 250);
-                    pratosVariaveis[i].setIcon(icon);
+                    BufferedImage img3 = ImageIO.read(new File("src\\imageresources\\noimagefound.jpg"));
+                    Icon icon = CardapioImageSize(img3, 350, 250);
+                    pratosVariaveis[0].setIcon(icon);
                 }
-
+                pratosVariaveis[1].setText("Nome de Prato não encontrado");
+                pratosVariaveis[1].setIcon(iconnotfound);
+                pratosVariaveis[2].setText("Nome de Prato não encontrado");
+                pratosVariaveis[2].setIcon(iconnotfound);
             }
-            BufferedImage img2 = ImageIO.read(new File("src\\imageresources\\noimagefound.jpg"));
-            Icon iconnotfound = CardapioImageSize(img2, 350, 250);
-
-            switch(pratos.length){
-                case 1:
-                    pratosVariaveis[1].setText("Nome de Prato não encontrado");
-                    pratosVariaveis[1].setIcon(iconnotfound);
-                    pratosVariaveis[2].setText("Nome de Prato não encontrado");
-                    pratosVariaveis[2].setIcon(iconnotfound);
-
-                case 2:
-                    pratosVariaveis[2].setText("Nome de Prato não encontrado");
-                    pratosVariaveis[2].setIcon(iconnotfound);
+            case 2 -> {
+                for (int i = 0; i < 1; i++) {
+                    String tipoprato = String.valueOf(pratos[i].getNome());
+                    pratosVariaveis[i].setText(tipoprato);
+                    Image img = pratos[i].getImagem();
+                    //if not null setup X, else setup img
+                    if (img != null) {
+                        Icon icon = CardapioImageSize(img, 350, 250);
+                        pratosVariaveis[i].setIcon(icon);
+                    } else {
+                        BufferedImage img3 = ImageIO.read(new File("src\\imageresources\\noimagefound.jpg"));
+                        Icon icon = CardapioImageSize(img3, 350, 250);
+                        pratosVariaveis[i].setIcon(icon);
+                    }
+                }
+                pratosVariaveis[2].setText("Nome de Prato não encontrado");
+                pratosVariaveis[2].setIcon(iconnotfound);
             }
-
-        } catch (ArrayIndexOutOfBoundsException ex) {
-            System.out.println("outofbounds");
-            return pratos.length;
+            default ->{
+                for (int i = 0; i < 2; i++) {
+                    String tipoprato = String.valueOf(pratos[i].getNome());
+                    pratosVariaveis[i].setText(tipoprato);
+                    Image img = pratos[i].getImagem();
+                    //if not null setup X, else setup img
+                    if (img != null) {
+                        Icon icon = CardapioImageSize(img, 350, 250);
+                        pratosVariaveis[i].setIcon(icon);
+                    } else {
+                        BufferedImage img3 = ImageIO.read(new File("src\\imageresources\\noimagefound.jpg"));
+                        Icon icon = CardapioImageSize(img3, 350, 250);
+                        pratosVariaveis[i].setIcon(icon);
+                    }
+                }
+            }
         }
+
 
         return pratos.length;
     }
@@ -1000,54 +1016,74 @@ public class GerenteForm {
      * @throws IOException
      * @throws ArrayIndexOutOfBoundsException
      */
-    private void adicionarBebidadeSQL(Restaurante restaurante) throws SQLException, IOException, ArrayIndexOutOfBoundsException {
+    private void adicionarBebidadeSQL(Restaurante restaurante) throws SQLException, IOException {
         Bebida[] bebidas = Bebida.from(restaurante);
         JLabel[] bebidasVariaveis = {bebida1, bebida2, bebida3};
 
-        if (bebidas.length == 0) {
-            bebidasVariaveis[0].setText("Nome da Bebida não encontrado");
-            bebidasVariaveis[1].setText("Nome da Bebida não encontrado");
-            bebidasVariaveis[2].setText("Nome da Bebida não encontrado");
-            BufferedImage img2 = ImageIO.read(new File("src\\imageresources\\noimagefound.jpg"));
-            Icon icon = CardapioImageSize(img2, 350, 250);
-            bebidasVariaveis[0].setIcon(icon);
-            bebidasVariaveis[1].setIcon(icon);
-            bebidasVariaveis[2].setIcon(icon);
-            return;
-        }
-
-        for (int i = 0; i < bebidas.length; i++) {
-            String tipoprato = String.valueOf(bebidas[i].getNome());
-            if (tipoprato != null) {
-                bebidasVariaveis[i].setText(tipoprato);
-            } else {
-                bebidasVariaveis[i].setText("Nome de Bebida não encontrado");
-            }
-            Image img = bebidas[i].getImagem();
-            //if not null setup X, else setup img
-            if (img != null) {
-                Icon icon = CardapioImageSize(img, 350, 250);
-                bebidasVariaveis[i].setIcon(icon);
-            } else {
-                BufferedImage img2 = ImageIO.read(new File("src\\imageresources\\noimagefound.jpg"));
-                Icon icon = CardapioImageSize(img2, 350, 250);
-                bebidasVariaveis[i].setIcon(icon);
-            }
-
-        }
         BufferedImage img2 = ImageIO.read(new File("src\\imageresources\\noimagefound.jpg"));
         Icon iconnotfound = CardapioImageSize(img2, 350, 250);
 
-        switch(bebidas.length){
-            case 1:
-                bebidasVariaveis[1].setText("Nome de Prato não encontrado");
+        switch (bebidas.length) {
+            case 0 ->{
+                bebidasVariaveis[0].setText("Nome da Bebida não encontrado");
+                bebidasVariaveis[1].setText("Nome da Bebida não encontrado");
+                bebidasVariaveis[2].setText("Nome da Bebida não encontrado");
+                bebidasVariaveis[0].setIcon(iconnotfound);
                 bebidasVariaveis[1].setIcon(iconnotfound);
-                bebidasVariaveis[2].setText("Nome de Prato não encontrado");
                 bebidasVariaveis[2].setIcon(iconnotfound);
-
-            case 2:
-                bebidasVariaveis[2].setText("Nome de Prato não encontrado");
+            }
+            case 1 -> {
+                String tipoprato = String.valueOf(bebidas[0].getNome());
+                bebidasVariaveis[0].setText(tipoprato);
+                Image img = bebidas[0].getImagem();
+                //if not null setup X, else setup img
+                if (img != null) {
+                    Icon icon = CardapioImageSize(img, 350, 250);
+                    bebidasVariaveis[0].setIcon(icon);
+                } else {
+                    BufferedImage img3 = ImageIO.read(new File("src\\imageresources\\noimagefound.jpg"));
+                    Icon icon = CardapioImageSize(img3, 350, 250);
+                    bebidasVariaveis[0].setIcon(icon);
+                }
+                bebidasVariaveis[1].setText("Nome da Bebida não encontrado");
+                bebidasVariaveis[1].setIcon(iconnotfound);
+                bebidasVariaveis[2].setText("Nome da Bebida não encontrado");
                 bebidasVariaveis[2].setIcon(iconnotfound);
+            }
+            case 2 -> {
+                for (int i = 0; i < 1; i++) {
+                    String tipoprato = String.valueOf(bebidas[i].getNome());
+                    bebidasVariaveis[i].setText(tipoprato);
+                    Image img = bebidas[i].getImagem();
+                    //if not null setup X, else setup img
+                    if (img != null) {
+                        Icon icon = CardapioImageSize(img, 350, 250);
+                        bebidasVariaveis[i].setIcon(icon);
+                    } else {
+                        BufferedImage img3 = ImageIO.read(new File("src\\imageresources\\noimagefound.jpg"));
+                        Icon icon = CardapioImageSize(img3, 350, 250);
+                        bebidasVariaveis[i].setIcon(icon);
+                    }
+                }
+                bebidasVariaveis[2].setText("Nome da Bebida não encontrado");
+                bebidasVariaveis[2].setIcon(iconnotfound);
+            }
+            default ->{
+                for (int i = 0; i < 2; i++) {
+                    String tipoprato = String.valueOf(bebidas[i].getNome());
+                    bebidasVariaveis[i].setText(tipoprato);
+                    Image img = bebidas[i].getImagem();
+                    //if not null setup X, else setup img
+                    if (img != null) {
+                        Icon icon = CardapioImageSize(img, 350, 250);
+                        bebidasVariaveis[i].setIcon(icon);
+                    } else {
+                        BufferedImage img3 = ImageIO.read(new File("src\\imageresources\\noimagefound.jpg"));
+                        Icon icon = CardapioImageSize(img3, 350, 250);
+                        bebidasVariaveis[i].setIcon(icon);
+                    }
+                }
+            }
         }
 
     }
