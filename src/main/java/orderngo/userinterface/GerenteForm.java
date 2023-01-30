@@ -969,7 +969,7 @@ public class GerenteForm {
                 pratosVariaveis[2].setIcon(iconnotfound);
             }
             case 2 -> {
-                for (int i = 0; i < 1; i++) {
+                for (int i = 0; i < 2; i++) {
                     String tipoprato = String.valueOf(pratos[i].getNome());
                     pratosVariaveis[i].setText(tipoprato);
                     Image img = pratos[i].getImagem();
@@ -987,7 +987,7 @@ public class GerenteForm {
                 pratosVariaveis[2].setIcon(iconnotfound);
             }
             default ->{
-                for (int i = 0; i < 2; i++) {
+                for (int i = 0; i < 3; i++) {
                     String tipoprato = String.valueOf(pratos[i].getNome());
                     pratosVariaveis[i].setText(tipoprato);
                     Image img = pratos[i].getImagem();
@@ -1051,7 +1051,7 @@ public class GerenteForm {
                 bebidasVariaveis[2].setIcon(iconnotfound);
             }
             case 2 -> {
-                for (int i = 0; i < 1; i++) {
+                for (int i = 0; i < 2; i++) {
                     String tipoprato = String.valueOf(bebidas[i].getNome());
                     bebidasVariaveis[i].setText(tipoprato);
                     Image img = bebidas[i].getImagem();
@@ -1069,7 +1069,7 @@ public class GerenteForm {
                 bebidasVariaveis[2].setIcon(iconnotfound);
             }
             default ->{
-                for (int i = 0; i < 2; i++) {
+                for (int i = 0; i < 3; i++) {
                     String tipoprato = String.valueOf(bebidas[i].getNome());
                     bebidasVariaveis[i].setText(tipoprato);
                     Image img = bebidas[i].getImagem();
